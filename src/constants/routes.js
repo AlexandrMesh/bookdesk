@@ -1,0 +1,13 @@
+export const SEARCH_ROUTE = 'Search';
+export const HOME_ROUTE = 'Home';
+export const PROFILE_ROUTE = 'Profile';
+export const ABOUT_ROUTE = 'About';
+export const HOME_NAVIGATOR_ROUTE = 'HomeNavigator';
+export const SEARCH_NAVIGATOR_ROUTE = 'SearchNavigator';
+export const PROFILE_NAVIGATOR_ROUTE = 'ProfileNavigator';
+export const SIGN_IN_ROUTE = 'SignIn';
+export const SIGN_UP_ROUTE = 'SignUp';
+export const ALL_BOOKS_ROUTE = 'AllBooks';
+export const PLANNED_BOOKS_ROUTE = 'PlannedBooks';
+export const IN_PROGRESS_BOOKS_ROUTE = 'InProgressBooks';
+export const COMPLETED_BOOKS_ROUTE = 'CompletedBooks';

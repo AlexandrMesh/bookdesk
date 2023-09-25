@@ -1,0 +1,14 @@
+{
+  "noStatus": "Нет статуса",
+  "planned": "Планирую",
+  "inProgress": "Читаю",
+  "completed": "Прочитал",
+  "choosingStatus": "Выбор статуса",
+  "emptyBoard": "Доска пуста",
+  "addBook": "Добавить книгу",
+  "count": "Кол-во: {{count}}",
+  "pages": "Страниц: ",
+  "category": "Категория: ",
+  "added": "Добавлено: ",
+  "catalogTitle": "Каталог"
+}

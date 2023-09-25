@@ -1,0 +1,16 @@
+{
+  "hasNoValue": "Заполните это поле",
+  "isTooLong": "Должно быть не более 64 символов",
+  "isNotValidEmailPattern": "Неверный формат email",
+  "isTooShort": "Должно быть не менее 6 символов",
+  "noToken": "Должен быть предоставлен токен",
+  "somethingWentWrong": "Что-то пошло не так",
+  "incorrectToken": "Неверный токен",
+  "noEmail": "Должен быть предоставлен email",
+  "incorrectEmail": "Неверный email",
+  "noPassword": "Должен быть предоставлен пароль",
+  "emailExists": "Email существует",
+  "invalidGoogleEmail": "Неверный Google Email",
+  "noUser": "Не существует такого пользователя",
+  "wrongEmailOrPassword": "Неверный email или пароль"
+}
