@@ -11,7 +11,7 @@ import { SIGN_UP_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
 import Logo from '~screens/Auth/Logo';
 import Input from '~UI/TextInput';
-import Spinner from '~UI/Spinner';
+import { Spinner, Size } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
 import styles from './styles';
 
@@ -92,7 +92,7 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
               disabled={pendingSignIn}
             />
             <Button
-              icon={pendingSignIn && <Spinner size='small' />}
+              icon={pendingSignIn && <Spinner size={Size.SMALL} />}
               onPress={handleSubmitSignIn}
               title={t('signIn')}
               disabled={pendingSignIn || isEmpty(email) || isEmpty(password)}

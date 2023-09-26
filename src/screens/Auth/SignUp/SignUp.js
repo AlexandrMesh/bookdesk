@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { func, string, shape } from 'prop-types';
 import { ScrollView, View, Text } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { SIGN_IN_ROUTE } from '~constants/routes';
 import Button from '~UI/Button';
 import Logo from '~screens/Auth/Logo';
 import Input from '~UI/TextInput';
-import Spinner from '~UI/Spinner';
+import { Spinner, Size } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
 import styles from './styles';
 
@@ -39,10 +39,10 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
     setPassword(password);
   };
 
-  const clearForm = () => {
+  const clearForm = useCallback(() => {
     setEmail('');
     setPassword('');
-  };
+  }, []);
 
   const handleSubmitSignIn = () => {
     if (isValidForm()) {
@@ -61,7 +61,7 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
       clearForm();
       clearErrors();
     }
-  }, [isFocused]);
+  }, [isFocused, clearForm, clearErrors]);
 
   return (
     <View style={styles.wrapper}>
@@ -88,7 +88,7 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
               disabled={pendingSignUp}
             />
             <Button
-              icon={pendingSignUp && <Spinner size='small' />}
+              icon={pendingSignUp && <Spinner size={Size.SMALL} />}
               onPress={handleSubmitSignIn}
               title={t('signUp')}
               disabled={pendingSignUp || isEmpty(email) || isEmpty(password)}

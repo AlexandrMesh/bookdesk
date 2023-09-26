@@ -9,6 +9,7 @@ import app from './locales/ru/app.json';
 import categories from './locales/ru/categories.json';
 
 i18n.init({
+  compatibilityJSON: 'v3',
   lng: 'ru',
   whitelist: ['ru'],
   resources: {

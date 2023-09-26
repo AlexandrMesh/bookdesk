@@ -39,4 +39,8 @@ export default StyleSheet.create({
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
+  api: {
+    fontSize: 30,
+    color: '#fff',
+  },
 });

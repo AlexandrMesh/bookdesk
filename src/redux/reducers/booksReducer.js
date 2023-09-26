@@ -53,6 +53,10 @@ const getDefaultSearchState = () => ({
   loadingDataStatus: IDLE,
   shouldReloadData: false,
   pagination: getDefaultPaginationState(),
+  sortParams: {
+    type: 'votesCount',
+    direction: -1,
+  },
 });
 
 const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({

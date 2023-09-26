@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { string, func, bool, number, arrayOf, shape } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
 import { IDLE } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import EmptyResults from '~screens/Home/EmptyResults';
-import Spinner from '~UI/Spinner';
+import { Spinner } from '~UI/Spinner';
 import ActionBar from '../ActionBar/ActionBar';
 import BooksList from '../BooksList';
 
@@ -22,7 +21,6 @@ const AllBooks = ({
   resetFilterParams,
 }) => {
   const isFocused = useIsFocused();
-  const { t } = useTranslation(['books', 'common']);
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -35,10 +33,10 @@ const AllBooks = ({
       };
       loadData();
     }
-  }, [loadingDataStatus, shouldReloadData, isFocused]);
+  }, [loadCategories, loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
   if (loadingDataStatus === IDLE || shouldReloadData) {
-    return <Spinner label={t('common:loadingData')} />;
+    return <Spinner />;
   }
 
   if (bookList.length > 0) {

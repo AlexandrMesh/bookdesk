@@ -3,7 +3,7 @@ import { bool, string, func, shape } from 'prop-types';
 import { View, Platform, UIManager, LayoutAnimation, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
-import Spinner from '~UI/Spinner';
+import { Spinner, Size } from '~UI/Spinner';
 import SlideMenu from '~UI/SlideMenu';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import BookStatusItem from './BookStatusItem';
@@ -68,7 +68,7 @@ const BookStatusSlideMenu = ({ isVisible, book, updateUserBook, onClose, boardTy
         keyExtractor={({ title }) => title}
       />
       <View style={styles.submitButtonWrapper}>
-        <Button icon={isLoading && <Spinner size='small' />} title={t('common:save')} disabled={isLoading} onPress={handleUpdate} />
+        <Button icon={isLoading && <Spinner size={Size.SMALL} />} title={t('common:save')} disabled={isLoading} onPress={handleUpdate} />
       </View>
     </SlideMenu>
   );

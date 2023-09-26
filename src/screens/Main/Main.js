@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { func, bool, string } from 'prop-types';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -88,18 +88,18 @@ const MainNavigator = () => (
 );
 
 const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
-  const checkAuthentication = async () => {
+  const checkAuthentication = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('token');
       await checkAuth(token);
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [checkAuth]);
 
   useEffect(() => {
     checkAuthentication();
-  }, []);
+  }, [checkAuthentication]);
 
   if (checkingStatus === PENDING) {
     return <Splash />;

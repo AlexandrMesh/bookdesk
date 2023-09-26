@@ -16,6 +16,7 @@ import {
   deriveManageTopLevelCategorySelection,
   deriveFilterBookCategoryPaths,
   getCategoriesData,
+  getSearchSortParams,
 } from '~redux/selectors/books';
 import { ALL } from '~constants/boardType';
 
@@ -295,12 +296,15 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
   const state = getState();
   const pageIndex = getSearchResultsPageIndex(state);
   const searchText = deriveSearchQuery(state);
+  const sortParams = getSearchSortParams(state);
 
   const params = {
     limit: PAGE_SIZE,
     pageIndex: shouldLoadMoreResults ? pageIndex + 1 : 0,
     boardType: ALL,
     title: searchText,
+    sortType: sortParams.type,
+    sortDirection: sortParams.direction,
   };
   try {
     dispatch(startLoadingSearchResults);

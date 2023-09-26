@@ -4,22 +4,22 @@ import { View, Text, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
-import Spinner from '~UI/Spinner';
+import { Spinner } from '~UI/Spinner';
 import { SECONDARY } from '~constants/themes';
 import styles from './styles';
 
 const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, loadingDataStatus }) => {
-  const { t } = useTranslation(['app', 'common']);
+  const { t } = useTranslation('app');
 
   useEffect(() => {
     loadAppInfo();
     return () => clearAppInfo();
-  }, []);
+  }, [loadAppInfo, clearAppInfo]);
 
   return (
     <View style={styles.container}>
       {loadingDataStatus === PENDING || loadingDataStatus === IDLE ? (
-        <Spinner label={t('common:loadingData')} />
+        <Spinner />
       ) : (
         <>
           <Text style={styles.label}>

@@ -14,6 +14,9 @@ export const getSearchResultsPagination = (state) => getSearch(state).pagination
 export const getSearchResultsHasNextPage = (state) => getSearchResultsPagination(state).hasNextPage;
 export const getSearchResultsTotalItems = (state) => getSearchResultsPagination(state).totalItems;
 export const getSearchResultsPageIndex = (state) => getSearchResultsPagination(state).pageIndex;
+export const getSearchSortParams = (state) => getSearch(state).sortParams;
+export const getSearchSortType = (state) => getSearchSortParams(state).type;
+export const getSearchSortDirection = (state) => getSearchSortParams(state).direction;
 export const getUpdatingBookStatus = (state) => getBooks(state).updatingBookStatus;
 export const getCategoriesData = (state) => getCategories(state).data;
 export const getCollapsedCategories = (state) => getCategories(state).collapsed;

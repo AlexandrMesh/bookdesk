@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { string, func, bool, number, arrayOf, shape } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import Spinner from '~UI/Spinner';
+import { Spinner } from '~UI/Spinner';
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';
@@ -11,7 +10,6 @@ import BooksList from '../BooksList';
 
 const InProgressBooks = ({ loadingDataStatus, loadBookList, bookList, totalItems, loadMoreBooks, shouldReloadData }) => {
   const isFocused = useIsFocused();
-  const { t } = useTranslation('common');
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -20,10 +18,10 @@ const InProgressBooks = ({ loadingDataStatus, loadBookList, bookList, totalItems
         shouldLoadMoreResults: false,
       });
     }
-  }, [loadingDataStatus, shouldReloadData, isFocused]);
+  }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
   if (loadingDataStatus === IDLE || shouldReloadData) {
-    return <Spinner label={t('loadingData')} />;
+    return <Spinner />;
   }
   if (bookList.length > 0) {
     return (

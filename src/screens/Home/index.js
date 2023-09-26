@@ -20,8 +20,9 @@ const renderLabel = (label, focused) => (
 
 const HeaderTabs = () => (
   <Tab.Navigator
+    initialRouteName={ALL_BOOKS_ROUTE}
     screenOptions={{
-      tabBarStyle: { backgroundColor: colors.primary_dark },
+      tabBarStyle: { backgroundColor: colors.primary_dark, borderBottomWidth: 1, borderColor: colors.neutral_medium },
       tabBarIndicatorStyle: { backgroundColor: colors.neutral_light },
     }}
   >

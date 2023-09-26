@@ -19,7 +19,7 @@ const Profile = ({ email, registered, signOut }) => {
           {t('email')} <Text style={styles.value}>{email}</Text>
         </Text>
         <Text style={styles.label}>
-          {t('registered')} <Text style={styles.value}>{new Date(registered).toLocaleDateString('ru-RU')}</Text>
+          {t('registered')} <Text style={styles.value}>{new Date(Number(registered)).toLocaleDateString('ru-RU')}</Text>
         </Text>
       </View>
       <View style={styles.buttonsWrapper}>

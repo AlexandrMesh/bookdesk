@@ -3,6 +3,7 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
+    position: 'relative',
     flex: 1,
     display: 'flex',
     justifyContent: 'center',

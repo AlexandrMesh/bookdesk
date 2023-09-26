@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
-import Spinner from '~UI/Spinner';
+import { Spinner } from '~UI/Spinner';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
@@ -21,13 +21,13 @@ const SearchResults = ({
   totalItems,
   shouldReloadData,
 }) => {
-  const { t } = useTranslation(['search', 'common']);
+  const { t } = useTranslation('search');
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
       loadSearchResults(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, loadSearchResults]);
 
   if (isEmpty(searchQuery)) {
     return (
@@ -39,7 +39,11 @@ const SearchResults = ({
     );
   }
   if (loadingDataStatus === IDLE || shouldReloadData) {
-    return <Spinner label={t('common:loadingData')} />;
+    return (
+      <View style={styles.wrapper}>
+        <Spinner />
+      </View>
+    );
   }
   if (searchResult.length > 0) {
     return (

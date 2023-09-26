@@ -28,9 +28,7 @@ export default StyleSheet.create({
   },
   title: { marginLeft: 5, color: colors.neutral_light },
   filtering: {
-    container: {
-      borderRadius: 5,
-      backgroundColor: colors.primary_dark,
-    },
+    borderRadius: 5,
+    backgroundColor: colors.primary_dark,
   },
 });
