@@ -5,8 +5,6 @@ export default StyleSheet.create({
   wrapper: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
   },
   white: {
     color: '#fff',
@@ -46,7 +44,6 @@ export default StyleSheet.create({
     width: '48%',
   },
   submitButtonWrapper: {
-    height: 100,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -55,9 +52,6 @@ export default StyleSheet.create({
   },
   firstLevel: {
     width: 35,
-  },
-  scrollView: {
-    height: 400,
   },
   collapsed: {
     transform: [{ rotate: '-90deg' }],

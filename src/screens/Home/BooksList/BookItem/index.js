@@ -18,7 +18,7 @@ const getStatusColor = (bookStatus) =>
     [COMPLETED]: colors.completed,
   }[bookStatus] || colors.neutral_light);
 
-const BookItem = ({ bookItem, showSlideMenu, setSelectedBook }) => {
+const BookItem = ({ bookItem, showModal, selectBook }) => {
   const { t } = useTranslation(['books', 'categories']);
 
   const { title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
@@ -26,8 +26,8 @@ const BookItem = ({ bookItem, showSlideMenu, setSelectedBook }) => {
   const statusColor = getStatusColor(bookStatus);
 
   const handleChangeStatus = () => {
-    showSlideMenu();
-    setSelectedBook(bookItem);
+    showModal('bookStatus');
+    selectBook(bookItem);
   };
 
   return (
@@ -100,8 +100,8 @@ BookItem.propTypes = {
     pages: number,
     added: number,
   }).isRequired,
-  showSlideMenu: func.isRequired,
-  setSelectedBook: func.isRequired,
+  showModal: func.isRequired,
+  selectBook: func.isRequired,
 };
 
 export default BookItem;

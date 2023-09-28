@@ -8,8 +8,14 @@ import { IDLE } from '~constants/loadingStatuses';
 import { PLANNED } from '~constants/boardType';
 import BooksList from '../BooksList';
 
-const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks, shouldReloadData, totalItems }) => {
+const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks, shouldReloadData, totalItems, setBoardType, clearBoardType }) => {
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      setBoardType();
+    }
+  }, [isFocused, setBoardType, clearBoardType]);
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -43,6 +49,8 @@ PlannedBooks.propTypes = {
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
   totalItems: number.isRequired,
+  setBoardType: func.isRequired,
+  clearBoardType: func.isRequired,
   bookList: arrayOf(
     shape({
       _id: string,

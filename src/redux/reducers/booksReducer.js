@@ -2,6 +2,7 @@ import union from 'lodash/union';
 import createReducer from '~utils/createReducer';
 import updateIn from '~utils/updateIn';
 import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
+import { ALL } from '~constants/boardType';
 import {
   SET_SEARCH_QUERY,
   START_LOADING_SEARCH_RESULTS,
@@ -33,7 +34,11 @@ import {
   CLEAR_INDETERMINATED_CATEGORIES,
   CLEAR_FILTERS,
   POPULATE_FILTERS,
-  RESET_FILTER_PARAMS,
+  SET_BOARD_TYPE,
+  CLEAR_BOARD_TYPE,
+  SELECT_BOOK,
+  SHOW_MODAL,
+  HIDE_MODAL,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -82,6 +87,9 @@ const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
 
 const initialState = {
   updatingBookStatus: IDLE,
+  boardType: ALL,
+  selectedBook: null,
+  activeModal: null,
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),
     planned: getDefaultBoardState({ sortType: 'added', sortDirection: -1 }),
@@ -93,6 +101,31 @@ const initialState = {
 };
 
 export default createReducer(initialState, (state, action) => ({
+  [SET_BOARD_TYPE]: () => ({
+    ...state,
+    boardType: action.boardType,
+  }),
+
+  [CLEAR_BOARD_TYPE]: () => ({
+    ...state,
+    boardType: null,
+  }),
+
+  [SELECT_BOOK]: () => ({
+    ...state,
+    selectedBook: action.book,
+  }),
+
+  [SHOW_MODAL]: () => ({
+    ...state,
+    activeModal: action.modal,
+  }),
+
+  [HIDE_MODAL]: () => ({
+    ...state,
+    activeModal: null,
+  }),
+
   [UPDATE_BOOK]: () => ({
     ...state,
     updatingBookStatus: SUCCEEDED,
@@ -244,17 +277,6 @@ export default createReducer(initialState, (state, action) => ({
             ? state.board[action.boardType].editableFilterParams.collapsed.filter((item) => item !== action.path)
             : [...state.board[action.boardType].editableFilterParams.collapsed, action.path],
         },
-      },
-    },
-  }),
-
-  [RESET_FILTER_PARAMS]: () => ({
-    ...state,
-    board: {
-      ...state.board,
-      [action.boardType]: {
-        ...state.board[action.boardType],
-        editableFilterParams: state.board[action.boardType].filterParams,
       },
     },
   }),

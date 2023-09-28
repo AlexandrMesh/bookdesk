@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View, VirtualizedList } from 'react-native';
-import { PENDING } from '~constants/loadingStatuses';
 import { PAGE_SIZE } from '~constants/bookList';
 import BookItem from './BookItem';
-import BookStatusSlideMenu from '../BookStatusSlideMenu';
 import styles from './styles';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({ data, updateUserBook, boardType, updatingBookStatus, loadMoreBooks }) => {
-  const [slideMenuVisibility, setSlideMenuVisibility] = useState(false);
-  const [selectedBook, setSelectedBook] = useState({});
-
-  const hideSlideMenu = () => setSlideMenuVisibility(false);
-
-  const showSlideMenu = () => setSlideMenuVisibility(true);
-
+const BookList = ({ data, loadMoreBooks, showModal, selectBook }) => {
   const getItem = (data, index) => ({
     bookId: data[index].bookId,
     title: data[index].title,
@@ -40,20 +31,12 @@ const BookList = ({ data, updateUserBook, boardType, updatingBookStatus, loadMor
           getItemCount={() => data.length}
           getItem={getItem}
           data={data}
-          renderItem={({ item }) => <BookItem bookItem={item} showSlideMenu={showSlideMenu} setSelectedBook={setSelectedBook} />}
+          renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
           onEndReached={loadMoreBooks}
           onEndReachedThreshold={0.5}
         />
       )}
-      <BookStatusSlideMenu
-        isLoading={updatingBookStatus === PENDING}
-        book={selectedBook}
-        updateUserBook={updateUserBook}
-        isVisible={slideMenuVisibility}
-        onClose={hideSlideMenu}
-        boardType={boardType}
-      />
     </View>
   );
 };
@@ -74,9 +57,8 @@ BookList.propTypes = {
     }),
   ).isRequired,
   loadMoreBooks: func.isRequired,
-  updateUserBook: func.isRequired,
-  boardType: string,
-  updatingBookStatus: string,
+  showModal: func.isRequired,
+  selectBook: func.isRequired,
 };
 
 export default BookList;

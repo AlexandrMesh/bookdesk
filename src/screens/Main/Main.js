@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { func, bool, string } from 'prop-types';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -28,6 +29,7 @@ import SignIn from '~screens/Auth/SignIn';
 import SignUp from '~screens/Auth/SignUp';
 import Search from '~screens/Search';
 import Profile from '~screens/Profile';
+import Modals from '~screens/Modals/Modals';
 import About from '~screens/Profile/About';
 
 const Tab = createBottomTabNavigator();
@@ -59,6 +61,7 @@ const ProfileNavigator = () => (
         },
         headerTintColor: colors.neutral_light,
       }}
+      screenOptions={{ presentation: 'modal' }}
     />
   </Stack.Navigator>
 );
@@ -67,7 +70,7 @@ const MainNavigator = () => (
   <Tab.Navigator
     initialRouteName={HOME_NAVIGATOR_ROUTE}
     screenOptions={({ route }) => ({
-      tabBarStyle: { backgroundColor: colors.primary_dark },
+      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0 },
       tabBarShowLabel: false,
       headerShown: false,
       tabBarIcon: ({ focused }) => {
@@ -117,6 +120,7 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
           </Stack.Navigator>
         )}
       </NavigationContainer>
+      <Modals />
     </SafeAreaProvider>
   );
 };

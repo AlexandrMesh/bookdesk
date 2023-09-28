@@ -7,7 +7,7 @@ import {
   deriveBookListTotalItems,
   deriveShouldReloadBookList,
 } from '~redux/selectors/books';
-import { loadBookList, loadMoreBooks } from '~redux/actions/booksActions';
+import { loadBookList, loadMoreBooks, setBoardType, clearBoardType } from '~redux/actions/booksActions';
 import { IN_PROGRESS } from '~constants/boardType';
 import InProgressBooks from './InProgressBooks';
 
@@ -23,6 +23,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   loadBookList: ({ boardType, shouldLoadMoreResults }) => dispatch(loadBookList({ boardType, shouldLoadMoreResults })),
   loadMoreBooks: () => dispatch(loadMoreBooks(IN_PROGRESS)),
+  setBoardType: () => dispatch(setBoardType(IN_PROGRESS)),
+  clearBoardType: () => dispatch(clearBoardType),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(InProgressBooks);

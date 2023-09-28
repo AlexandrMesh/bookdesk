@@ -14,13 +14,22 @@ const AllBooks = ({
   loadMoreBooks,
   bookList,
   filterParams,
-  editableFilterParams,
   shouldReloadData,
   totalItems,
   loadCategories,
-  resetFilterParams,
+  setBoardType,
+  clearBoardType,
+  showFilters,
 }) => {
   const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      setBoardType();
+    } else {
+      clearBoardType();
+    }
+  }, [isFocused, setBoardType, clearBoardType]);
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -42,13 +51,7 @@ const AllBooks = ({
   if (bookList.length > 0) {
     return (
       <>
-        <ActionBar
-          filterParams={filterParams}
-          editableFilterParams={editableFilterParams}
-          boardType={ALL}
-          totalItems={totalItems}
-          resetFilterParams={resetFilterParams}
-        />
+        <ActionBar filterParams={filterParams} totalItems={totalItems} showFilters={showFilters} />
         <BooksList boardType={ALL} data={bookList} loadMoreBooks={loadMoreBooks} />
       </>
     );
@@ -66,7 +69,8 @@ AllBooks.propTypes = {
   shouldReloadData: bool.isRequired,
   totalItems: number.isRequired,
   loadCategories: func.isRequired,
-  resetFilterParams: func.isRequired,
+  setBoardType: func.isRequired,
+  clearBoardType: func.isRequired,
   bookList: arrayOf(
     shape({
       _id: string,
@@ -80,9 +84,7 @@ AllBooks.propTypes = {
   filterParams: shape({
     categoryPaths: arrayOf(string),
   }),
-  editableFilterParams: shape({
-    categoryPaths: arrayOf(string),
-  }),
+  showFilters: func.isRequired,
 };
 
 export default AllBooks;

@@ -61,8 +61,8 @@ const Filtering = ({
   };
 
   return (
-    <>
-      <ScrollView style={styles.scrollView}>
+    <SlideMenu isVisible={isVisible} title={t('categoriesTitle')} onClose={onClose} onReset={() => undefined}>
+      <ScrollView style={styles.wrapper}>
         {categories.map(({ value, path, isCollapsed, children }) => (
           <View key={path}>
             {renderCategory(value, path, isCollapsed)}
@@ -81,7 +81,7 @@ const Filtering = ({
         <Button style={categoryPaths.length > 0 && styles.button} title={t('toFilter')} onPress={handleFilter} />
         {categoryPaths.length > 0 ? <Button style={styles.button} theme={SECONDARY} title={t('clear')} onPress={handleClearFilters} /> : null}
       </View>
-    </>
+    </SlideMenu>
   );
 };
 

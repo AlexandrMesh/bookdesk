@@ -1,12 +1,21 @@
 import { connect } from 'react-redux';
-import { triggerReloadBookList, toggleCollapsedCategory, manageFilters, clearFilters, populateFilters } from '~redux/actions/booksActions';
-import { deriveCategories, deriveEditableIndeterminatedCategories } from '~redux/selectors/books';
+import {
+  getActiveModal,
+  deriveCategories,
+  deriveEditableIndeterminatedCategories,
+  getBoardType,
+  deriveBookListEditableFilterParams,
+} from '~redux/selectors/books';
+import { triggerReloadBookList, toggleCollapsedCategory, manageFilters, clearFilters, populateFilters, hideModal } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import Filtering from './Filtering';
 
 const mapStateToProps = (state) => ({
+  isVisible: getActiveModal(state) === 'filtering',
+  boardType: getBoardType(state),
   categories: deriveCategories(ALL)(state),
   indeterminatedCategories: deriveEditableIndeterminatedCategories(ALL)(state),
+  filterParams: deriveBookListEditableFilterParams(ALL)(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,6 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   toggleCollapsedCategory: (path, boardType) => dispatch(toggleCollapsedCategory(path, boardType)),
   clearFilters: (boardType) => dispatch(clearFilters(boardType)),
+  onClose: () => dispatch(hideModal),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filtering);

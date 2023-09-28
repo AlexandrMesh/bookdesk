@@ -27,7 +27,8 @@ export default StyleSheet.create({
     marginRight: 5,
   },
   title: { marginLeft: 5, color: colors.neutral_light },
-  filtering: {
+  sheetContainer: {
+    height: 400,
     borderRadius: 5,
     backgroundColor: colors.primary_dark,
   },

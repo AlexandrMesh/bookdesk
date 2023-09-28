@@ -22,6 +22,12 @@ import { ALL } from '~constants/boardType';
 
 const PREFIX = 'BOOKS';
 
+export const SET_BOARD_TYPE = `${PREFIX}/SET_BOARD_TYPE`;
+export const CLEAR_BOARD_TYPE = `${PREFIX}/CLEAR_BOARD_TYPE`;
+export const SELECT_BOOK = `${PREFIX}/SELECT_BOOK`;
+export const SHOW_MODAL = `${PREFIX}/SHOW_MODAL`;
+export const HIDE_MODAL = `${PREFIX}/HIDE_MODAL`;
+
 export const SET_SEARCH_QUERY = `${PREFIX}/SET_SEARCH_QUERY`;
 export const START_LOADING_SEARCH_RESULTS = `${PREFIX}/START_LOADING_SEARCH_RESULTS`;
 export const LOADING_SEARCH_RESULTS_FAILED = `${PREFIX}/LOADING_SEARCH_RESULTS_FAILED`;
@@ -44,7 +50,6 @@ export const ADD_FILTER_VALUE = `${PREFIX}/ADD_FILTER_VALUE`;
 export const REMOVE_FILTER_VALUE = `${PREFIX}/REMOVE_FILTER_VALUE`;
 export const CLEAR_FILTERS = `${PREFIX}/CLEAR_FILTERS`;
 export const POPULATE_FILTERS = `${PREFIX}/POPULATE_FILTERS`;
-export const RESET_FILTER_PARAMS = `${PREFIX}/RESET_FILTER_PARAMS`;
 
 export const SET_SORT_TYPE = `${PREFIX}/SET_SORT_TYPE`;
 export const SET_SORT_DIRECTION = `${PREFIX}/SET_SORT_DIRECTION`;
@@ -66,6 +71,29 @@ export const LOADING_CATEGORIES_FAILED = `${PREFIX}/LOADING_CATEGORIES_FAILED`;
 export const TOGGLE_COLLAPSED_CATEGORY = `${PREFIX}/TOGGLE_COLLAPSED_CATEGORY`;
 export const ADD_TO_INDETERMINATED_CATEGORIES = `${PREFIX}/ADD_TO_INDETERMINATED_CATEGORIES`;
 export const CLEAR_INDETERMINATED_CATEGORIES = `${PREFIX}/CLEAR_INDETERMINATED_CATEGORIES`;
+
+export const setBoardType = (boardType) => ({
+  type: SET_BOARD_TYPE,
+  boardType,
+});
+
+export const selectBook = (book) => ({
+  type: SELECT_BOOK,
+  book,
+});
+
+export const showModal = (modal) => ({
+  type: SHOW_MODAL,
+  modal,
+});
+
+export const clearBoardType = {
+  type: CLEAR_BOARD_TYPE,
+};
+
+export const hideModal = {
+  type: HIDE_MODAL,
+};
 
 export const triggerReloadBookList = (boardType) => ({
   type: TRIGGER_RELOAD_BOOK_LIST,
@@ -242,11 +270,6 @@ export const clearFilters = (boardType) => ({
 
 export const populateFilters = (boardType) => ({
   type: POPULATE_FILTERS,
-  boardType,
-});
-
-export const resetFilterParams = (boardType) => ({
-  type: RESET_FILTER_PARAMS,
   boardType,
 });
 
@@ -436,8 +459,10 @@ export const updateUserBook =
       dispatch(updateBook(bookId, ALL, data.bookStatus, data.added));
       dispatch(updateBookInSearchResults(bookId, ALL, data.bookStatus, data.added));
 
-      // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
-      dispatch(triggerReloadBookList(newBookStatus));
+      if (newBookStatus !== ALL) {
+        // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
+        dispatch(triggerReloadBookList(newBookStatus));
+      }
 
       dispatch(reloadBookList(boardType));
     } catch (e) {

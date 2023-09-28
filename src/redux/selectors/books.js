@@ -5,7 +5,9 @@ const getSearch = (state) => getBooks(state).search;
 const getCategories = (state) => getBooks(state).categories;
 const getBoard = (state) => getBooks(state).board;
 
-export const getSelectedBookId = (state) => getBooks(state).selectedBookId;
+export const getBoardType = (state) => getBooks(state).boardType;
+export const getActiveModal = (state) => getBooks(state).activeModal;
+export const getSelectedBook = (state) => getBooks(state).selectedBook;
 export const getSearchQuery = (state) => getSearch(state).query;
 export const getSearchResults = (state) => getSearch(state).data;
 export const getLoadingSearchResultsStatus = (state) => getSearch(state).loadingDataStatus;

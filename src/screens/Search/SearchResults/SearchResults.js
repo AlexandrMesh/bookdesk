@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { string, func, bool, arrayOf, shape, number } from 'prop-types';
 import { View, Text } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
@@ -20,8 +21,19 @@ const SearchResults = ({
   hasNextPage,
   totalItems,
   shouldReloadData,
+  setBoardType,
+  clearBoardType,
 }) => {
   const { t } = useTranslation('search');
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      setBoardType();
+    } else {
+      clearBoardType();
+    }
+  }, [isFocused, setBoardType, clearBoardType]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
@@ -66,6 +78,8 @@ SearchResults.propTypes = {
   loadMoreSearchResults: func.isRequired,
   shouldReloadData: bool.isRequired,
   hasNextPage: bool.isRequired,
+  setBoardType: func.isRequired,
+  clearBoardType: func.isRequired,
   searchResult: arrayOf(
     shape({
       _id: string,

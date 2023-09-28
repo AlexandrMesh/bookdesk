@@ -2,26 +2,29 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
-  overlay: {
-    backgroundColor: colors.neutral_black,
-    opacity: 0.4,
-    height: '100%',
-    width: '100%',
+  topWrapper: {
     position: 'absolute',
-    elevation: 5,
+    width: '100%',
+    height: '100%',
   },
   wrapper: {
+    height: 350,
     display: 'flex',
-    justifyContent: 'flex-end',
-    height: '100%',
   },
-  closeArea: {
-    height: '100%',
+  overlay: {
+    flex: 1,
+  },
+  tappableOverlay: {
+    flex: 1,
+    backgroundColor: colors.neutral_black,
+  },
+  animatedWrapper: {
     width: '100%',
     position: 'absolute',
-    elevation: 5,
+    bottom: 0,
   },
   content: {
+    height: '100%',
     display: 'flex',
     position: 'relative',
     backgroundColor: colors.primary_dark,

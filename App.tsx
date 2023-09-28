@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { View, Text } from 'react-native';
 import i18n from './src/translations/i18n';
 import configureStore from './src/redux/store/configureStore';
 import Main from './src/screens/Main';
