@@ -19,7 +19,6 @@ const AllBooks = ({
   totalItems,
   loadCategories,
   setBoardType,
-  clearBoardType,
   showFilters,
 }) => {
   const isFocused = useIsFocused();
@@ -27,10 +26,8 @@ const AllBooks = ({
   useEffect(() => {
     if (isFocused) {
       setBoardType();
-    } else {
-      clearBoardType();
     }
-  }, [isFocused, setBoardType, clearBoardType]);
+  }, [isFocused, setBoardType]);
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -71,7 +68,6 @@ AllBooks.propTypes = {
   totalItems: number.isRequired,
   loadCategories: func.isRequired,
   setBoardType: func.isRequired,
-  clearBoardType: func.isRequired,
   bookList: arrayOf(
     shape({
       _id: string,

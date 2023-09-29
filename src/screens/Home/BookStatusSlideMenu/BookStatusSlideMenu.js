@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
-import { View, Platform, UIManager, LayoutAnimation, FlatList } from 'react-native';
+import { View, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
@@ -61,8 +62,9 @@ const BookStatusSlideMenu = ({ isVisible, book, updateUserBook, hideModal, board
 
   return (
     <SlideMenu isVisible={isVisible} title={t('choosingStatus')} onClose={handleClose} onReset={() => undefined}>
-      <FlatList
+      <FlashList
         data={actionTypes}
+        estimatedItemSize={actionTypes.length}
         renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} isLoading={isLoading} />}
         keyExtractor={({ title }) => title}
       />

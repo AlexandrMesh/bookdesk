@@ -7,8 +7,9 @@ import {
   deriveShouldReloadBookList,
   deriveBookListTotalItems,
 } from '~redux/selectors/books';
-import { loadBookList, loadMoreBooks, loadCategories, setBoardType, clearBoardType, showModal } from '~redux/actions/booksActions';
+import { loadBookList, loadMoreBooks, loadCategories, setBoardType, showModal } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
+import { FILTERING } from '~constants/modalTypes';
 import SearchResults from './AllBooks';
 
 const mapStateToProps = (state) => ({
@@ -25,8 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
   loadMoreBooks: () => dispatch(loadMoreBooks(ALL)),
   loadCategories: () => dispatch(loadCategories()),
   setBoardType: () => dispatch(setBoardType(ALL)),
-  clearBoardType: () => dispatch(clearBoardType),
-  showFilters: () => dispatch(showModal('filtering')),
+  showFilters: () => dispatch(showModal(FILTERING)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchResults);

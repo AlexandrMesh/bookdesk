@@ -19,11 +19,9 @@ const SearchResults = ({
   loadSearchResults,
   loadMoreSearchResults,
   searchResult,
-  hasNextPage,
   totalItems,
   shouldReloadData,
   setBoardType,
-  clearBoardType,
 }) => {
   const { t } = useTranslation('search');
   const isFocused = useIsFocused();
@@ -31,10 +29,8 @@ const SearchResults = ({
   useEffect(() => {
     if (isFocused) {
       setBoardType();
-    } else {
-      clearBoardType();
     }
-  }, [isFocused, setBoardType, clearBoardType]);
+  }, [isFocused, setBoardType]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
@@ -62,7 +58,13 @@ const SearchResults = ({
     return (
       <>
         <TotalCount count={totalItems} />
-        <BooksList searchText={searchQuery} boardType={ALL} loadMoreBooks={loadMoreSearchResults} data={searchResult} hasNextPage={hasNextPage} />
+        <BooksList
+          searchText={searchQuery}
+          boardType={ALL}
+          loadMoreBooks={loadMoreSearchResults}
+          data={searchResult}
+          loadingDataStatus={loadingDataStatus}
+        />
       </>
     );
   }
@@ -78,9 +80,7 @@ SearchResults.propTypes = {
   loadSearchResults: func.isRequired,
   loadMoreSearchResults: func.isRequired,
   shouldReloadData: bool.isRequired,
-  hasNextPage: bool.isRequired,
   setBoardType: func.isRequired,
-  clearBoardType: func.isRequired,
   searchResult: arrayOf(
     shape({
       _id: string,

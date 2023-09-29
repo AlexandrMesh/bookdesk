@@ -9,23 +9,14 @@ import { IN_PROGRESS } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksList from '../BooksList';
 
-const InProgressBooks = ({
-  loadingDataStatus,
-  loadBookList,
-  bookList,
-  totalItems,
-  loadMoreBooks,
-  shouldReloadData,
-  setBoardType,
-  clearBoardType,
-}) => {
+const InProgressBooks = ({ loadingDataStatus, loadBookList, bookList, totalItems, loadMoreBooks, shouldReloadData, setBoardType }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
       setBoardType();
     }
-  }, [isFocused, setBoardType, clearBoardType]);
+  }, [isFocused, setBoardType]);
 
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
@@ -59,7 +50,6 @@ InProgressBooks.propTypes = {
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
   setBoardType: func.isRequired,
-  clearBoardType: func.isRequired,
   bookList: arrayOf(
     shape({
       _id: string,

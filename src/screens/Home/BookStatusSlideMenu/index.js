@@ -2,10 +2,11 @@ import { connect } from 'react-redux';
 import { getActiveModal, getUpdatingBookStatus, getBoardType, getSelectedBook } from '~redux/selectors/books';
 import { updateUserBook, hideModal } from '~redux/actions/booksActions';
 import { PENDING } from '~constants/loadingStatuses';
+import { BOOK_STATUS } from '~constants/modalTypes';
 import BookStatusSlideMenu from './BookStatusSlideMenu';
 
 const mapStateToProps = (state) => ({
-  isVisible: getActiveModal(state) === 'bookStatus',
+  isVisible: getActiveModal(state) === BOOK_STATUS,
   isLoading: getUpdatingBookStatus(state) === PENDING,
   boardType: getBoardType(state),
   book: getSelectedBook(state),

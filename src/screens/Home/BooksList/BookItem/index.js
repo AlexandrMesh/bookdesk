@@ -6,6 +6,7 @@ import Button from '~UI/Button';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { IMG_URL } from '~config/api';
 import { SECONDARY } from '~constants/themes';
+import { BOOK_STATUS } from '~constants/modalTypes';
 import HeartIcon from '~assets/heart.svg';
 import DropdownIcon from '~assets/dropdown.svg';
 import colors from '~styles/colors';
@@ -26,7 +27,7 @@ const BookItem = ({ bookItem, showModal, selectBook }) => {
   const statusColor = getStatusColor(bookStatus);
 
   const handleChangeStatus = () => {
-    showModal('bookStatus');
+    showModal(BOOK_STATUS);
     selectBook(bookItem);
   };
 
@@ -50,10 +51,7 @@ const BookItem = ({ bookItem, showModal, selectBook }) => {
           </View>
         ))}
         <View style={styles.info}>
-          <Text style={[styles.item, styles.mediumColor]}>
-            {t('category')}
-            <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
-          </Text>
+          <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
           <Text style={[styles.item, styles.mediumColor]}>
             {t('pages')}
             <Text style={styles.lightColor}>{pages}</Text>

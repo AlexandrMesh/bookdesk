@@ -20,10 +20,11 @@ import {
   clearSearchQueryForCategory,
 } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
+import { FILTERING } from '~constants/modalTypes';
 import Filtering from './Filtering';
 
 const mapStateToProps = (state) => ({
-  isVisible: getActiveModal(state) === 'filtering',
+  isVisible: getActiveModal(state) === FILTERING,
   boardType: getBoardType(state),
   categories: deriveCategories(ALL)(state),
   indeterminatedCategories: deriveEditableIndeterminatedCategories(ALL)(state),

@@ -9,6 +9,6 @@ export default StyleSheet.create({
     backgroundColor: colors.primary_dark,
   },
   listFooterComponent: {
-    height: 50,
+    height: 80,
   },
 });
