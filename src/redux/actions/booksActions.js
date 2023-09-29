@@ -50,6 +50,7 @@ export const ADD_FILTER_VALUE = `${PREFIX}/ADD_FILTER_VALUE`;
 export const REMOVE_FILTER_VALUE = `${PREFIX}/REMOVE_FILTER_VALUE`;
 export const CLEAR_FILTERS = `${PREFIX}/CLEAR_FILTERS`;
 export const POPULATE_FILTERS = `${PREFIX}/POPULATE_FILTERS`;
+export const RESET_CATEGORIES = `${PREFIX}/RESET_CATEGORIES`;
 
 export const SET_SORT_TYPE = `${PREFIX}/SET_SORT_TYPE`;
 export const SET_SORT_DIRECTION = `${PREFIX}/SET_SORT_DIRECTION`;
@@ -68,7 +69,7 @@ export const CLEAR_BOOKS_DATA = `${PREFIX}/CLEAR_BOOKS_DATA`;
 export const START_LOADING_CATEGORIES = `${PREFIX}/START_LOADING_CATEGORIES`;
 export const CATEGORIES_LOADED = `${PREFIX}/CATEGORIES_LOADED`;
 export const LOADING_CATEGORIES_FAILED = `${PREFIX}/LOADING_CATEGORIES_FAILED`;
-export const TOGGLE_COLLAPSED_CATEGORY = `${PREFIX}/TOGGLE_COLLAPSED_CATEGORY`;
+export const TOGGLE_EXPANDED_CATEGORY = `${PREFIX}/TOGGLE_EXPANDED_CATEGORY`;
 export const ADD_TO_INDETERMINATED_CATEGORIES = `${PREFIX}/ADD_TO_INDETERMINATED_CATEGORIES`;
 export const CLEAR_INDETERMINATED_CATEGORIES = `${PREFIX}/CLEAR_INDETERMINATED_CATEGORIES`;
 
@@ -95,6 +96,11 @@ export const hideModal = {
   type: HIDE_MODAL,
 };
 
+export const resetCategories = (boardType) => ({
+  type: RESET_CATEGORIES,
+  boardType,
+});
+
 export const triggerReloadBookList = (boardType) => ({
   type: TRIGGER_RELOAD_BOOK_LIST,
   boardType,
@@ -113,8 +119,8 @@ export const categoriesLoaded = (data) => ({
   data,
 });
 
-export const toggleCollapsedCategory = (path, boardType) => ({
-  type: TOGGLE_COLLAPSED_CATEGORY,
+export const toggleExpandedCategory = (path, boardType) => ({
+  type: TOGGLE_EXPANDED_CATEGORY,
   path,
   boardType,
 });
@@ -393,6 +399,7 @@ export const loadMoreBooks = (boardType) => async (dispatch, getState) => {
   const bookList = deriveBookListData(boardType)(state);
   try {
     if (bookList.length >= PAGE_SIZE && hasNextPage) {
+      dispatch(startLoadingBookList(boardType));
       await dispatch(loadBookList({ boardType, shouldLoadMoreResults: true }));
       dispatch(incrementPageIndex(boardType));
     }

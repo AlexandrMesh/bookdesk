@@ -29,7 +29,7 @@ import {
   START_LOADING_CATEGORIES,
   LOADING_CATEGORIES_FAILED,
   CATEGORIES_LOADED,
-  TOGGLE_COLLAPSED_CATEGORY,
+  TOGGLE_EXPANDED_CATEGORY,
   ADD_TO_INDETERMINATED_CATEGORIES,
   CLEAR_INDETERMINATED_CATEGORIES,
   CLEAR_FILTERS,
@@ -39,6 +39,7 @@ import {
   SELECT_BOOK,
   SHOW_MODAL,
   HIDE_MODAL,
+  RESET_CATEGORIES,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -70,12 +71,12 @@ const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
   shouldReloadData: false,
   editableFilterParams: {
     categoryPaths: [],
-    collapsed: [],
+    expanded: [],
     indeterminated: [],
   },
   filterParams: {
     categoryPaths: [],
-    collapsed: [],
+    expanded: [],
     indeterminated: [],
   },
   sortParams: {
@@ -265,7 +266,18 @@ export default createReducer(initialState, (state, action) => ({
     },
   }),
 
-  [TOGGLE_COLLAPSED_CATEGORY]: () => ({
+  [RESET_CATEGORIES]: () => ({
+    ...state,
+    board: {
+      ...state.board,
+      [action.boardType]: {
+        ...state.board[action.boardType],
+        editableFilterParams: state.board[action.boardType].filterParams,
+      },
+    },
+  }),
+
+  [TOGGLE_EXPANDED_CATEGORY]: () => ({
     ...state,
     board: {
       ...state.board,
@@ -273,9 +285,9 @@ export default createReducer(initialState, (state, action) => ({
         ...state.board[action.boardType],
         editableFilterParams: {
           ...state.board[action.boardType].editableFilterParams,
-          collapsed: state.board[action.boardType].editableFilterParams.collapsed.includes(action.path)
-            ? state.board[action.boardType].editableFilterParams.collapsed.filter((item) => item !== action.path)
-            : [...state.board[action.boardType].editableFilterParams.collapsed, action.path],
+          expanded: state.board[action.boardType].editableFilterParams.expanded.includes(action.path)
+            ? state.board[action.boardType].editableFilterParams.expanded.filter((item) => item !== action.path)
+            : [...state.board[action.boardType].editableFilterParams.expanded, action.path],
         },
       },
     },
@@ -320,7 +332,7 @@ export default createReducer(initialState, (state, action) => ({
         editableFilterParams: {
           categoryPaths: [],
           indeterminated: [],
-          collapsed: [],
+          expanded: [],
         },
       },
     },

@@ -8,4 +8,7 @@ export default StyleSheet.create({
     borderTopColor: colors.neutral_medium,
     backgroundColor: colors.primary_dark,
   },
+  listFooterComponent: {
+    height: 50,
+  },
 });

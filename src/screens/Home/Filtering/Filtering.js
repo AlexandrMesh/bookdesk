@@ -16,7 +16,7 @@ const Filtering = ({
   boardType,
   applyFilters,
   categories,
-  toggleCollapsedCategory,
+  toggleExpandedCategory,
   indeterminatedCategories,
   manageFilters,
   clearFilters,
@@ -34,7 +34,7 @@ const Filtering = ({
 
   const { categoryPaths } = filterParams;
 
-  const renderCategory = (value, path, isCollapsed) => {
+  const renderCategory = (value, path, isExpanded) => {
     const splittedPath = path.split('.');
     const level = splittedPath.length;
     const iconWrapperStyle = () => {
@@ -49,8 +49,8 @@ const Filtering = ({
 
     return (
       <View key={path} style={styles.menuItem}>
-        <Pressable onPress={() => toggleCollapsedCategory(path, boardType)} style={[styles.arrowIconWrapper, iconWrapperStyle()]}>
-          {shouldDisplayArrowIcon ? <ArrowDown style={isCollapsed ? styles.collapsed : null} width='16' height='16' /> : null}
+        <Pressable onPress={() => toggleExpandedCategory(path, boardType)} style={[styles.arrowIconWrapper, iconWrapperStyle()]}>
+          {shouldDisplayArrowIcon ? <ArrowDown style={isExpanded ? null : styles.collapsed} width='16' height='16' /> : null}
         </Pressable>
         <Pressable key={value} style={styles.labelWrapper} onPress={() => manageFilters(path, boardType, categoryPaths)}>
           <Text style={styles.menuItemTitle}>{t(`categories:${value}`)}</Text>
@@ -61,19 +61,19 @@ const Filtering = ({
   };
 
   return (
-    <SlideMenu isVisible={isVisible} title={t('categoriesTitle')} onClose={onClose} onReset={() => undefined}>
+    <SlideMenu isVisible={isVisible} title={t('categoriesTitle')} onClose={onClose} onReset={() => undefined} menuHeight={500}>
       <ScrollView style={styles.wrapper}>
-        {categories.map(({ value, path, isCollapsed, children }) => (
+        {categories.map(({ value, path, isExpanded, children }) => (
           <View key={path}>
-            {renderCategory(value, path, isCollapsed)}
-            {isCollapsed
-              ? null
-              : children.map(({ value, path, isCollapsed, children }) => (
+            {renderCategory(value, path, isExpanded)}
+            {isExpanded
+              ? children.map(({ value, path, isExpanded, children }) => (
                   <View key={path}>
-                    {renderCategory(value, path, isCollapsed)}
-                    {isCollapsed ? null : children.map(({ value, path }) => renderCategory(value, path))}
+                    {renderCategory(value, path, isExpanded)}
+                    {isExpanded ? children.map(({ value, path }) => renderCategory(value, path)) : null}
                   </View>
-                ))}
+                ))
+              : null}
           </View>
         ))}
       </ScrollView>
@@ -95,7 +95,7 @@ Filtering.propTypes = {
   boardType: string.isRequired,
   applyFilters: func.isRequired,
   clearFilters: func.isRequired,
-  toggleCollapsedCategory: func.isRequired,
+  toggleExpandedCategory: func.isRequired,
   indeterminatedCategories: arrayOf(string).isRequired,
   categories: arrayOf(shape({ path: string, value: string })),
 };

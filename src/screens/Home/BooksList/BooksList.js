@@ -1,7 +1,9 @@
 import React from 'react';
 import { arrayOf, shape, string, number, func } from 'prop-types';
-import { Platform, UIManager, View, VirtualizedList } from 'react-native';
-import { PAGE_SIZE } from '~constants/bookList';
+import { Platform, UIManager, View } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+import { Spinner } from '~UI/Spinner';
+import { PENDING } from '~constants/loadingStatuses';
 import BookItem from './BookItem';
 import styles from './styles';
 
@@ -9,32 +11,25 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({ data, loadMoreBooks, showModal, selectBook }) => {
-  const getItem = (data, index) => ({
-    bookId: data[index].bookId,
-    title: data[index].title,
-    authorsList: data[index].authorsList,
-    categoryValue: data[index].categoryValue,
-    categoryPath: data[index].categoryPath,
-    pages: data[index].pages,
-    coverPath: data[index].coverPath,
-    votesCount: data[index].votesCount,
-    bookStatus: data[index].bookStatus,
-    added: data[index].added,
-  });
+const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus }) => {
+  const getSpinner = () =>
+    loadingDataStatus === PENDING ? (
+      <View style={styles.listFooterComponent}>
+        <Spinner />
+      </View>
+    ) : null;
 
   return (
     <View style={styles.container}>
       {data.length > 0 && (
-        <VirtualizedList
-          initialNumToRender={PAGE_SIZE}
-          getItemCount={() => data.length}
-          getItem={getItem}
+        <FlashList
+          estimatedItemSize={data.length}
           data={data}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
           onEndReached={loadMoreBooks}
           onEndReachedThreshold={0.5}
+          ListFooterComponent={getSpinner}
         />
       )}
     </View>
@@ -59,6 +54,7 @@ BookList.propTypes = {
   loadMoreBooks: func.isRequired,
   showModal: func.isRequired,
   selectBook: func.isRequired,
+  loadingDataStatus: string.isRequired,
 };
 
 export default BookList;

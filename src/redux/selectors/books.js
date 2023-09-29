@@ -21,7 +21,7 @@ export const getSearchSortType = (state) => getSearchSortParams(state).type;
 export const getSearchSortDirection = (state) => getSearchSortParams(state).direction;
 export const getUpdatingBookStatus = (state) => getBooks(state).updatingBookStatus;
 export const getCategoriesData = (state) => getCategories(state).data;
-export const getCollapsedCategories = (state) => getCategories(state).collapsed;
+export const getExpandedCategories = (state) => getCategories(state).expanded;
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);
@@ -32,10 +32,10 @@ export const deriveEditableIndeterminatedCategories = (status) =>
 export const deriveIndeterminatedCategories = (status) =>
   createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.indeterminated);
 
-export const deriveEditableCollapsedCategories = (status) =>
-  createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.collapsed);
+export const deriveEditableExpandedCategories = (status) =>
+  createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.expanded);
 
-export const deriveCollapsedCategories = (status) => createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.collapsed);
+export const deriveExpandedCategories = (status) => createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.expanded);
 
 export const deriveFilterBookCategoryPaths = (status) =>
   createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.categoryPaths.filter((item) => item.split('.').length === 3));
@@ -175,7 +175,7 @@ export const deriveManageTopLevelCategorySelection = (fullPath, status) =>
   );
 
 export const deriveCategories = (boardType) =>
-  createSelector([getCategoriesData, deriveEditableCollapsedCategories(boardType)], (categories, collapsedCategories) =>
+  createSelector([getCategoriesData, deriveEditableExpandedCategories(boardType)], (categories, expandedCategories) =>
     categories
       .map(({ path, value }) => {
         const firstLevel = path.split('.');
@@ -183,7 +183,7 @@ export const deriveCategories = (boardType) =>
           return {
             path,
             value,
-            isCollapsed: collapsedCategories.includes(path),
+            isExpanded: expandedCategories.includes(path),
             children: categories
               .map(({ path, value }) => {
                 const secondLevel = path.split('.');
@@ -191,7 +191,7 @@ export const deriveCategories = (boardType) =>
                   return {
                     path,
                     value,
-                    isCollapsed: collapsedCategories.includes(path),
+                    isExpanded: expandedCategories.includes(path),
                     children: categories
                       .map(({ path, value }) => {
                         const thirdLevel = path.split('.');

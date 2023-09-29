@@ -52,7 +52,7 @@ const AllBooks = ({
     return (
       <>
         <ActionBar filterParams={filterParams} totalItems={totalItems} showFilters={showFilters} />
-        <BooksList boardType={ALL} data={bookList} loadMoreBooks={loadMoreBooks} />
+        <BooksList boardType={ALL} data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }

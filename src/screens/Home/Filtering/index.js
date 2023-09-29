@@ -6,7 +6,15 @@ import {
   getBoardType,
   deriveBookListEditableFilterParams,
 } from '~redux/selectors/books';
-import { triggerReloadBookList, toggleCollapsedCategory, manageFilters, clearFilters, populateFilters, hideModal } from '~redux/actions/booksActions';
+import {
+  triggerReloadBookList,
+  toggleExpandedCategory,
+  manageFilters,
+  clearFilters,
+  populateFilters,
+  hideModal,
+  resetCategories,
+} from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import Filtering from './Filtering';
 
@@ -24,9 +32,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(populateFilters(boardType));
     dispatch(triggerReloadBookList(boardType));
   },
-  toggleCollapsedCategory: (path, boardType) => dispatch(toggleCollapsedCategory(path, boardType)),
+  toggleExpandedCategory: (path, boardType) => dispatch(toggleExpandedCategory(path, boardType)),
   clearFilters: (boardType) => dispatch(clearFilters(boardType)),
-  onClose: () => dispatch(hideModal),
+  onClose: () => {
+    dispatch(hideModal);
+    dispatch(resetCategories(ALL));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filtering);

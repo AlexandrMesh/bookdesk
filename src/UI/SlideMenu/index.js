@@ -1,23 +1,22 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { bool, func, node, string } from 'prop-types';
+import { bool, number, func, node, string } from 'prop-types';
 import { Animated, Text, View, Pressable } from 'react-native';
 import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
 
-const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset }) => {
+const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, menuHeight }) => {
   const [shouldDIsplay, setShouldDisplay] = useState(false);
   const [shouldDIsplayAfterUpdatingBook, setShouldDIsplayAfterUpdatingBook] = useState(false);
   const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(true);
-  const screenHeight = 350;
-  const animatedHeight = useMemo(() => new Animated.Value(screenHeight), [screenHeight]);
+  const animatedHeight = useMemo(() => new Animated.Value(menuHeight), [menuHeight]);
   const duration = 120;
 
   const hideModal = useCallback(() => {
     setShouldDIsplayOverlay(false);
     Animated.spring(animatedHeight, {
       useNativeDriver: true,
-      toValue: screenHeight,
+      toValue: menuHeight,
       duration,
       restSpeedThreshold: 100,
       restDisplacementThreshold: 40,
@@ -27,7 +26,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset })
       setShouldDIsplayOverlay(true);
       onClose();
     });
-  }, [setShouldDIsplayOverlay, animatedHeight, onClose]);
+  }, [setShouldDIsplayOverlay, animatedHeight, menuHeight, onClose]);
 
   useEffect(() => {
     if (isVisible) {
@@ -78,7 +77,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset })
         <Animated.View
           style={[
             {
-              height: screenHeight,
+              height: menuHeight,
               transform: [{ translateY: animatedHeight }],
             },
             styles.animatedWrapper,
@@ -109,11 +108,17 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset })
     )
   );
 };
+
+SlideMenu.defaultProps = {
+  menuHeight: 330,
+};
+
 SlideMenu.propTypes = {
   isVisible: bool,
   onClose: func.isRequired,
   onReset: func.isRequired,
   children: node.isRequired,
+  menuHeight: number,
   title: string,
   titleReset: string,
 };

@@ -8,7 +8,6 @@ export default StyleSheet.create({
     height: '100%',
   },
   wrapper: {
-    height: 350,
     display: 'flex',
   },
   overlay: {
