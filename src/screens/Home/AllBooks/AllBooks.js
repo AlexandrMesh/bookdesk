@@ -5,6 +5,7 @@ import { IDLE } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import EmptyResults from '~screens/Home/EmptyResults';
 import { Spinner } from '~UI/Spinner';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import ActionBar from '../ActionBar/ActionBar';
 import BooksList from '../BooksList';
 
@@ -63,7 +64,7 @@ const AllBooks = ({
 };
 
 AllBooks.propTypes = {
-  loadingDataStatus: string.isRequired,
+  loadingDataStatus: loadingDataStatusShape,
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,

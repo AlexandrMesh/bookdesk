@@ -52,11 +52,13 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: colors.neutral_medium,
   },
-  titleResetWrapper: {
-    marginLeft: 10,
+  resetButton: {
+    marginLeft: 15,
+    width: 100,
+    height: 30,
   },
-  titleReset: {
-    color: colors.neutral_medium,
+  titleStyle: {
+    fontSize: 16,
   },
   closeIconWrapper: {
     display: 'flex',

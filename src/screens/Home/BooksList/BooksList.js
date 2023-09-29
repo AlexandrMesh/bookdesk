@@ -4,6 +4,7 @@ import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BookItem from './BookItem';
 import styles from './styles';
 
@@ -11,7 +12,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus }) => {
+const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus, triggerReloadBookList, boardType }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -27,6 +28,8 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
           data={data}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
+          onRefresh={() => triggerReloadBookList(boardType)}
+          refreshing={false}
           onEndReached={loadMoreBooks}
           onEndReachedThreshold={0.5}
           ListFooterComponent={getSpinner}
@@ -53,8 +56,10 @@ BookList.propTypes = {
   ).isRequired,
   loadMoreBooks: func.isRequired,
   showModal: func.isRequired,
+  triggerReloadBookList: func.isRequired,
+  boardType: string,
   selectBook: func.isRequired,
-  loadingDataStatus: string.isRequired,
+  loadingDataStatus: loadingDataStatusShape,
 };
 
 export default BookList;

@@ -51,6 +51,8 @@ export const REMOVE_FILTER_VALUE = `${PREFIX}/REMOVE_FILTER_VALUE`;
 export const CLEAR_FILTERS = `${PREFIX}/CLEAR_FILTERS`;
 export const POPULATE_FILTERS = `${PREFIX}/POPULATE_FILTERS`;
 export const RESET_CATEGORIES = `${PREFIX}/RESET_CATEGORIES`;
+export const SEARCH_CATEGORY = `${PREFIX}/SEARCH_CATEGORY`;
+export const CLEAR_SEARCH_QUERY_FOR_CATEGORY = `${PREFIX}/CLEAR_SEARCH_QUERY_FOR_CATEGORY`;
 
 export const SET_SORT_TYPE = `${PREFIX}/SET_SORT_TYPE`;
 export const SET_SORT_DIRECTION = `${PREFIX}/SET_SORT_DIRECTION`;
@@ -95,6 +97,17 @@ export const clearBoardType = {
 export const hideModal = {
   type: HIDE_MODAL,
 };
+
+export const searchCategory = (boardType, query) => ({
+  type: SEARCH_CATEGORY,
+  boardType,
+  query,
+});
+
+export const clearSearchQueryForCategory = (boardType) => ({
+  type: CLEAR_SEARCH_QUERY_FOR_CATEGORY,
+  boardType,
+});
 
 export const resetCategories = (boardType) => ({
   type: RESET_CATEGORIES,

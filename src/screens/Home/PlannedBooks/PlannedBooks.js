@@ -6,6 +6,7 @@ import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import { IDLE } from '~constants/loadingStatuses';
 import { PLANNED } from '~constants/boardType';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksList from '../BooksList';
 
 const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks, shouldReloadData, totalItems, setBoardType, clearBoardType }) => {
@@ -33,7 +34,7 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks
     return (
       <>
         <TotalCount count={totalItems} />
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={PLANNED} />
+        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={PLANNED} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }
@@ -44,7 +45,7 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks
 };
 
 PlannedBooks.propTypes = {
-  loadingDataStatus: string.isRequired,
+  loadingDataStatus: loadingDataStatusShape,
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,

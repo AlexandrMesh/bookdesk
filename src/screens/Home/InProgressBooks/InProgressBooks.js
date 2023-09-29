@@ -6,6 +6,7 @@ import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';
 import { IN_PROGRESS } from '~constants/boardType';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksList from '../BooksList';
 
 const InProgressBooks = ({
@@ -42,7 +43,7 @@ const InProgressBooks = ({
     return (
       <>
         <TotalCount count={totalItems} />
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={IN_PROGRESS} />
+        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={IN_PROGRESS} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }
@@ -53,7 +54,7 @@ const InProgressBooks = ({
 };
 
 InProgressBooks.propTypes = {
-  loadingDataStatus: string.isRequired,
+  loadingDataStatus: loadingDataStatusShape,
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,

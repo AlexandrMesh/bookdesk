@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { getT } from '~translations/i18n';
 
 const getBooks = (state) => state.books;
 const getSearch = (state) => getBooks(state).search;
@@ -21,7 +22,6 @@ export const getSearchSortType = (state) => getSearchSortParams(state).type;
 export const getSearchSortDirection = (state) => getSearchSortParams(state).direction;
 export const getUpdatingBookStatus = (state) => getBooks(state).updatingBookStatus;
 export const getCategoriesData = (state) => getCategories(state).data;
-export const getExpandedCategories = (state) => getCategories(state).expanded;
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);
@@ -37,10 +37,24 @@ export const deriveEditableExpandedCategories = (status) =>
 
 export const deriveExpandedCategories = (status) => createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.expanded);
 
+export const deriveCategorySearchQuery = (status) =>
+  createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.categorySearchQuery);
+
 export const deriveFilterBookCategoryPaths = (status) =>
   createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.categoryPaths.filter((item) => item.split('.').length === 3));
 
 export const deriveSearchQuery = createSelector([getSearchQuery], (query) => query.trim());
+
+export const deriveCategoriesSearchResult = (status) =>
+  createSelector([getCategoriesData, deriveCategorySearchQuery(status)], (categories, query) => {
+    const searchQuery = query.trim().toLowerCase();
+    return searchQuery
+      ? categories
+          .filter(({ path }) => path.split('.').length === 3)
+          .map((item) => ({ ...item, label: getT('categories')(item.value) }))
+          .filter(({ label }) => label.toLowerCase().includes(searchQuery))
+      : [];
+  });
 
 export const deriveBookListData = (status) =>
   createSelector([getBoard, getCategoriesData], (board, categories) =>

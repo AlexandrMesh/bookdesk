@@ -10,6 +10,7 @@ import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import BooksList from '~screens/Home/BooksList';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
 const SearchResults = ({
@@ -72,7 +73,7 @@ const SearchResults = ({
 };
 
 SearchResults.propTypes = {
-  loadingDataStatus: string.isRequired,
+  loadingDataStatus: loadingDataStatusShape,
   searchQuery: string.isRequired,
   loadSearchResults: func.isRequired,
   loadMoreSearchResults: func.isRequired,

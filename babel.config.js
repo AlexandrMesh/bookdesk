@@ -12,16 +12,7 @@ module.exports = {
            */
           '^~(.+)': './src/\\1',
         },
-        extensions: [
-          '.ios.js',
-          '.android.js',
-          '.js',
-          '.jsx',
-          '.json',
-          '.tsx',
-          '.ts',
-          '.native.js',
-        ],
+        extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.tsx', '.ts', '.native.js'],
       },
     ],
   ],

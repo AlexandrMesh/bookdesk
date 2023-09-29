@@ -12,5 +12,6 @@
   "toFilter": "Фильтровать",
   "clear": "Очистить",
   "categoriesTitle": "Категории",
-  "categoriesCount": "Категории ({{count}})"
+  "categoriesCount": "Категории ({{count}})",
+  "searchCategory": "Введите название категории"
 }

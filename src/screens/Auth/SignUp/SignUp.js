@@ -11,6 +11,7 @@ import Logo from '~screens/Auth/Logo';
 import Input from '~UI/TextInput';
 import { Spinner, Size } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
 const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation, clearErrors }) => {
@@ -112,7 +113,7 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
 SignUp.propTypes = {
   signUp: func.isRequired,
   clearErrors: func.isRequired,
-  loadingDataStatus: string,
+  loadingDataStatus: loadingDataStatusShape,
   errors: shape({
     email: string,
     password: string,

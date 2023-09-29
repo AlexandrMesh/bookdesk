@@ -6,6 +6,7 @@ import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { Spinner } from '~UI/Spinner';
 import { SECONDARY } from '~constants/themes';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
 const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, loadingDataStatus }) => {
@@ -54,7 +55,7 @@ About.propTypes = {
   email: string,
   loadAppInfo: func.isRequired,
   clearAppInfo: func.isRequired,
-  loadingDataStatus: string,
+  loadingDataStatus: loadingDataStatusShape,
 };
 
 export default About;

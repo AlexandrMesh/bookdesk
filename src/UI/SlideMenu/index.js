@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { bool, number, func, node, string } from 'prop-types';
 import { Animated, Text, View, Pressable } from 'react-native';
+import Button from '~UI/Button';
+import { SECONDARY } from '~constants/themes';
 import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
@@ -89,9 +91,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
                 <View style={styles.titleWrapper}>
                   <Text style={styles.title}>{title}</Text>
                   {titleReset ? (
-                    <Pressable onPress={onReset} style={styles.titleResetWrapper}>
-                      <Text style={styles.titleReset}>{titleReset}</Text>
-                    </Pressable>
+                    <Button style={styles.resetButton} titleStyle={styles.titleStyle} theme={SECONDARY} title={titleReset} onPress={onReset} />
                   ) : null}
                 </View>
                 <Pressable onPress={hideModal}>

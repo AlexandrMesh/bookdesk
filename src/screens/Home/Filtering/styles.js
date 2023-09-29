@@ -3,11 +3,10 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
+    height: '100%',
     width: '100%',
     display: 'flex',
-  },
-  white: {
-    color: '#fff',
+    flex: 1,
   },
   menuItem: {
     height: 50,
@@ -18,6 +17,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  searchResult: {
+    paddingLeft: 15,
   },
   menuItemTitle: {
     fontSize: 16,
@@ -55,5 +57,17 @@ export default StyleSheet.create({
   },
   collapsed: {
     transform: [{ rotate: '-90deg' }],
+  },
+  emptyResult: {
+    height: 300,
+    width: '100%',
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyLabel: {
+    fontSize: 16,
+    color: colors.neutral_light,
   },
 });
