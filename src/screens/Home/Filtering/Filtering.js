@@ -1,6 +1,6 @@
 import React from 'react';
 import { bool, func, string, shape, arrayOf } from 'prop-types';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, SectionList, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import CheckBox from '~UI/CheckBox';
 import SlideMenu from '~UI/SlideMenu';
@@ -38,15 +38,15 @@ const Filtering = ({
 
   const { categoryPaths } = filterParams;
 
-  const shouldDisplaySearchResults = searchQuery && categoriesSearchResult.length > 0;
+  const shouldDisplaySearchResults = searchQuery;
 
   const emptySearchResult = () => (
     <View style={styles.emptyResult}>
-      <Text style={styles.emptyLabel}>Не найдено категорий</Text>
+      <Text style={styles.emptyLabel}>{t('noCategories')}</Text>
     </View>
   );
 
-  const renderCategory = ({ value, path, isExpanded, isSearchResult }) => {
+  const renderCategoryItem = ({ value, path, isExpanded, isSearchResult }) => {
     const splittedPath = path.split('.');
     const level = splittedPath.length;
     const iconWrapperStyle = () => {
@@ -78,12 +78,33 @@ const Filtering = ({
     );
   };
 
+  const renderCategory = ({ value, path, isExpanded, data }) => {
+    return (
+      <>
+        {renderCategoryItem({ value, path, isExpanded })}
+        {isExpanded && data.length > 0 && (
+          <FlatList
+            eyboardShouldPersistTaps='handled'
+            data={data}
+            renderItem={({ item }) => renderCategory({ value: item.value, path: item.path })}
+            keyExtractor={(item) => item.path}
+          />
+        )}
+      </>
+    );
+  };
+
   const renderSearchResults = () => {
     if (shouldDisplaySearchResults) {
-      return categoriesSearchResult.map(({ value, path }) => renderCategory({ value, path, isSearchResult: true }));
-    }
-    if (searchQuery && categoriesSearchResult.length === 0) {
-      return emptySearchResult();
+      return (
+        <FlatList
+          keyboardShouldPersistTaps='handled'
+          data={categoriesSearchResult}
+          renderItem={({ item }) => renderCategoryItem({ value: item.value, path: item.path, isSearchResult: true })}
+          keyExtractor={(item) => item.path}
+          ListEmptyComponent={emptySearchResult()}
+        />
+      );
     }
     return null;
   };
@@ -105,24 +126,23 @@ const Filtering = ({
         shouldDisplayClearButton={!!searchQuery}
         onClear={clearSearchQueryForCategory}
       />
-      <ScrollView style={styles.wrapper} keyboardShouldPersistTaps='handled'>
+      <View style={styles.wrapper}>
         {renderSearchResults()}
-        {!searchQuery &&
-          categories.map(({ value, path, isExpanded, children }) => (
-            <View key={path}>
-              {renderCategory({ value, path, isExpanded })}
-              {isExpanded
-                ? children.map(({ value, path, isExpanded, children }) => (
-                    <View key={path}>
-                      {renderCategory({ value, path, isExpanded })}
-                      {isExpanded ? children.map(({ value, path }) => renderCategory({ value, path })) : null}
-                    </View>
-                  ))
-                : null}
-            </View>
-          ))}
-      </ScrollView>
-      <View style={styles.submitButtonWrapper} keyboardShouldPersistTaps='handled'>
+        {!searchQuery && (
+          <SectionList
+            keyboardShouldPersistTaps='handled'
+            sections={categories}
+            extraData={categories}
+            keyExtractor={(item) => item.path}
+            renderItem={({ item, section }) =>
+              section.isExpanded &&
+              renderCategory({ value: item.value, path: item.path, isExpanded: item.isExpanded, data: item.data, section: item.isExpanded })
+            }
+            renderSectionHeader={({ section }) => renderCategoryItem({ value: section.value, path: section.path, isExpanded: section.isExpanded })}
+          />
+        )}
+      </View>
+      <View style={styles.submitButtonWrapper}>
         <Button title={t('toFilter')} onPress={handleFilter} />
       </View>
     </SlideMenu>

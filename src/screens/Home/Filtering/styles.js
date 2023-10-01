@@ -3,7 +3,7 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
-    height: '100%',
+    height: 300,
     width: '100%',
     display: 'flex',
     flex: 1,

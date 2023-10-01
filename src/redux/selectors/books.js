@@ -197,21 +197,24 @@ export const deriveCategories = (boardType) =>
           return {
             path,
             value,
+            title: value,
             isExpanded: expandedCategories.includes(path),
-            children: categories
+            data: categories
               .map(({ path, value }) => {
                 const secondLevel = path.split('.');
                 if (secondLevel.length === 2 && firstLevel[0] === secondLevel[0]) {
                   return {
                     path,
                     value,
+                    title: value,
                     isExpanded: expandedCategories.includes(path),
-                    children: categories
+                    data: categories
                       .map(({ path, value }) => {
                         const thirdLevel = path.split('.');
                         if (thirdLevel.length === 3 && firstLevel[0] === thirdLevel[0] && thirdLevel[1] === secondLevel[1]) {
                           return {
                             path,
+                            title: value,
                             value,
                           };
                         }

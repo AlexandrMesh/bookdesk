@@ -13,5 +13,6 @@
   "clear": "Очистить",
   "categoriesTitle": "Категории",
   "categoriesCount": "Категории ({{count}})",
-  "searchCategory": "Введите название категории"
+  "searchCategory": "Введите название категории",
+  "noCategories": "Не найдено категорий"
 }
