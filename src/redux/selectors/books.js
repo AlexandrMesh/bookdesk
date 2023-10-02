@@ -51,7 +51,7 @@ export const deriveCategoriesSearchResult = (status) =>
     return searchQuery
       ? categories
           .filter(({ path }) => path.split('.').length === 3)
-          .map((item) => ({ ...item, label: getT('categories')(item.value) }))
+          .map((item) => ({ ...item, title: item.value, label: getT('categories')(item.value) }))
           .filter(({ label }) => label.toLowerCase().includes(searchQuery))
       : [];
   });
@@ -68,6 +68,8 @@ export const deriveSearchBookListData = createSelector([getSearchResults, getCat
 export const deriveLoadingBookListStatus = (status) => createSelector([getBoard], (board) => board[status].loadingDataStatus);
 
 export const deriveShouldReloadBookList = (status) => createSelector([getBoard], (board) => board[status].shouldReloadData);
+
+export const deriveShouldReloadWithPullRefresh = (status) => createSelector([getBoard], (board) => board[status].shouldReloadWithPullRefresh);
 
 export const deriveBookListPagination = (status) => createSelector([getBoard], (board) => board[status].pagination);
 
@@ -196,7 +198,6 @@ export const deriveCategories = (boardType) =>
         if (firstLevel.length === 1) {
           return {
             path,
-            value,
             title: value,
             isExpanded: expandedCategories.includes(path),
             data: categories
@@ -205,7 +206,6 @@ export const deriveCategories = (boardType) =>
                 if (secondLevel.length === 2 && firstLevel[0] === secondLevel[0]) {
                   return {
                     path,
-                    value,
                     title: value,
                     isExpanded: expandedCategories.includes(path),
                     data: categories
@@ -215,7 +215,6 @@ export const deriveCategories = (boardType) =>
                           return {
                             path,
                             title: value,
-                            value,
                           };
                         }
                         return null;

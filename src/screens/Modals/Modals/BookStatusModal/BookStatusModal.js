@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
-import { View, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { View, ToastAndroid, Platform, UIManager, LayoutAnimation } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
@@ -21,7 +21,7 @@ const layoutAnimConfig = {
   },
 };
 
-const BookStatusSlideMenu = ({ isVisible, book, updateUserBook, hideModal, boardType, isLoading }) => {
+const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType, isLoading }) => {
   const { t } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
 
@@ -51,6 +51,7 @@ const BookStatusSlideMenu = ({ isVisible, book, updateUserBook, hideModal, board
       if (boardType !== ALL) {
         LayoutAnimation.configureNext(layoutAnimConfig);
       }
+      ToastAndroid.show(t('bookStatusUpdated'), ToastAndroid.SHORT);
     }
   };
 
@@ -75,7 +76,7 @@ const BookStatusSlideMenu = ({ isVisible, book, updateUserBook, hideModal, board
   );
 };
 
-BookStatusSlideMenu.propTypes = {
+BookStatusModal.propTypes = {
   isVisible: bool,
   book: shape({
     bookId: string,
@@ -87,4 +88,4 @@ BookStatusSlideMenu.propTypes = {
   isLoading: bool,
 };
 
-export default BookStatusSlideMenu;
+export default BookStatusModal;

@@ -41,7 +41,6 @@ export const START_LOADING_USERS_BOOK_LIST = `${PREFIX}/START_LOADING_USERS_BOOK
 export const LOADING_USERS_BOOK_LIST_FAILED = `${PREFIX}/LOADING_USERS_BOOK_LIST_FAILED`;
 
 export const START_UPDATING_USERS_BOOK = `${PREFIX}/START_UPDATING_USERS_BOOK`;
-export const USER_BOOK_UPDATED = `${PREFIX}/USER_BOOK_UPDATED`;
 export const UPDATING_USERS_BOOK_FAILED = `${PREFIX}/UPDATING_USERS_BOOK_FAILED`;
 
 export const REMOVE_BOOK = `${PREFIX}/REMOVE_BOOK`;
@@ -114,9 +113,10 @@ export const resetCategories = (boardType) => ({
   boardType,
 });
 
-export const triggerReloadBookList = (boardType) => ({
+export const triggerReloadBookList = (boardType, isPullRefresh) => ({
   type: TRIGGER_RELOAD_BOOK_LIST,
   boardType,
+  isPullRefresh,
 });
 
 export const startLoadingCategories = {
@@ -144,9 +144,10 @@ export const addToIndeterminatedCategories = (boardType, value) => ({
   value,
 });
 
-export const clearIndeterminatedCategories = (boardType) => ({
+export const clearIndeterminatedCategories = (boardType, path) => ({
   type: CLEAR_INDETERMINATED_CATEGORIES,
   boardType,
+  path,
 });
 
 export const triggerReloadSearchResults = {
@@ -173,12 +174,6 @@ export const incrementSearchResultPageIndex = {
 export const clearSearchResults = {
   type: CLEAR_SEARCH_RESULTS,
 };
-
-export const userBookUpdated = (bookId, bookStatus) => ({
-  type: USER_BOOK_UPDATED,
-  bookId,
-  bookStatus,
-});
 
 export const updatingUsersBookFailed = {
   type: UPDATING_USERS_BOOK_FAILED,
@@ -296,7 +291,8 @@ export const manageTopLevelCategorySelection = (path, boardType) => (dispatch, g
   const { shouldSelectTopLevelCategory, shouldUnselectTopLevelCategory, shouldIndeterminateTopLevelCategory, categoryPath } =
     deriveManageTopLevelCategorySelection(path, boardType)(getState()) || {};
   // if we click on the first or the second level categories we should clear indeterminate state
-  dispatch(clearIndeterminatedCategories(boardType));
+  dispatch(clearIndeterminatedCategories(boardType, path));
+  // очищать только топ 1 и топ 2 категорийй в indeterminated
   if ((shouldIndeterminateTopLevelCategory || []).length > 0) {
     dispatch(addToIndeterminatedCategories(boardType, shouldIndeterminateTopLevelCategory));
   }

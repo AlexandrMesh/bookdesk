@@ -9,7 +9,7 @@ import Input from '~UI/TextInput';
 import ArrowDown from '~assets/arrow-down.svg';
 import styles from './styles';
 
-const Filtering = ({
+const FilteringModal = ({
   isVisible,
   filterParams,
   onClose,
@@ -86,7 +86,7 @@ const Filtering = ({
           <FlatList
             eyboardShouldPersistTaps='handled'
             data={data}
-            renderItem={({ item }) => renderCategory({ value: item.value, path: item.path })}
+            renderItem={({ item }) => renderCategoryItem({ value: item.title, path: item.path })}
             keyExtractor={(item) => item.path}
           />
         )}
@@ -100,7 +100,7 @@ const Filtering = ({
         <FlatList
           keyboardShouldPersistTaps='handled'
           data={categoriesSearchResult}
-          renderItem={({ item }) => renderCategoryItem({ value: item.value, path: item.path, isSearchResult: true })}
+          renderItem={({ item }) => renderCategoryItem({ value: item.title, path: item.path, isSearchResult: true })}
           keyExtractor={(item) => item.path}
           ListEmptyComponent={emptySearchResult()}
         />
@@ -136,9 +136,9 @@ const Filtering = ({
             keyExtractor={(item) => item.path}
             renderItem={({ item, section }) =>
               section.isExpanded &&
-              renderCategory({ value: item.value, path: item.path, isExpanded: item.isExpanded, data: item.data, section: item.isExpanded })
+              renderCategory({ value: item.title, path: item.path, isExpanded: item.isExpanded, data: item.data, section: item.isExpanded })
             }
-            renderSectionHeader={({ section }) => renderCategoryItem({ value: section.value, path: section.path, isExpanded: section.isExpanded })}
+            renderSectionHeader={({ section }) => renderCategoryItem({ value: section.title, path: section.path, isExpanded: section.isExpanded })}
           />
         )}
       </View>
@@ -149,7 +149,7 @@ const Filtering = ({
   );
 };
 
-Filtering.propTypes = {
+FilteringModal.propTypes = {
   isVisible: bool.isRequired,
   filterParams: shape({
     categoryPaths: arrayOf(string),
@@ -163,9 +163,9 @@ Filtering.propTypes = {
   toggleExpandedCategory: func.isRequired,
   clearSearchQueryForCategory: func.isRequired,
   indeterminatedCategories: arrayOf(string).isRequired,
-  categories: arrayOf(shape({ path: string, value: string, isExpanded: bool })),
-  categoriesSearchResult: arrayOf(shape({ path: string, value: string })),
+  categories: arrayOf(shape({ path: string, title: string, isExpanded: bool })),
+  categoriesSearchResult: arrayOf(shape({ path: string, title: string })),
   searchQuery: string,
 };
 
-export default Filtering;
+export default FilteringModal;

@@ -6,7 +6,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeBook: (id, boardType) => dispatch(removeBook(id, boardType)),
   showModal: (modal) => dispatch(showModal(modal)),
   selectBook: (book) => dispatch(selectBook(book)),
-  triggerReloadBookList: (boardType) => dispatch(triggerReloadBookList(boardType)),
+  triggerReloadBookList: (boardType, isPullRefresh) => dispatch(triggerReloadBookList(boardType, isPullRefresh)),
 });
 
 export default connect(null, mapDispatchToProps)(BooksList);

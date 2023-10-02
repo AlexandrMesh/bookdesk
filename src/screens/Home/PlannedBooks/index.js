@@ -5,6 +5,7 @@ import {
   deriveBookListHasNextPage,
   deriveShouldReloadBookList,
   deriveBookListTotalItems,
+  deriveShouldReloadWithPullRefresh,
 } from '~redux/selectors/books';
 import { loadBookList, loadMoreBooks, setBoardType } from '~redux/actions/booksActions';
 import { PLANNED } from '~constants/boardType';
@@ -15,6 +16,7 @@ const mapStateToProps = (state) => ({
   loadingDataStatus: deriveLoadingBookListStatus(PLANNED)(state),
   hasNextPage: deriveBookListHasNextPage(PLANNED)(state),
   shouldReloadData: deriveShouldReloadBookList(PLANNED)(state),
+  shouldReloadWithPullRefresh: deriveShouldReloadWithPullRefresh(PLANNED)(state),
   totalItems: deriveBookListTotalItems(PLANNED)(state),
 });
 

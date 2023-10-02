@@ -16,6 +16,7 @@ const AllBooks = ({
   bookList,
   filterParams,
   shouldReloadData,
+  shouldReloadWithPullRefresh,
   totalItems,
   loadCategories,
   setBoardType,
@@ -42,7 +43,7 @@ const AllBooks = ({
     }
   }, [loadCategories, loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (loadingDataStatus === IDLE || shouldReloadData) {
+  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
     return <Spinner />;
   }
 
@@ -65,6 +66,7 @@ AllBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
+  shouldReloadWithPullRefresh: bool,
   totalItems: number.isRequired,
   loadCategories: func.isRequired,
   setBoardType: func.isRequired,

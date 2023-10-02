@@ -52,10 +52,12 @@ const BookItem = ({ bookItem, showModal, selectBook }) => {
         ))}
         <View style={styles.info}>
           <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
-          <Text style={[styles.item, styles.mediumColor]}>
-            {t('pages')}
-            <Text style={styles.lightColor}>{pages}</Text>
-          </Text>
+          {pages && (
+            <Text style={[styles.item, styles.mediumColor]}>
+              {t('pages')}
+              <Text style={styles.lightColor}>{pages}</Text>
+            </Text>
+          )}
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}

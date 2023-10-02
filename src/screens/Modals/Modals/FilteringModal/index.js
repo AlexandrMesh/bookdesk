@@ -21,7 +21,7 @@ import {
 } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import { FILTERING } from '~constants/modalTypes';
-import Filtering from './Filtering';
+import FilteringModal from './FilteringModal';
 
 const mapStateToProps = (state) => ({
   isVisible: getActiveModal(state) === FILTERING,
@@ -49,4 +49,4 @@ const mapDispatchToProps = (dispatch) => ({
   clearSearchQueryForCategory: () => dispatch(clearSearchQueryForCategory(ALL)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Filtering);
+export default connect(mapStateToProps, mapDispatchToProps)(FilteringModal);

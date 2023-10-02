@@ -3,7 +3,7 @@ import { arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
-import { PENDING } from '~constants/loadingStatuses';
+import { PENDING, REFRESHING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BookItem from './BookItem';
 import styles from './styles';
@@ -28,8 +28,8 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
           data={data}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
-          onRefresh={() => triggerReloadBookList(boardType)}
-          refreshing={false}
+          onRefresh={() => triggerReloadBookList(boardType, true)}
+          refreshing={loadingDataStatus === REFRESHING}
           onEndReached={loadMoreBooks}
           onEndReachedThreshold={0.5}
           ListFooterComponent={getSpinner}

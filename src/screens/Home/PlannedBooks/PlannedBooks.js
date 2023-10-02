@@ -9,7 +9,16 @@ import { PLANNED } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksList from '../BooksList';
 
-const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks, shouldReloadData, totalItems, setBoardType }) => {
+const PlannedBooks = ({
+  loadingDataStatus,
+  loadBookList,
+  bookList,
+  loadMoreBooks,
+  shouldReloadData,
+  totalItems,
+  setBoardType,
+  shouldReloadWithPullRefresh,
+}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -27,7 +36,7 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, bookList, loadMoreBooks
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (loadingDataStatus === IDLE || shouldReloadData) {
+  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
     return <Spinner />;
   }
   if (bookList.length > 0) {
@@ -49,6 +58,7 @@ PlannedBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
+  shouldReloadWithPullRefresh: bool,
   totalItems: number.isRequired,
   setBoardType: func.isRequired,
   bookList: arrayOf(

@@ -3,7 +3,7 @@ import { getActiveModal, getUpdatingBookStatus, getBoardType, getSelectedBook } 
 import { updateUserBook, hideModal } from '~redux/actions/booksActions';
 import { PENDING } from '~constants/loadingStatuses';
 import { BOOK_STATUS } from '~constants/modalTypes';
-import BookStatusSlideMenu from './BookStatusSlideMenu';
+import BookStatusModal from './BookStatusModal';
 
 const mapStateToProps = (state) => ({
   isVisible: getActiveModal(state) === BOOK_STATUS,
@@ -17,4 +17,4 @@ const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(hideModal),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookStatusSlideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(BookStatusModal);

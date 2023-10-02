@@ -1,12 +1,12 @@
 import React from 'react';
-import BookStatusSlideMenu from '~screens/Home/BookStatusSlideMenu';
-import Filtering from '~screens/Home/Filtering';
+import BookStatusModal from '~screens/Modals/Modals/BookStatusModal';
+import FilteringModal from '~screens/Modals/Modals/FilteringModal';
 
 const Modals = () => {
   return (
     <>
-      <BookStatusSlideMenu />
-      <Filtering />
+      <BookStatusModal />
+      <FilteringModal />
     </>
   );
 };

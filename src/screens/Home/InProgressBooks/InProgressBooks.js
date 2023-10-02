@@ -9,7 +9,16 @@ import { IN_PROGRESS } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksList from '../BooksList';
 
-const InProgressBooks = ({ loadingDataStatus, loadBookList, bookList, totalItems, loadMoreBooks, shouldReloadData, setBoardType }) => {
+const InProgressBooks = ({
+  loadingDataStatus,
+  loadBookList,
+  bookList,
+  totalItems,
+  loadMoreBooks,
+  shouldReloadData,
+  setBoardType,
+  shouldReloadWithPullRefresh,
+}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -27,7 +36,7 @@ const InProgressBooks = ({ loadingDataStatus, loadBookList, bookList, totalItems
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (loadingDataStatus === IDLE || shouldReloadData) {
+  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
     return <Spinner />;
   }
   if (bookList.length > 0) {
@@ -49,6 +58,7 @@ InProgressBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
+  shouldReloadWithPullRefresh: bool,
   setBoardType: func.isRequired,
   bookList: arrayOf(
     shape({

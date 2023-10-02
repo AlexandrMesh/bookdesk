@@ -9,7 +9,7 @@ import styles from './styles';
 
 const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, menuHeight }) => {
   const [shouldDIsplay, setShouldDisplay] = useState(false);
-  const [shouldDIsplayAfterUpdatingBook, setShouldDIsplayAfterUpdatingBook] = useState(false);
+  const [shouldDIsplayAfterUpdating, setShouldDIsplayAfterUpdating] = useState(false);
   const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(true);
   const animatedHeight = useMemo(() => new Animated.Value(menuHeight), [menuHeight]);
   const duration = 120;
@@ -24,7 +24,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
       restDisplacementThreshold: 40,
     }).start(() => {
       setShouldDisplay(false);
-      setShouldDIsplayAfterUpdatingBook(false);
+      setShouldDIsplayAfterUpdating(false);
       setShouldDIsplayOverlay(true);
       onClose();
     });
@@ -34,7 +34,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
     if (isVisible) {
       setShouldDisplay(true);
     } else {
-      setShouldDIsplayAfterUpdatingBook(true);
+      setShouldDIsplayAfterUpdating(true);
       setShouldDisplay(false);
     }
   }, [isVisible, setShouldDisplay]);
@@ -55,7 +55,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
     }
   }, [shouldDIsplay, animatedHeight]);
 
-  const shouldShowModal = shouldDIsplay || shouldDIsplayAfterUpdatingBook;
+  const shouldShowModal = shouldDIsplay || shouldDIsplayAfterUpdating;
 
   return (
     shouldShowModal && (
