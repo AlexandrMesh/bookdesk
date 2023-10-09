@@ -7,10 +7,9 @@ import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
 
-const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, menuHeight }) => {
+const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, title, titleReset, menuHeight }) => {
   const [shouldDIsplay, setShouldDisplay] = useState(false);
-  const [shouldDIsplayAfterUpdating, setShouldDIsplayAfterUpdating] = useState(false);
-  const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(true);
+  const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(false);
   const animatedHeight = useMemo(() => new Animated.Value(menuHeight), [menuHeight]);
   const duration = 120;
 
@@ -23,27 +22,24 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
       restSpeedThreshold: 100,
       restDisplacementThreshold: 40,
     }).start(() => {
-      setShouldDisplay(false);
-      setShouldDIsplayAfterUpdating(false);
-      setShouldDIsplayOverlay(true);
       onClose();
     });
-  }, [setShouldDIsplayOverlay, animatedHeight, menuHeight, onClose]);
+  }, [animatedHeight, menuHeight, onClose]);
 
   useEffect(() => {
     if (isVisible) {
       setShouldDisplay(true);
+      setShouldDIsplayOverlay(true);
     } else {
-      setShouldDIsplayAfterUpdating(true);
       setShouldDisplay(false);
     }
   }, [isVisible, setShouldDisplay]);
 
   useEffect(() => {
-    if (!shouldDIsplay && !isVisible) {
+    if (shouldAutoClose) {
       hideModal();
     }
-  }, [shouldDIsplay, isVisible, hideModal]);
+  }, [shouldAutoClose, hideModal]);
 
   useEffect(() => {
     if (shouldDIsplay) {
@@ -55,7 +51,7 @@ const SlideMenu = ({ isVisible, onClose, onReset, children, title, titleReset, m
     }
   }, [shouldDIsplay, animatedHeight]);
 
-  const shouldShowModal = shouldDIsplay || shouldDIsplayAfterUpdating;
+  const shouldShowModal = shouldDIsplay;
 
   return (
     shouldShowModal && (
@@ -115,6 +111,7 @@ SlideMenu.defaultProps = {
 
 SlideMenu.propTypes = {
   isVisible: bool,
+  shouldAutoClose: bool,
   onClose: func.isRequired,
   onReset: func.isRequired,
   children: node.isRequired,

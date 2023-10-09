@@ -7,6 +7,7 @@
         <item name="android:windowBackground">#09172a</item>
         <item name="android:colorBackground">#09172a</item>
         <item name="android:windowSplashScreenBackground">#09172a</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
     </style>
 
 </resources>

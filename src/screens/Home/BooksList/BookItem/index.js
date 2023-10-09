@@ -43,7 +43,7 @@ const BookItem = ({ bookItem, showModal, selectBook }) => {
       </View>
       <View style={styles.rightSide}>
         <View style={styles.titleWrapper}>
-          <Text style={[styles.title, styles.lightColor]}>{title}</Text>
+          <Text style={[styles.title]}>{title}</Text>
         </View>
         {authorsList.map((author) => (
           <View key={author}>

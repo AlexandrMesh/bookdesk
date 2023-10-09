@@ -24,6 +24,7 @@ const layoutAnimConfig = {
 const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType, isLoading }) => {
   const { t } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
+  const [shouldAutoClose, setShouldAutoClose] = useState(false);
 
   const actionTypes = [
     { title: t('noStatus'), isSelected: newBookStatus === ALL, action: () => setNewBookStatus(ALL) },
@@ -47,13 +48,20 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
         newBookStatus,
         boardType,
       });
-      hideModal();
+      setShouldAutoClose(true);
+      console.log('updated');
       if (boardType !== ALL) {
         LayoutAnimation.configureNext(layoutAnimConfig);
       }
       ToastAndroid.show(t('bookStatusUpdated'), ToastAndroid.SHORT);
     }
   };
+
+  useEffect(() => {
+    if (shouldAutoClose) {
+      setShouldAutoClose(false);
+    }
+  }, [shouldAutoClose]);
 
   const handleClose = () => {
     if (!isLoading) {
@@ -62,7 +70,7 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
   };
 
   return (
-    <SlideMenu isVisible={isVisible} title={t('choosingStatus')} onClose={handleClose} onReset={() => undefined}>
+    <SlideMenu isVisible={isVisible} title={t('choosingStatus')} onClose={handleClose} shouldAutoClose={shouldAutoClose} onReset={() => undefined}>
       <FlashList
         data={actionTypes}
         estimatedItemSize={actionTypes.length}
