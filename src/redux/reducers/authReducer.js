@@ -4,7 +4,8 @@ import {
   START_SIGN_IN,
   SIGN_IN_FAILED,
   SIGNED_IN,
-  SET_SIGN_UP_LOADING,
+  START_SIGN_UP,
+  SIGN_UP_FAILED,
   SET_IS_GOOGLE_ACCOUNT,
   SET_PROFILE,
   START_AUTH_CHECKING,
@@ -85,11 +86,18 @@ export default createReducer(initialState, (state, action) => ({
       errors: getDefaultErrorsState(),
     },
   }),
-  [SET_SIGN_UP_LOADING]: () => ({
+  [START_SIGN_UP]: () => ({
     ...state,
     signUp: {
       ...state.signUp,
-      isLoading: action.isLoading,
+      loadingDataStatus: PENDING,
+    },
+  }),
+  [SIGN_UP_FAILED]: () => ({
+    ...state,
+    signUp: {
+      ...state.signUp,
+      loadingDataStatus: FAILED,
     },
   }),
   [SET_SIGN_UP_ERROR]: () => ({

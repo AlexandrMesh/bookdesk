@@ -3,5 +3,7 @@
   "version": "Версия: ",
   "description": "Описание: ",
   "feedback": "Обратная связь: ",
-  "support": "Написать нам"
+  "support": "Написать нам",
+  "appName": "BookDesk",
+  "appTitle": "Ваш список книг для чтения"
 }

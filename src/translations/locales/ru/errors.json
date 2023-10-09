@@ -12,5 +12,6 @@
   "emailExists": "Email существует",
   "invalidGoogleEmail": "Неверный Google Email",
   "noUser": "Не существует такого пользователя",
-  "wrongEmailOrPassword": "Неверный email или пароль"
+  "wrongEmailOrPassword": "Неверный email или пароль",
+  "serverNotAvailable": "Сервер недоступен"
 }

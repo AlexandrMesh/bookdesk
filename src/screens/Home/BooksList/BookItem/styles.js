@@ -13,6 +13,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderTopColor: 'transparent',
     borderColor: colors.neutral_medium,
+    borderTopWidth: 0,
   },
   leftSide: {
     width: 126,

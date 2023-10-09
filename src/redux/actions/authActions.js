@@ -20,8 +20,6 @@ export const AUTH_CHECKED = `${PREFIX}/AUTH_CHECKED`;
 export const START_SIGN_UP = `${PREFIX}/START_SIGN_UP`;
 export const SIGN_UP_FAILED = `${PREFIX}/SIGN_UP_FAILED`;
 export const SIGNED_UP = `${PREFIX}/SIGNED_UP`;
-export const SET_SIGN_UP_LOADING = `${PREFIX}/SET_SIGN_UP_LOADING`;
-export const SET_SIGN_UP_ERRORS = `${PREFIX}/SET_SIGN_UP_ERRORS`;
 export const SET_SIGN_UP_ERROR = `${PREFIX}/SET_SIGN_UP_ERROR`;
 export const CLEAR_PROFILE = `${PREFIX}/CLEAR_PROFILE`;
 export const CLEAR_SIGN_IN_ERRORS = `${PREFIX}/CLEAR_SIGN_IN_ERRORS`;
@@ -92,11 +90,6 @@ export const setIsGoogleAccount = (isGoogleAccount) => ({
   isGoogleAccount,
 });
 
-export const setSignUpLoading = (isLoading) => ({
-  type: SET_SIGN_UP_LOADING,
-  isLoading,
-});
-
 export const setProfile = (profile) => ({
   type: SET_PROFILE,
   profile,
@@ -124,6 +117,17 @@ export const checkAuth = (token) => async (dispatch) => {
   return true;
 };
 
+const signInFailed = (error) => async (dispatch) => {
+  dispatch(singInFailed);
+  const responseData = error?.response?.data;
+  if (responseData) {
+    const { fieldName, key } = responseData;
+    dispatch(setSignInError(fieldName, key));
+  } else {
+    dispatch(setSignInError('password', 'serverNotAvailable'));
+  }
+};
+
 export const signIn =
   ({ email, password, isGoogleAccount }) =>
   async (dispatch) => {
@@ -147,9 +151,7 @@ export const signIn =
           }
         }
       } catch (error) {
-        const { fieldName, key } = error.response.data;
-        dispatch(setSignInError(fieldName, key));
-        dispatch(singInFailed);
+        dispatch(signInFailed(error));
       }
     } else {
       try {
@@ -164,9 +166,7 @@ export const signIn =
           }
         }
       } catch (error) {
-        const { fieldName, key } = error.response.data;
-        dispatch(setSignInError(fieldName, key));
-        dispatch(singInFailed);
+        dispatch(signInFailed(error));
       }
     }
     return true;
@@ -175,7 +175,6 @@ export const signIn =
 export const signUp =
   ({ email, password }) =>
   async (dispatch) => {
-    dispatch(setSignUpLoading(true));
     dispatch(startSignUp);
     try {
       const { data } = await AuthService().signUp({ email, password });
@@ -190,9 +189,14 @@ export const signUp =
         }
       }
     } catch (error) {
-      const { fieldName, key } = error.response.data;
-      dispatch(setSignUpError(fieldName, key));
       dispatch(signUpFailed);
+      const responseData = error?.response?.data;
+      if (responseData) {
+        const { fieldName, key } = responseData;
+        dispatch(setSignUpError(fieldName, key));
+      } else {
+        dispatch(setSignUpError('password', 'serverNotAvailable'));
+      }
     }
     return true;
   };
