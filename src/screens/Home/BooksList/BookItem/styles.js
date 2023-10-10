@@ -11,9 +11,9 @@ export default StyleSheet.create({
     padding: 15,
     backgroundColor: colors.primary_dark,
     borderWidth: 1,
+    borderTopWidth: 0,
     borderTopColor: 'transparent',
     borderColor: colors.neutral_medium,
-    borderTopWidth: 0,
   },
   leftSide: {
     width: 126,

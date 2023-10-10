@@ -151,6 +151,7 @@ export const signIn =
           }
         }
       } catch (error) {
+        console.log(error, 'error');
         dispatch(signInFailed(error));
       }
     } else {

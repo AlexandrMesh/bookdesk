@@ -9,8 +9,7 @@ import Main from './src/screens/Main';
 
 GoogleSignin.configure({
   offlineAccess: true,
-  webClientId: '424932684716-m79mq3d4akt2gft7plia6r5keaos68t1.apps.googleusercontent.com',
-  androidClientId: '424932684716-dpuv1s7lkhuec3sokqn84obo4uuas081.apps.googleusercontent.com',
+  webClientId: '798541911751-2bfmd87u0b4tlua24hs8k57r5pmag36e.apps.googleusercontent.com',
 });
 
 const App = () => (
