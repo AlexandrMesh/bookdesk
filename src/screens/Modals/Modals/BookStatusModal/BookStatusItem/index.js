@@ -2,7 +2,7 @@ import React from 'react';
 import { bool, string, func } from 'prop-types';
 import { Text, Pressable } from 'react-native';
 import RadioButton from '~UI/RadioButton';
-import styles from '../styles';
+import styles from './styles';
 
 const Item = ({ title, isSelected, action, isLoading }) => {
   const handleItemPress = (action) => {

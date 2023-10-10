@@ -106,7 +106,7 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
 };
 
 SlideMenu.defaultProps = {
-  menuHeight: 330,
+  menuHeight: 336,
 };
 
 SlideMenu.propTypes = {

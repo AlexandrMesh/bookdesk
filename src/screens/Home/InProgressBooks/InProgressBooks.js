@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { string, func, bool, number, arrayOf, shape } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
 import { Spinner } from '~UI/Spinner';
+
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';

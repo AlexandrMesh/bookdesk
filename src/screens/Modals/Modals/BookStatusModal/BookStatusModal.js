@@ -49,7 +49,6 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
         boardType,
       });
       setShouldAutoClose(true);
-      console.log('updated');
       if (boardType !== ALL) {
         LayoutAnimation.configureNext(layoutAnimConfig);
       }
