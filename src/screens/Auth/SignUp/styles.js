@@ -23,14 +23,21 @@ export default StyleSheet.create({
   neutralLight: {
     color: colors.neutral_light,
   },
-  signUpWrapper: {
+  existingAccountWrapper: {
     marginTop: 70,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  link: {
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+  existingAccountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  loginButton: { width: 'auto', paddingHorizontal: 5, height: 26 },
+  loginTitleStyle: {
+    fontSize: 14,
   },
 });

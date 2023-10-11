@@ -111,13 +111,17 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
               disabled={pendingSignIn}
             />
 
-            <View style={styles.signUpWrapper}>
-              <Text style={styles.neutralLight}>
-                {t('noAccount')}{' '}
-                <Text onPress={handleNavigateToSignUp} style={styles.link}>
-                  {t('create')}
-                </Text>
-              </Text>
+            <View style={styles.noAccountWrapper}>
+              <View style={styles.noAccountContainer}>
+                <Text style={styles.neutralLight}>{t('noAccount')} </Text>
+                <Button
+                  theme={SECONDARY}
+                  style={styles.createButton}
+                  titleStyle={styles.createTitleStyle}
+                  onPress={handleNavigateToSignUp}
+                  title={t('create')}
+                />
+              </View>
             </View>
           </View>
         </ScrollView>

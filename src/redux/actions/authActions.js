@@ -147,11 +147,10 @@ export const signIn =
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       } catch (error) {
-        console.log(error, 'error');
         dispatch(signInFailed(error));
       }
     } else {
@@ -163,7 +162,7 @@ export const signIn =
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {
-            console.log(error);
+            console.error(error);
           }
         }
       } catch (error) {
@@ -186,7 +185,7 @@ export const signUp =
         try {
           await AsyncStorage.setItem('token', data.token);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     } catch (error) {

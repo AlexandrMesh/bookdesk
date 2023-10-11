@@ -10,6 +10,7 @@ import Button from '~UI/Button';
 import Logo from '~screens/Auth/Logo';
 import Input from '~UI/TextInput';
 import { Spinner, Size } from '~UI/Spinner';
+import { SECONDARY } from '~constants/themes';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
@@ -95,13 +96,17 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
               disabled={pendingSignUp || isEmpty(email) || isEmpty(password)}
             />
 
-            <View style={styles.signUpWrapper}>
-              <Text style={styles.neutralLight}>
-                {t('alreadyHaveAnAccount')}{' '}
-                <Text onPress={handleNavigateToSignIn} style={styles.link}>
-                  {t('signIn')}
-                </Text>
-              </Text>
+            <View style={styles.existingAccountWrapper}>
+              <View style={styles.existingAccountContainer}>
+                <Text style={styles.neutralLight}>{t('alreadyHaveAnAccount')} </Text>
+                <Button
+                  theme={SECONDARY}
+                  style={styles.loginButton}
+                  titleStyle={styles.loginTitleStyle}
+                  onPress={handleNavigateToSignIn}
+                  title={t('signIn')}
+                />
+              </View>
             </View>
           </View>
         </ScrollView>

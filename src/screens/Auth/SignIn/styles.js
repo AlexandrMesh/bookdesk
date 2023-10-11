@@ -29,15 +29,21 @@ export default StyleSheet.create({
   neutralLight: {
     color: colors.neutral_light,
   },
-  signUpWrapper: {
+  noAccountWrapper: {
     marginTop: 70,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  link: {
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+  noAccountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  createButton: { width: 'auto', paddingHorizontal: 5, height: 26 },
+  createTitleStyle: {
+    fontSize: 14,
   },
   api: {
     fontSize: 30,
