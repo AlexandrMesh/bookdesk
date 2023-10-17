@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { string, func } from 'prop-types';
-import { View, Text, Linking } from 'react-native';
+import { ScrollView, View, Text, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
@@ -39,9 +39,10 @@ const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, l
               onPress={() => Linking.openURL(`mailto:${email}`)}
             />
           </Text>
-          <Text style={styles.label}>
-            {t('description')} <Text style={styles.value}>{description}</Text>
-          </Text>
+          <Text style={styles.label}>{t('description')}</Text>
+          <ScrollView>
+            <Text style={styles.value}>{description}</Text>
+          </ScrollView>
         </>
       )}
     </View>

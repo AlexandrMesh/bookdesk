@@ -351,9 +351,9 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
     dispatch(
       searchResultsLoaded({
         boardType: ALL,
-        data: items,
-        totalItems: pagination.totalItems,
-        hasNextPage: pagination.hasNextPage,
+        data: items || [],
+        totalItems: pagination?.totalItems || 0,
+        hasNextPage: pagination?.hasNextPage || false,
         shouldLoadMoreResults,
       }),
     );
@@ -361,6 +361,7 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
       dispatch(incrementSearchResultPageIndex);
     }
   } catch (error) {
+    console.log(error, 'error');
     dispatch(loadingSearchResultsFailed);
   }
 };

@@ -2,13 +2,10 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
-  container: {
-    height: '100%',
+  wrapper: {
     backgroundColor: colors.primary_dark,
-  },
-  tabBarLabel: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
+    position: 'relative',
+    paddingTop: 15,
+    paddingHorizontal: 5,
   },
 });

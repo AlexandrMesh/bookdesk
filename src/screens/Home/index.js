@@ -22,14 +22,19 @@ const HeaderTabs = () => (
   <Tab.Navigator
     initialRouteName={ALL_BOOKS_ROUTE}
     screenOptions={{
-      tabBarStyle: { backgroundColor: colors.primary_dark, borderBottomWidth: 1, borderColor: colors.neutral_medium },
+      tabBarItemStyle: { width: 'auto' },
+      tabBarStyle: {
+        backgroundColor: colors.primary_dark,
+        borderBottomWidth: 1,
+        borderColor: colors.neutral_medium,
+      },
       tabBarIndicatorStyle: { backgroundColor: colors.neutral_light },
     }}
   >
     <Tab.Screen
       name={ALL_BOOKS_ROUTE}
       component={AllBooks}
-      options={{ tabBarLabel: ({ focused }) => renderLabel(getT('books')('catalogTitle'), focused) }}
+      options={{ tabBarLabel: ({ focused }) => renderLabel(getT('books')('recommended'), focused) }}
     />
     <Tab.Screen
       name={PLANNED_BOOKS_ROUTE}

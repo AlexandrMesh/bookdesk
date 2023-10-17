@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Input from '~UI/TextInput';
 import useDebouncedSearch from '~hooks/useDebouncedSearch';
+import styles from './styles';
 
 const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults }) => {
   const { t } = useTranslation(['books', 'common', 'search']);
@@ -15,7 +16,7 @@ const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults }) => {
   };
 
   return (
-    <View style={{ position: 'relative' }}>
+    <View style={styles.wrapper}>
       <Input
         placeholder={t('search:enterBookTitle')}
         onChangeText={handleChangeQuery}

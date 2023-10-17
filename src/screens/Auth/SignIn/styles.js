@@ -30,7 +30,7 @@ export default StyleSheet.create({
     color: colors.neutral_light,
   },
   noAccountWrapper: {
-    marginTop: 70,
+    marginTop: 30,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
