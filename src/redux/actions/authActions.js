@@ -202,7 +202,6 @@ export const signUp =
   };
 
 export const signOut = async (dispatch) => {
-  // dispatch(setSignInLoading(true));
   try {
     await AsyncStorage.removeItem('token');
     dispatch(clearProfile);

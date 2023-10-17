@@ -23,20 +23,24 @@ const getDefaultErrorsState = () => ({
   password: '',
 });
 
+const getDefaultSignUpState = () => ({
+  isSignedUp: false,
+  loadingDataStatus: IDLE,
+  errors: getDefaultErrorsState(),
+});
+
+const getDefaultSignInState = () => ({
+  isSignedIn: false,
+  isGoogleAccount: false,
+  loadingDataStatus: IDLE,
+  errors: getDefaultErrorsState(),
+});
+
 const initialState = {
   profile: {},
-  signUp: {
-    isSignedUp: false,
-    loadingDataStatus: IDLE,
-    errors: getDefaultErrorsState(),
-  },
-  signIn: {
-    isSignedIn: false,
-    isGoogleAccount: false,
-    loadingDataStatus: IDLE,
-    checkingStatus: IDLE,
-    errors: getDefaultErrorsState(),
-  },
+  signUp: getDefaultSignUpState(),
+  signIn: getDefaultSignInState(),
+  checkingStatus: IDLE,
 };
 
 export default createReducer(initialState, (state, action) => ({
@@ -123,24 +127,20 @@ export default createReducer(initialState, (state, action) => ({
   }),
   [START_AUTH_CHECKING]: () => ({
     ...state,
-    signIn: {
-      ...state.signIn,
-      checkingStatus: PENDING,
-    },
+    checkingStatus: PENDING,
   }),
   [AUTH_CHECKED]: () => ({
     ...state,
-    signIn: {
-      ...state.signIn,
-      checkingStatus: SUCCEEDED,
-    },
+    checkingStatus: SUCCEEDED,
   }),
   [CHECKING_AUTH_FAILED]: () => ({
     ...state,
-    signIn: {
-      ...state.signIn,
-      checkingStatus: FAILED,
-    },
+    checkingStatus: FAILED,
   }),
-  [CLEAR_PROFILE]: () => initialState,
+  [CLEAR_PROFILE]: () => ({
+    ...state,
+    profile: {},
+    signUp: getDefaultSignUpState(),
+    signIn: getDefaultSignInState(),
+  }),
 }));

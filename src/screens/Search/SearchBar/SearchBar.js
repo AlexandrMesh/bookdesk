@@ -8,7 +8,7 @@ import styles from './styles';
 
 const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults }) => {
   const { t } = useTranslation(['books', 'common', 'search']);
-  const [searchQueryValue, handleChangeQuery, clearSearchText] = useDebouncedSearch(setSearchQuery, searchQuery, 400);
+  const [searchQueryValue, handleChangeQuery, clearSearchText] = useDebouncedSearch(setSearchQuery, searchQuery, 600);
 
   const handleClear = () => {
     clearSearchText();
@@ -18,7 +18,7 @@ const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults }) => {
   return (
     <View style={styles.wrapper}>
       <Input
-        placeholder={t('search:enterBookTitle')}
+        placeholder={t('search:enterSearchQuery')}
         onChangeText={handleChangeQuery}
         value={searchQueryValue}
         shouldDisplayClearButton={!!searchQueryValue}

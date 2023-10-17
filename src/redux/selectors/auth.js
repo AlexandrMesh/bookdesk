@@ -9,7 +9,7 @@ export const getRegistered = (state) => getProfile(state).registered;
 export const getSignInEmail = (state) => getSignIn(state).email.value;
 export const getSignInPassword = (state) => getSignIn(state).password.value;
 export const getSignInLoadingDataStatus = (state) => getSignIn(state).loadingDataStatus;
-export const getCheckingStatus = (state) => getSignIn(state).checkingStatus;
+
 export const getIsSignedIn = (state) => getSignIn(state).isSignedIn;
 export const getSignInErrors = (state) => getSignIn(state).errors;
 
@@ -18,3 +18,5 @@ export const getSignUpLoadingDataStatus = (state) => getSignUp(state).loadingDat
 export const getSignUpEmail = (state) => getSignUp(state).email.value;
 export const getSignUpPassword = (state) => getSignUp(state).password.value;
 export const getSignUpErrors = (state) => getSignUp(state).errors;
+
+export const getCheckingStatus = (state) => getAuth(state).checkingStatus;

@@ -17,6 +17,7 @@ import {
   deriveFilterBookCategoryPaths,
   getCategoriesData,
   getSearchSortParams,
+  getSearchQuery,
 } from '~redux/selectors/books';
 import { ALL } from '~constants/boardType';
 
@@ -241,12 +242,15 @@ export const addBook = (book, boardType) => ({
   boardType,
 });
 
-export const setSearchQuery = (query) => (dispatch) => {
-  dispatch({
-    type: SET_SEARCH_QUERY,
-    query,
-  });
-  dispatch(triggerReloadSearchResults);
+export const setSearchQuery = (query) => (dispatch, getState) => {
+  const searchQuery = getSearchQuery(getState());
+  if (searchQuery.toLowerCase().trim() !== query.toLowerCase().trim()) {
+    dispatch({
+      type: SET_SEARCH_QUERY,
+      query,
+    });
+    dispatch(triggerReloadSearchResults);
+  }
 };
 
 export const searchResultsLoaded = ({ boardType, data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults }) => ({

@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import { func, bool, string } from 'prop-types';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PENDING } from '~constants/loadingStatuses';
+import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { getT } from '~translations/i18n';
 import {
   SEARCH_ROUTE,
@@ -104,7 +103,7 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
     checkAuthentication();
   }, [checkAuthentication]);
 
-  if (checkingStatus === PENDING) {
+  if (checkingStatus === IDLE || checkingStatus === PENDING) {
     return <Splash />;
   }
 
