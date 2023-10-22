@@ -9,10 +9,8 @@ import FilterIcon from '~assets/filter.svg';
 import TotalCount from './TotalCount';
 import styles from './styles';
 
-const ActionBar = ({ filterParams, totalItems, showFilters }) => {
+const ActionBar = ({ filterParams, totalItems, showFilters, activeFiltersCount }) => {
   const { t } = useTranslation('common');
-
-  // const displayFilters = () => actionSheetRef.current?.show();
 
   const categoriesLength = filterParams?.categoryPaths?.length;
   const isActiveFilter = categoriesLength > 0;
@@ -28,7 +26,7 @@ const ActionBar = ({ filterParams, totalItems, showFilters }) => {
             iconClassName={styles.icon}
             icon={<FilterIcon width='16' height='16' fill={isActiveFilter ? colors.success : colors.neutral_light} />}
             onPress={showFilters}
-            title={isActiveFilter ? t('categoriesCount', { count: categoriesLength }) : t('categoriesTitle')}
+            title={isActiveFilter ? t('categoriesCount', { count: activeFiltersCount }) : t('categoriesTitle')}
           />
         </View>
         <TotalCount count={totalItems} />
@@ -43,6 +41,7 @@ ActionBar.propTypes = {
   }),
   showFilters: func.isRequired,
   totalItems: number.isRequired,
+  activeFiltersCount: number,
 };
 
 export default ActionBar;

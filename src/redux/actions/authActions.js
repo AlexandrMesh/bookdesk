@@ -1,6 +1,6 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { clearBooksData } from '~redux/actions/booksActions';
+import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
 import AuthService from '~http/services/auth';
 
 const PREFIX = 'AUTH';
@@ -106,6 +106,7 @@ export const checkAuth = (token) => async (dispatch) => {
       if (data.profile) {
         const { _id, email, registered, updated } = data.profile;
         dispatch(setProfile({ _id, email, registered, updated }));
+        dispatch(setBookVotes(data.userVotes));
         dispatch(signedIn);
         dispatch(authChecked);
         return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));
@@ -143,6 +144,7 @@ export const signIn =
         if (data) {
           dispatch(signedIn);
           dispatch(setProfile(data.profile));
+          dispatch(setBookVotes(data.userVotes));
           dispatch(setIsGoogleAccount(true));
           try {
             await AsyncStorage.setItem('token', data.token);
@@ -159,6 +161,7 @@ export const signIn =
         if (data) {
           dispatch(signedIn);
           dispatch(setProfile(data.profile));
+          dispatch(setBookVotes(data.userVotes));
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {

@@ -7,6 +7,7 @@ import {
   deriveShouldReloadBookList,
   deriveBookListTotalItems,
   deriveShouldReloadWithPullRefresh,
+  deriveFilterBookCategoryPaths,
 } from '~redux/selectors/books';
 import { loadBookList, loadMoreBooks, loadCategories, setBoardType, showModal } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
@@ -21,6 +22,7 @@ const mapStateToProps = (state) => ({
   shouldReloadData: deriveShouldReloadBookList(ALL)(state),
   shouldReloadWithPullRefresh: deriveShouldReloadWithPullRefresh(ALL)(state),
   totalItems: deriveBookListTotalItems(ALL)(state),
+  activeFiltersCount: deriveFilterBookCategoryPaths(ALL)(state)?.length,
 });
 
 const mapDispatchToProps = (dispatch) => ({

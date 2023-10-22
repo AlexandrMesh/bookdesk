@@ -21,6 +21,7 @@ const AllBooks = ({
   loadCategories,
   setBoardType,
   showFilters,
+  activeFiltersCount,
 }) => {
   const isFocused = useIsFocused();
 
@@ -50,7 +51,7 @@ const AllBooks = ({
   if (bookList.length > 0) {
     return (
       <>
-        <ActionBar filterParams={filterParams} totalItems={totalItems} showFilters={showFilters} />
+        <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={showFilters} />
         <BooksList boardType={ALL} data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
       </>
     );
@@ -84,6 +85,7 @@ AllBooks.propTypes = {
     categoryPaths: arrayOf(string),
   }),
   showFilters: func.isRequired,
+  activeFiltersCount: number,
 };
 
 export default AllBooks;

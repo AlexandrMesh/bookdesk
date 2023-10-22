@@ -75,6 +75,13 @@ export const TOGGLE_EXPANDED_CATEGORY = `${PREFIX}/TOGGLE_EXPANDED_CATEGORY`;
 export const ADD_TO_INDETERMINATED_CATEGORIES = `${PREFIX}/ADD_TO_INDETERMINATED_CATEGORIES`;
 export const CLEAR_INDETERMINATED_CATEGORIES = `${PREFIX}/CLEAR_INDETERMINATED_CATEGORIES`;
 
+export const SET_BOOK_VOTES = `${PREFIX}/SET_BOOK_VOTES`;
+export const START_UPDATING_BOOK_VOTES = `${PREFIX}/START_UPDATING_BOOK_VOTES`;
+export const UPDATING_BOOK_VOTES_FAILED = `${PREFIX}/UPDATING_BOOK_VOTES_FAILED`;
+export const UPDATED_BOOK_VOTES = `${PREFIX}/UPDATED_BOOK_VOTES`;
+export const UPDATE_BOOK_VOTES = `${PREFIX}/UPDATE_BOOK_VOTES`;
+export const UPDATE_BOOK_VOTES_IN_SEARCH = `${PREFIX}/UPDATE_BOOK_VOTES_IN_SEARCH`;
+
 export const setBoardType = (boardType) => ({
   type: SET_BOARD_TYPE,
   boardType,
@@ -149,6 +156,40 @@ export const clearIndeterminatedCategories = (boardType, path) => ({
   type: CLEAR_INDETERMINATED_CATEGORIES,
   boardType,
   path,
+});
+
+export const startUpdatingBookVotes = (bookId) => ({
+  type: START_UPDATING_BOOK_VOTES,
+  bookId,
+});
+
+export const updatingBookVotesFailed = (bookId) => ({
+  type: UPDATING_BOOK_VOTES_FAILED,
+  bookId,
+});
+
+export const updatedBookVotes = (userVotes, bookId) => ({
+  type: UPDATED_BOOK_VOTES,
+  userVotes,
+  bookId,
+});
+
+export const setBookVotes = (data) => ({
+  type: SET_BOOK_VOTES,
+  data,
+});
+
+export const updateBookVotesAction = (bookStatus, bookId, votesCount) => ({
+  type: UPDATE_BOOK_VOTES,
+  bookStatus,
+  bookId,
+  votesCount,
+});
+
+export const updateBookVotesInSearch = (bookId, votesCount) => ({
+  type: UPDATE_BOOK_VOTES_IN_SEARCH,
+  bookId,
+  votesCount,
 });
 
 export const triggerReloadSearchResults = {
@@ -488,5 +529,23 @@ export const updateUserBook =
       dispatch(reloadBookList(boardType));
     } catch (e) {
       dispatch(updatingUsersBookFailed);
+    }
+  };
+
+export const updateBookVotes =
+  ({ bookId, shouldAdd, bookStatus }) =>
+  async (dispatch) => {
+    dispatch(startUpdatingBookVotes(bookId));
+    try {
+      const { data } = await DataService().updateBookVotes({ bookId, shouldAdd });
+
+      dispatch(updatedBookVotes(data.userVotes, bookId));
+      dispatch(updateBookVotesAction(ALL, bookId, data.votesCount));
+      dispatch(updateBookVotesInSearch(bookId, data.votesCount));
+      if (bookStatus) {
+        dispatch(updateBookVotesAction(bookStatus, bookId, data.votesCount));
+      }
+    } catch (e) {
+      dispatch(updatingBookVotesFailed(bookId));
     }
   };

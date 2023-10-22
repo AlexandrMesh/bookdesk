@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { bool, func, string, shape, arrayOf } from 'prop-types';
 import { View, Text, Pressable, SectionList, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -26,10 +26,11 @@ const FilteringModal = ({
   clearSearchQueryForCategory,
 }) => {
   const { t } = useTranslation(['common', 'categories']);
+  const [shouldAutoClose, setShouldAutoClose] = useState(false);
 
   const handleFilter = () => {
     applyFilters(boardType);
-    onClose();
+    setShouldAutoClose(true);
   };
 
   const handleClearFilters = () => {
@@ -109,9 +110,16 @@ const FilteringModal = ({
     return null;
   };
 
+  useEffect(() => {
+    if (shouldAutoClose) {
+      setShouldAutoClose(false);
+    }
+  }, [shouldAutoClose]);
+
   return (
     <SlideMenu
       isVisible={isVisible}
+      shouldAutoClose={shouldAutoClose}
       title={t('categoriesTitle')}
       onClose={onClose}
       menuHeight={500}

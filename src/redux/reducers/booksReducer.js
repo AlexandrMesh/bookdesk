@@ -42,6 +42,12 @@ import {
   RESET_CATEGORIES,
   SEARCH_CATEGORY,
   CLEAR_SEARCH_QUERY_FOR_CATEGORY,
+  SET_BOOK_VOTES,
+  START_UPDATING_BOOK_VOTES,
+  UPDATING_BOOK_VOTES_FAILED,
+  UPDATED_BOOK_VOTES,
+  UPDATE_BOOK_VOTES,
+  UPDATE_BOOK_VOTES_IN_SEARCH,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -94,6 +100,8 @@ const initialState = {
   boardType: ALL,
   selectedBook: null,
   activeModal: null,
+  bookVotes: [],
+  updatingVotesForBooks: [],
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),
     planned: getDefaultBoardState({ sortType: 'added', sortDirection: -1 }),
@@ -153,6 +161,50 @@ export default createReducer(initialState, (state, action) => ({
       data: updateIn(state.search.data, (book) => book.bookId === action.bookId, {
         bookStatus: action.bookStatus,
         added: action.added,
+      }),
+    },
+  }),
+
+  [SET_BOOK_VOTES]: () => ({
+    ...state,
+    bookVotes: action.data,
+  }),
+
+  [START_UPDATING_BOOK_VOTES]: () => ({
+    ...state,
+    updatingVotesForBooks: [...state.updatingVotesForBooks, action.bookId],
+  }),
+
+  [UPDATING_BOOK_VOTES_FAILED]: () => ({
+    ...state,
+    updatingVotesForBooks: state.updatingVotesForBooks.filter((item) => item !== action.bookId),
+  }),
+
+  [UPDATED_BOOK_VOTES]: () => ({
+    ...state,
+    updatingVotesForBooks: state.updatingVotesForBooks.filter((item) => item !== action.bookId),
+    bookVotes: action.userVotes,
+  }),
+
+  [UPDATE_BOOK_VOTES]: () => ({
+    ...state,
+    board: {
+      ...state.board,
+      [action.bookStatus]: {
+        ...state.board[action.bookStatus],
+        data: updateIn(state.board[action.bookStatus].data, (book) => book.bookId === action.bookId, {
+          votesCount: action.votesCount,
+        }),
+      },
+    },
+  }),
+
+  [UPDATE_BOOK_VOTES_IN_SEARCH]: () => ({
+    ...state,
+    search: {
+      ...state.search,
+      data: updateIn(state.search.data, (book) => book.bookId === action.bookId, {
+        votesCount: action.votesCount,
       }),
     },
   }),

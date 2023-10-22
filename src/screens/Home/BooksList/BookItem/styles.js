@@ -30,13 +30,22 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   ratingWrapper: {
+    height: 30,
+    marginLeft: 10,
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 2,
+  },
+  spinnerWrapper: {
+    width: 70,
+    display: 'flex',
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 16,
@@ -56,6 +65,9 @@ export default StyleSheet.create({
   },
   mediumColor: {
     color: colors.neutral_medium,
+  },
+  votesCount: {
+    marginLeft: 3,
   },
   buttonTitle: {
     fontSize: 15,
