@@ -20,7 +20,9 @@ const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, l
   return (
     <View style={styles.container}>
       {loadingDataStatus === PENDING || loadingDataStatus === IDLE ? (
-        <Spinner />
+        <View style={styles.spinnerWrapper}>
+          <Spinner />
+        </View>
       ) : (
         <>
           <Text style={styles.label}>

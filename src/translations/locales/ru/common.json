@@ -14,5 +14,7 @@
   "categoriesTitle": "Категории",
   "categoriesCount": "Категории ({{count}})",
   "searchCategory": "Введите название категории",
-  "noCategories": "Категорий не найдено"
+  "noCategories": "Категорий не найдено",
+  "update": "Обновить",
+  "alert": "!"
 }

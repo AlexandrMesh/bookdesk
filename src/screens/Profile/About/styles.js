@@ -9,6 +9,13 @@ export default StyleSheet.create({
     padding: 15,
     backgroundColor: colors.primary_dark,
   },
+  spinnerWrapper: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   label: {
     fontSize: 17,
     color: colors.neutral_medium,

@@ -16,6 +16,7 @@ import {
   CLEAR_PROFILE,
   CLEAR_SIGN_IN_ERRORS,
   CLEAR_SIGN_UP_ERRORS,
+  SET_UPDATE_APP_INFO,
 } from '~redux/actions/authActions';
 
 const getDefaultErrorsState = () => ({
@@ -36,8 +37,14 @@ const getDefaultSignInState = () => ({
   errors: getDefaultErrorsState(),
 });
 
+const getDefaultUpdateAppInfo = () => ({
+  version: '',
+  googlePlayUrl: '',
+});
+
 const initialState = {
   profile: {},
+  updateAppInfo: getDefaultUpdateAppInfo(),
   signUp: getDefaultSignUpState(),
   signIn: getDefaultSignInState(),
   checkingStatus: IDLE,
@@ -74,6 +81,13 @@ export default createReducer(initialState, (state, action) => ({
         ...state.signIn.errors,
         [action.fieldName]: action.error,
       },
+    },
+  }),
+  [SET_UPDATE_APP_INFO]: () => ({
+    ...state,
+    updateAppInfo: {
+      version: action.version,
+      googlePlayUrl: action.googlePlayUrl,
     },
   }),
   [CLEAR_SIGN_IN_ERRORS]: () => ({
@@ -142,5 +156,6 @@ export default createReducer(initialState, (state, action) => ({
     profile: {},
     signUp: getDefaultSignUpState(),
     signIn: getDefaultSignInState(),
+    updateAppInfo: getDefaultUpdateAppInfo(),
   }),
 }));

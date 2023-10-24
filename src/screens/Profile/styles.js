@@ -31,7 +31,13 @@ export default StyleSheet.create({
   buttons: {
     width: '50%',
   },
-  marginTop: {
-    marginTop: 15,
+  marginBottom: {
+    marginBottom: 15,
+  },
+  updateLabel: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: colors.success,
+    marginBottom: 10,
   },
 });

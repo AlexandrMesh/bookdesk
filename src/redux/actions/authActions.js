@@ -25,6 +25,8 @@ export const CLEAR_PROFILE = `${PREFIX}/CLEAR_PROFILE`;
 export const CLEAR_SIGN_IN_ERRORS = `${PREFIX}/CLEAR_SIGN_IN_ERRORS`;
 export const CLEAR_SIGN_UP_ERRORS = `${PREFIX}/CLEAR_SIGN_UP_ERRORS`;
 
+export const SET_UPDATE_APP_INFO = `${PREFIX}/SET_UPDATE_APP_INFO`;
+
 export const clearProfile = {
   type: CLEAR_PROFILE,
 };
@@ -73,6 +75,12 @@ export const signedUp = {
   type: SIGNED_UP,
 };
 
+export const setUpdateAppInfo = (version, googlePlayUrl) => ({
+  type: SET_UPDATE_APP_INFO,
+  version,
+  googlePlayUrl,
+});
+
 export const setSignInError = (fieldName, error) => ({
   type: SET_SIGN_IN_ERROR,
   fieldName,
@@ -105,10 +113,12 @@ export const checkAuth = (token) => async (dispatch) => {
       const { data } = await AuthService().checkAuth(token);
       if (data.profile) {
         const { _id, email, registered, updated } = data.profile;
+        const { version, googlePlayUrl } = data;
         dispatch(setProfile({ _id, email, registered, updated }));
         dispatch(setBookVotes(data.userVotes));
         dispatch(signedIn);
         dispatch(authChecked);
+        dispatch(setUpdateAppInfo(version, googlePlayUrl));
         return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));
       }
     } catch (error) {
@@ -145,6 +155,7 @@ export const signIn =
           dispatch(signedIn);
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
+          dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
           dispatch(setIsGoogleAccount(true));
           try {
             await AsyncStorage.setItem('token', data.token);
@@ -162,6 +173,7 @@ export const signIn =
           dispatch(signedIn);
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
+          dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {
@@ -185,6 +197,7 @@ export const signUp =
         dispatch(signedUp);
         dispatch(signedIn);
         dispatch(setProfile(data.profile));
+        dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
         try {
           await AsyncStorage.setItem('token', data.token);
         } catch (error) {

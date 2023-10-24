@@ -65,11 +65,11 @@ const ProfileNavigator = () => (
   </Stack.Navigator>
 );
 
-const MainNavigator = () => (
+const MainNavigator = ({ isTheLatestAppVersion }) => (
   <Tab.Navigator
     initialRouteName={HOME_NAVIGATOR_ROUTE}
     screenOptions={({ route }) => ({
-      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0 },
+      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_light },
       tabBarShowLabel: false,
       headerShown: false,
       tabBarIcon: ({ focused }) => {
@@ -85,11 +85,18 @@ const MainNavigator = () => (
   >
     <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
     <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
-    <Tab.Screen name={PROFILE_NAVIGATOR_ROUTE} component={ProfileNavigator} />
+    <Tab.Screen
+      name={PROFILE_NAVIGATOR_ROUTE}
+      component={ProfileNavigator}
+      options={{
+        tabBarBadge: !isTheLatestAppVersion ? getT('common')('alert') : null,
+        tabBarBadgeStyle: { backgroundColor: colors.success, color: colors.primary_dark },
+      }}
+    />
   </Tab.Navigator>
 );
 
-const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
+const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion }) => {
   const checkAuthentication = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -111,7 +118,7 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
     <SafeAreaProvider>
       <NavigationContainer>
         {isSignedIn ? (
-          <MainNavigator />
+          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} />
         ) : (
           <Stack.Navigator screenOptions={{ animationEnabled: false }}>
             <Stack.Screen name={SIGN_IN_ROUTE} component={SignIn} options={{ headerShown: false }} />
@@ -124,10 +131,15 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn }) => {
   );
 };
 
+MainNavigator.propTypes = {
+  isTheLatestAppVersion: bool,
+};
+
 Main.propTypes = {
   checkAuth: func.isRequired,
   isSignedIn: bool.isRequired,
   checkingStatus: string,
+  isTheLatestAppVersion: bool,
 };
 
 export default Main;

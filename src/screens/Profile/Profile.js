@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { string, func, number } from 'prop-types';
+import { View, Text, Linking } from 'react-native';
+import { string, func, number, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { ABOUT_ROUTE } from '~constants/routes';
@@ -8,8 +8,8 @@ import { SECONDARY } from '~constants/themes';
 import Button from '~UI/Button';
 import styles from './styles';
 
-const Profile = ({ email, registered, signOut }) => {
-  const { t } = useTranslation('profile');
+const Profile = ({ email, registered, signOut, googlePlayUrl, isTheLatestAppVersion }) => {
+  const { t } = useTranslation(['profile', 'common']);
   const navigation = useNavigation();
 
   return (
@@ -24,8 +24,14 @@ const Profile = ({ email, registered, signOut }) => {
       </View>
       <View style={styles.buttonsWrapper}>
         <View style={styles.buttons}>
-          <Button theme={SECONDARY} onPress={() => navigation.navigate(ABOUT_ROUTE)} title={t('aboutApp')} />
-          <Button theme={SECONDARY} style={styles.marginTop} onPress={signOut} title={t('signOut')} />
+          {!isTheLatestAppVersion && (
+            <View style={styles.marginBottom}>
+              <Text style={[styles.updateLabel]}>{t('newVersionAvailable')}</Text>
+              <Button onPress={() => Linking.openURL(googlePlayUrl)} title={t('common:update')} />
+            </View>
+          )}
+          <Button theme={SECONDARY} style={styles.marginBottom} onPress={() => navigation.navigate(ABOUT_ROUTE)} title={t('aboutApp')} />
+          <Button theme={SECONDARY} onPress={signOut} title={t('signOut')} />
         </View>
       </View>
     </View>
@@ -34,8 +40,10 @@ const Profile = ({ email, registered, signOut }) => {
 
 Profile.propTypes = {
   email: string,
+  googlePlayUrl: string,
   signOut: func.isRequired,
   registered: number,
+  isTheLatestAppVersion: bool,
 };
 
 export default Profile;
