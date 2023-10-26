@@ -9,6 +9,7 @@ import GoogleIcon from '~assets/google.svg';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { SIGN_UP_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
+import { GOOGLE_ICON } from '~constants/dimensions';
 import Logo from '~screens/Auth/Logo';
 import Input from '~UI/TextInput';
 import { Spinner, Size } from '~UI/Spinner';
@@ -106,7 +107,7 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
             <Button
               theme={SECONDARY}
               onPress={handleGoogleSignIn}
-              icon={<GoogleIcon width='26' height='26' />}
+              icon={<GoogleIcon width={GOOGLE_ICON.width} height={GOOGLE_ICON.height} />}
               title={t('googleSignIn')}
               disabled={pendingSignIn}
             />

@@ -7,6 +7,7 @@ const DataService = () => ({
   updateUserBook: (params) => http.post(`${config.API_URL}/updateUserBook`, params),
   updateBookVotes: (params) => http.post(`${config.API_URL}/updateBookVotes`, params),
   getCategories: (params) => http.get(`${config.API_URL}/categories`, params),
+  getBookDetails: (params) => http.get(`${config.API_URL}/book`, { params }),
 });
 
 export default DataService;

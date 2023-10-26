@@ -6,10 +6,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
+import { BOTTOM_BAR_ICON } from '~constants/dimensions';
 import { getT } from '~translations/i18n';
 import {
   SEARCH_ROUTE,
   HOME_ROUTE,
+  BOOK_DETAILS_ROUTE,
   PROFILE_ROUTE,
   ABOUT_ROUTE,
   HOME_NAVIGATOR_ROUTE,
@@ -24,6 +26,7 @@ import ProfileIcon from '~assets/profile.svg';
 import colors from '~styles/colors';
 import Splash from '~screens/Splash';
 import Home from '~screens/Home';
+import BookDetails from '~screens/Home/BookDetails';
 import SignIn from '~screens/Auth/SignIn';
 import SignUp from '~screens/Auth/SignUp';
 import Search from '~screens/Search';
@@ -43,6 +46,21 @@ const SearchNavigator = () => (
 const HomeNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
+    <Stack.Screen
+      name={BOOK_DETAILS_ROUTE}
+      component={BookDetails}
+      options={{
+        title: getT('books')('bookDetails'),
+        presentation: 'modal',
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
+      }}
+    />
   </Stack.Navigator>
 );
 
@@ -57,10 +75,12 @@ const ProfileNavigator = () => (
         animationEnabled: false,
         headerStyle: {
           backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
         },
         headerTintColor: colors.neutral_light,
       }}
-      screenOptions={{ presentation: 'modal' }}
     />
   </Stack.Navigator>
 );
@@ -69,14 +89,24 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
   <Tab.Navigator
     initialRouteName={HOME_NAVIGATOR_ROUTE}
     screenOptions={({ route }) => ({
-      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_light },
+      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_medium },
       tabBarShowLabel: false,
       headerShown: false,
       tabBarIcon: ({ focused }) => {
         const icon = {
-          HomeNavigator: <HomeIcon width='22' height='22' fill={focused ? colors.neutral_light : colors.neutral_medium} />,
-          SearchNavigator: <SearchIcon width='22' height='22' fill={focused ? colors.neutral_light : colors.neutral_medium} />,
-          ProfileNavigator: <ProfileIcon width='22' height='22' fill={focused ? colors.neutral_light : colors.neutral_medium} />,
+          HomeNavigator: (
+            <HomeIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
+          ),
+          SearchNavigator: (
+            <SearchIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
+          ),
+          ProfileNavigator: (
+            <ProfileIcon
+              width={BOTTOM_BAR_ICON.width}
+              height={BOTTOM_BAR_ICON.height}
+              fill={focused ? colors.neutral_light : colors.neutral_medium}
+            />
+          ),
         };
 
         return icon[route.name];

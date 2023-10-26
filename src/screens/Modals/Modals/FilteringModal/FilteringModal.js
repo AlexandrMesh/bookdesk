@@ -6,6 +6,7 @@ import CheckBox from '~UI/CheckBox';
 import SlideMenu from '~UI/SlideMenu';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
+import { FILTER_ICON } from '~constants/dimensions';
 import ArrowDown from '~assets/arrow-down.svg';
 import styles from './styles';
 
@@ -68,7 +69,9 @@ const FilteringModal = ({
             onPress={() => toggleExpandedCategory(path, boardType)}
             style={[styles.arrowIconWrapper, iconWrapperStyle()]}
           >
-            {shouldDisplayArrowIcon ? <ArrowDown style={isExpanded ? null : styles.collapsed} width='16' height='16' /> : null}
+            {shouldDisplayArrowIcon ? (
+              <ArrowDown style={isExpanded ? null : styles.collapsed} width={FILTER_ICON.width} height={FILTER_ICON.height} />
+            ) : null}
           </Pressable>
         )}
         <Pressable style={styles.labelWrapper} onPress={() => manageFilters(path, boardType, categoryPaths)}>

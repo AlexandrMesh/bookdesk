@@ -7,9 +7,12 @@
   "emptyBoard": "Доска пуста",
   "addBook": "Добавить книгу",
   "count": "Кол-во: {{count}}",
+  "countWithThousands": "Кол-во: {{count}} тыс.",
   "pages": "Страниц: ",
   "category": "Категория: ",
   "added": "Добавлено: ",
+  "annotation": "Описание: ",
   "recommended": "Рекомендуем",
-  "bookStatusUpdated": "Статус обновлён!"
+  "bookStatusUpdated": "Статус обновлён!",
+  "bookDetails": "Информация о книге"
 }

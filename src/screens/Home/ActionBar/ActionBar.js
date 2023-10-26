@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import colors from '~styles/colors';
 import Button from '~UI/Button';
 import { SECONDARY } from '~constants/themes';
+import { FILTER_ICON } from '~constants/dimensions';
 import FilterIcon from '~assets/filter.svg';
 import TotalCount from './TotalCount';
 import styles from './styles';
@@ -24,7 +25,7 @@ const ActionBar = ({ filterParams, totalItems, showFilters, activeFiltersCount }
             style={[styles.button, isActiveFilter && { borderColor: colors.success }]}
             titleStyle={[styles.titleStyle, isActiveFilter > 0 && { color: colors.success }]}
             iconClassName={styles.icon}
-            icon={<FilterIcon width='16' height='16' fill={isActiveFilter ? colors.success : colors.neutral_light} />}
+            icon={<FilterIcon width={FILTER_ICON.width} height={FILTER_ICON.height} fill={isActiveFilter ? colors.success : colors.neutral_light} />}
             onPress={showFilters}
             title={isActiveFilter ? t('categoriesCount', { count: activeFiltersCount }) : t('categoriesTitle')}
           />

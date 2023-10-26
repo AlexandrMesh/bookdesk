@@ -652,7 +652,7 @@ userVotes
 Поставить защиту на Express node.js API
 Бывает запускается только со второго раза приложение (попробовал убрать proguard)
 + Удалить unused assets
-Все размеры иконок вынести в константы
++ Все размеры иконок вынести в константы
 + После фильтрации flyout закрывается сразу без плавности
 
 22.10.2023
@@ -672,5 +672,23 @@ userVotes
 + Сервер mongodb падает serverStatus was very slow: { after basic: 80, after asserts: 226, after connections: 272, after electionMetrics: 356, after extra_info: 397, after flowControl: 397, after globalLock: 466, after locks: 482, after logicalSessionRecordCache: 680, after network: 817, after opLatencies: 892, after opReadConcernCounters: 962, after opcounters: 1027, after opcountersRepl: 1027, after oplogTruncation: 1316, after repl: 1316, after security: 1372, after storageEngine: 1482, after tcmalloc: 1636, after trafficRecording: 1636, after transactions: 1688, after transportSecurity: 1688, after twoPhaseCommitCoordinator: 1774, after wiredTiger: 4149, at end: 9712 }
 + Поставить mongoDB на рестарт после того как падает
 + restrat mongodb https://whyboobo.com/devops/autorestart-mongodb-systemctl-service/
+https://thecodebarbarian.com/managing-connections-with-the-mongodb-node-driver.html
 Настроить автобэкап базы
-Количество делать в виде 155 тыс.
++ Количество делать в виде 155 тыс.
+Настроить jenkins для бэкенда
+
+для запуска прода NODE_ENV=production pm2 start /home/admin/web/omegaprokat.ru/public_html/bookdesk-api/bin/www
+инструкции от PM2 https://pm2.io/docs/runtime/best-practices/environment-variables/
+для рестарта с другим окружением NODE_ENV=production pm2 restart 0 --update-env
+
++ Отображать в О приложении текущую версию
+и последнюю версию
+
+25.10.2023
+Добавить экран Что нового? с описанием улучшений каждой версии (flashlist)
++ Сделать обложку для книг без обложки
+
+26.10.2023
+По клику на кнопку назад закрывать slide menu
+Сделать высоту slide menu нормальной для горизонтальной ориентации
+Название книги в header slide menu с изменением статуса

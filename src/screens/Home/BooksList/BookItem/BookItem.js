@@ -1,12 +1,15 @@
 import React from 'react';
-import { shape, func, string, number, bool } from 'prop-types';
+import { shape, func, string, number, bool, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Image, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { IMG_URL } from '~config/api';
 import { SECONDARY } from '~constants/themes';
+import { BOOK_DETAILS_ROUTE } from '~constants/routes';
+import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
@@ -23,6 +26,7 @@ const getStatusColor = (bookStatus) =>
 
 const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVotes, updatingVoteForBook }) => {
   const { t } = useTranslation(['books', 'categories']);
+  const navigation = useNavigation();
 
   const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
 
@@ -33,25 +37,30 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
     selectBook(bookItem);
   };
 
+  const navigateToBookDetails = () => navigation.navigate(BOOK_DETAILS_ROUTE, { bookId });
+
   return (
     <View style={styles.bookItem}>
       <View style={styles.leftSide}>
-        <Image
-          style={styles.cover}
-          source={{
-            uri: IMG_URL(`${coverPath}.webp`),
-          }}
-        />
+        <Pressable onPress={navigateToBookDetails}>
+          <Image
+            style={styles.cover}
+            source={{
+              uri: IMG_URL(`${coverPath}.webp`),
+            }}
+          />
+        </Pressable>
       </View>
       <View style={styles.rightSide}>
-        <View style={styles.titleWrapper}>
+        <Pressable onPress={navigateToBookDetails} style={styles.titleWrapper}>
           <Text style={[styles.title, styles.lightColor]}>{title}</Text>
-        </View>
-        {authorsList.map((author) => (
-          <View key={author}>
-            <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
-          </View>
-        ))}
+        </Pressable>
+        {authorsList.length > 0 &&
+          authorsList.map((author) => (
+            <View key={author}>
+              <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
+            </View>
+          ))}
         <View style={styles.info}>
           <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
           {pages && (
@@ -73,7 +82,7 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
             title={t(bookStatus) || t('noStatus')}
             style={[styles.statusButton, { borderColor: statusColor }]}
             titleStyle={[styles.buttonTitle, { color: statusColor }]}
-            icon={<DropdownIcon width='16' height='16' style={{ fill: statusColor }} />}
+            icon={<DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />}
             iconPosition='right'
             iconClassName={styles.buttonIcon}
             theme={SECONDARY}
@@ -85,7 +94,11 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
             </View>
           ) : (
             <Pressable onPress={() => updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.ratingWrapper}>
-              {bookWithVote ? <LikeFillIcon width='26' height='26' /> : <LikeIcon width='26' height='26' />}
+              {bookWithVote ? (
+                <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
+              ) : (
+                <LikeIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
+              )}
               <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
             </Pressable>
           )}
@@ -100,6 +113,7 @@ BookItem.propTypes = {
     _id: string,
     bookId: string,
     title: string,
+    authorsList: arrayOf(string),
     bookStatus: string,
     categoryPath: string,
     coverPath: string,

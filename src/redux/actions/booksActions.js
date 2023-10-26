@@ -1,5 +1,6 @@
 import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
+import isEmpty from 'lodash/isEmpty';
 import { PAGE_SIZE } from '~constants/bookList';
 import DataService from '~http/services/books';
 import {
@@ -18,6 +19,7 @@ import {
   getCategoriesData,
   getSearchSortParams,
   getSearchQuery,
+  getBookDetailsData,
 } from '~redux/selectors/books';
 import { ALL } from '~constants/boardType';
 
@@ -58,6 +60,7 @@ export const SET_SORT_TYPE = `${PREFIX}/SET_SORT_TYPE`;
 export const SET_SORT_DIRECTION = `${PREFIX}/SET_SORT_DIRECTION`;
 
 export const UPDATE_BOOK = `${PREFIX}/UPDATE_BOOK`;
+export const UPDATE_BOOK_DETAILS = `${PREFIX}/UPDATE_BOOK_DETAILS`;
 export const ADD_BOOK = `${PREFIX}/ADD_BOOK`;
 
 export const UPDATE_BOOK_IN_SEARCH_RESULTS = `${PREFIX}/UPDATE_BOOK_IN_SEARCH_RESULTS`;
@@ -81,6 +84,12 @@ export const UPDATING_BOOK_VOTES_FAILED = `${PREFIX}/UPDATING_BOOK_VOTES_FAILED`
 export const UPDATED_BOOK_VOTES = `${PREFIX}/UPDATED_BOOK_VOTES`;
 export const UPDATE_BOOK_VOTES = `${PREFIX}/UPDATE_BOOK_VOTES`;
 export const UPDATE_BOOK_VOTES_IN_SEARCH = `${PREFIX}/UPDATE_BOOK_VOTES_IN_SEARCH`;
+export const UPDATE_BOOK_VOTES_IN_BOOK_DETAILS = `${PREFIX}/UPDATE_BOOK_VOTES_IN_BOOK_DETAILS`;
+
+export const START_LOADING_BOOK_DETAILS = `${PREFIX}/START_LOADING_BOOK_DETAILS`;
+export const BOOK_DETAILS_LOADED = `${PREFIX}/BOOK_DETAILS_LOADED`;
+export const LOADING_BOOK_DETAILS_FAILED = `${PREFIX}/LOADING_BOOK_DETAILS_FAILED`;
+export const CLEAR_BOOK_DETAILS = `${PREFIX}/CLEAR_BOOK_DETAILS`;
 
 export const setBoardType = (boardType) => ({
   type: SET_BOARD_TYPE,
@@ -140,6 +149,23 @@ export const categoriesLoaded = (data) => ({
   data,
 });
 
+export const startLoadingBookDetails = {
+  type: START_LOADING_BOOK_DETAILS,
+};
+
+export const loadingBookDetailsFailed = {
+  type: LOADING_BOOK_DETAILS_FAILED,
+};
+
+export const bookDetailsLoaded = (data) => ({
+  type: BOOK_DETAILS_LOADED,
+  data,
+});
+
+export const clearBookDetails = {
+  type: CLEAR_BOOK_DETAILS,
+};
+
 export const toggleExpandedCategory = (path, boardType) => ({
   type: TOGGLE_EXPANDED_CATEGORY,
   path,
@@ -189,6 +215,11 @@ export const updateBookVotesAction = (bookStatus, bookId, votesCount) => ({
 export const updateBookVotesInSearch = (bookId, votesCount) => ({
   type: UPDATE_BOOK_VOTES_IN_SEARCH,
   bookId,
+  votesCount,
+});
+
+export const updateBookVotesInBookDetails = (votesCount) => ({
+  type: UPDATE_BOOK_VOTES_IN_BOOK_DETAILS,
   votesCount,
 });
 
@@ -265,6 +296,12 @@ export const updateBook = (bookId, boardType, bookStatus, added) => ({
   type: UPDATE_BOOK,
   bookId,
   boardType,
+  bookStatus,
+  added,
+});
+
+export const updateBookDetails = (bookStatus, added) => ({
+  type: UPDATE_BOOK_DETAILS,
   bookStatus,
   added,
 });
@@ -406,7 +443,6 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
       dispatch(incrementSearchResultPageIndex);
     }
   } catch (error) {
-    console.log(error, 'error');
     dispatch(loadingSearchResultsFailed);
   }
 };
@@ -476,6 +512,16 @@ export const loadCategories = () => async (dispatch, getState) => {
   }
 };
 
+export const loadBookDetails = (bookId) => async (dispatch) => {
+  try {
+    dispatch(startLoadingBookDetails);
+    const { data } = (await DataService().getBookDetails(bookId)) || {};
+    dispatch(bookDetailsLoaded(data));
+  } catch (e) {
+    dispatch(loadingBookDetailsFailed);
+  }
+};
+
 export const loadMoreSearchResults = () => async (dispatch, getState) => {
   const state = getState();
   const hasNextPage = getSearchResultsHasNextPage(state);
@@ -502,14 +548,17 @@ export const reloadBookList = (boardType) => async (dispatch, getState) => {
 };
 
 export const updateUserBook =
-  ({ book, newBookStatus, boardType, isCalledFromDetails }) =>
-  async (dispatch) => {
+  ({ book, newBookStatus, boardType }) =>
+  async (dispatch, getState) => {
     dispatch(startUpdatingUsersBook);
     const { bookId, bookStatus } = book;
+    const state = getState();
+    const bookDetailsData = getBookDetailsData(state);
     try {
       const { data } = await DataService().updateUserBook({ bookId, bookStatus: newBookStatus });
-      if (isCalledFromDetails) {
-        // dispatch(updateBookDetails('bookStatus', data.bookStatus));
+
+      if (!isEmpty(bookDetailsData)) {
+        dispatch(updateBookDetails(data.bookStatus, data.added));
       }
       if (boardType !== ALL) {
         dispatch(removeBook(bookId, boardType));
@@ -534,14 +583,19 @@ export const updateUserBook =
 
 export const updateBookVotes =
   ({ bookId, shouldAdd, bookStatus }) =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     dispatch(startUpdatingBookVotes(bookId));
     try {
+      const state = getState();
+      const bookDetailsData = getBookDetailsData(state);
       const { data } = await DataService().updateBookVotes({ bookId, shouldAdd });
 
       dispatch(updatedBookVotes(data.userVotes, bookId));
       dispatch(updateBookVotesAction(ALL, bookId, data.votesCount));
       dispatch(updateBookVotesInSearch(bookId, data.votesCount));
+      if (!isEmpty(bookDetailsData)) {
+        dispatch(updateBookVotesInBookDetails(data.votesCount));
+      }
       if (bookStatus) {
         dispatch(updateBookVotesAction(bookStatus, bookId, data.votesCount));
       }

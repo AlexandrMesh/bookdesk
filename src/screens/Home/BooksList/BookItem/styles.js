@@ -17,7 +17,6 @@ export default StyleSheet.create({
   },
   leftSide: {
     width: 126,
-    backgroundColor: colors.primary_light,
   },
   rightSide: {
     display: 'flex',
@@ -48,7 +47,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
+    fontSize: 17,
   },
   cover: {
     width: 126,
@@ -58,7 +57,7 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   item: {
-    fontSize: 14,
+    fontSize: 15,
   },
   lightColor: {
     color: colors.neutral_light,

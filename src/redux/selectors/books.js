@@ -5,6 +5,7 @@ const getBooks = (state) => state.books;
 const getSearch = (state) => getBooks(state).search;
 const getCategories = (state) => getBooks(state).categories;
 const getBoard = (state) => getBooks(state).board;
+const getBookDetails = (state) => getBooks(state).bookDetails;
 
 export const getBoardType = (state) => getBooks(state).boardType;
 export const getBookVotes = (state) => getBooks(state).bookVotes;
@@ -24,6 +25,9 @@ export const getSearchSortType = (state) => getSearchSortParams(state).type;
 export const getSearchSortDirection = (state) => getSearchSortParams(state).direction;
 export const getUpdatingBookStatus = (state) => getBooks(state).updatingBookStatus;
 export const getCategoriesData = (state) => getCategories(state).data;
+
+export const getLoadingBookDetailsStatus = (state) => getBookDetails(state).loadingDataStatus;
+export const getBookDetailsData = (state) => getBookDetails(state).data;
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);
@@ -72,6 +76,11 @@ export const deriveBookListData = (status) =>
 export const deriveSearchBookListData = createSelector([getSearchResults, getCategoriesData], (searchResults, categories) =>
   searchResults.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath).value })),
 );
+
+export const deriveBookDetails = createSelector([getBookDetailsData, getCategoriesData], (bookDetails, categories) => ({
+  ...bookDetails,
+  categoryValue: categories.find((category) => category.path === bookDetails.categoryPath)?.value,
+}));
 
 export const deriveLoadingBookListStatus = (status) => createSelector([getBoard], (board) => board[status].loadingDataStatus);
 

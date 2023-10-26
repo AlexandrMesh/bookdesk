@@ -11,3 +11,4 @@ export const ALL_BOOKS_ROUTE = 'AllBooks';
 export const PLANNED_BOOKS_ROUTE = 'PlannedBooks';
 export const IN_PROGRESS_BOOKS_ROUTE = 'InProgressBooks';
 export const COMPLETED_BOOKS_ROUTE = 'CompletedBooks';
+export const BOOK_DETAILS_ROUTE = 'BookDetails';

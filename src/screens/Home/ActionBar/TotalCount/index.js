@@ -2,6 +2,7 @@ import React from 'react';
 import { number } from 'prop-types';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import numberFormat from '~utils/numberFormat';
 import styles from './styles';
 
 const TotalCount = ({ count }) => {
@@ -9,7 +10,7 @@ const TotalCount = ({ count }) => {
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{t('count', { count })}</Text>
+      <Text style={styles.label}>{count < 1000 ? t('count', { count }) : t('countWithThousands', { count: numberFormat(count) })}</Text>
     </View>
   );
 };

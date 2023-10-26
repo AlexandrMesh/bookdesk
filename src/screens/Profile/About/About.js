@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { string, func } from 'prop-types';
 import { ScrollView, View, Text, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import DeviceInfo from 'react-native-device-info';
 import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { Spinner } from '~UI/Spinner';
@@ -9,7 +10,7 @@ import { SECONDARY } from '~constants/themes';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
-const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, loadingDataStatus }) => {
+const About = ({ loadAppInfo, clearAppInfo, name, description, email, loadingDataStatus }) => {
   const { t } = useTranslation('app');
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, l
             {t('name')} <Text style={styles.value}>{name}</Text>
           </Text>
           <Text style={styles.label}>
-            {t('version')} <Text style={styles.value}>{version}</Text>
+            {t('version')} <Text style={styles.value}>{DeviceInfo.getVersion()}</Text>
           </Text>
           <Text style={styles.label}>
             {t('feedback')}{' '}
@@ -53,7 +54,6 @@ const About = ({ loadAppInfo, clearAppInfo, name, version, description, email, l
 
 About.propTypes = {
   name: string,
-  version: string,
   description: string,
   email: string,
   loadAppInfo: func.isRequired,

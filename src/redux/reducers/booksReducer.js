@@ -48,6 +48,12 @@ import {
   UPDATED_BOOK_VOTES,
   UPDATE_BOOK_VOTES,
   UPDATE_BOOK_VOTES_IN_SEARCH,
+  START_LOADING_BOOK_DETAILS,
+  LOADING_BOOK_DETAILS_FAILED,
+  BOOK_DETAILS_LOADED,
+  UPDATE_BOOK_VOTES_IN_BOOK_DETAILS,
+  UPDATE_BOOK_DETAILS,
+  CLEAR_BOOK_DETAILS,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -81,6 +87,11 @@ const getDefaultFilterParamsState = () => ({
   indeterminated: [],
 });
 
+const getDefaultBookDetailsState = () => ({
+  data: {},
+  loadingDataStatus: IDLE,
+});
+
 const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
   data: [],
   loadingDataStatus: IDLE,
@@ -102,6 +113,7 @@ const initialState = {
   activeModal: null,
   bookVotes: [],
   updatingVotesForBooks: [],
+  bookDetails: getDefaultBookDetailsState(),
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),
     planned: getDefaultBoardState({ sortType: 'added', sortDirection: -1 }),
@@ -151,6 +163,23 @@ export default createReducer(initialState, (state, action) => ({
         }),
       },
     },
+  }),
+
+  [UPDATE_BOOK_DETAILS]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
+      data: {
+        ...state.bookDetails.data,
+        bookStatus: action.bookStatus,
+        added: action.added,
+      },
+    },
+  }),
+
+  [CLEAR_BOOK_DETAILS]: () => ({
+    ...state,
+    bookDetails: getDefaultBookDetailsState(),
   }),
 
   [UPDATE_BOOK_IN_SEARCH_RESULTS]: () => ({
@@ -206,6 +235,14 @@ export default createReducer(initialState, (state, action) => ({
       data: updateIn(state.search.data, (book) => book.bookId === action.bookId, {
         votesCount: action.votesCount,
       }),
+    },
+  }),
+
+  [UPDATE_BOOK_VOTES_IN_BOOK_DETAILS]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
+      data: { ...state.bookDetails.data, votesCount: action.votesCount },
     },
   }),
 
@@ -321,6 +358,31 @@ export default createReducer(initialState, (state, action) => ({
     ...state,
     categories: {
       ...state.categories,
+      loadingDataStatus: FAILED,
+    },
+  }),
+
+  [START_LOADING_BOOK_DETAILS]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
+      loadingDataStatus: PENDING,
+    },
+  }),
+
+  [BOOK_DETAILS_LOADED]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
+      data: action.data,
+      loadingDataStatus: SUCCEEDED,
+    },
+  }),
+
+  [LOADING_BOOK_DETAILS_FAILED]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
       loadingDataStatus: FAILED,
     },
   }),

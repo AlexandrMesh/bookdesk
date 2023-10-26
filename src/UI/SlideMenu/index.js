@@ -3,6 +3,7 @@ import { bool, number, func, node, string } from 'prop-types';
 import { Animated, Text, View, Pressable } from 'react-native';
 import Button from '~UI/Button';
 import { SECONDARY } from '~constants/themes';
+import { CLOSE_ICON } from '~constants/dimensions';
 import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
@@ -92,7 +93,7 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
                 </View>
                 <Pressable onPress={hideModal}>
                   <View style={styles.closeIconWrapper}>
-                    <CloseIcon width='16' height='16' fill={colors.neutral_medium} />
+                    <CloseIcon width={CLOSE_ICON.width} height={CLOSE_ICON.height} fill={colors.neutral_medium} />
                   </View>
                 </Pressable>
               </View>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { string, func, bool, oneOf, any } from 'prop-types';
 import { View, TextInput, Text, Pressable } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
+import { CLOSE_ICON } from '~constants/dimensions';
 import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
@@ -58,7 +59,7 @@ const Input = ({
         />
         {shouldDisplayClearButton && (
           <Pressable onPress={onClear} style={styles.clearButtonWrapper}>
-            <CloseIcon width='16' height='16' fill={isFocused ? colors.neutral_light : colors.neutral_medium} />
+            <CloseIcon width={CLOSE_ICON.width} height={CLOSE_ICON.height} fill={isFocused ? colors.neutral_light : colors.neutral_medium} />
           </Pressable>
         )}
       </View>
