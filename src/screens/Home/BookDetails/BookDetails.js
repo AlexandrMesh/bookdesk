@@ -3,6 +3,7 @@ import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, SafeAreaView, Text, Image, Pressable } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { Spinner, Size } from '~UI/Spinner';
 import Button from '~UI/Button';
@@ -37,6 +38,7 @@ const BookDetails = ({
   clearBookDetails,
 }) => {
   const { t } = useTranslation(['books', 'categories']);
+  const isFocused = useIsFocused();
 
   const { params } = useRoute();
 
@@ -45,16 +47,18 @@ const BookDetails = ({
   const statusColor = getStatusColor(bookStatus);
 
   useEffect(() => {
-    loadBookDetails({ bookId: params.bookId });
+    loadBookDetails({ bookId: params?.bookId });
   }, [loadBookDetails, params]);
 
   useEffect(() => {
-    return () => clearBookDetails();
-  }, [clearBookDetails]);
+    if (!isFocused) {
+      clearBookDetails();
+    }
+  }, [isFocused, clearBookDetails]);
 
   const handleChangeStatus = () => {
     showModal(BOOK_STATUS);
-    selectBook({ authorsList, title, coverPath, pages, votesCount, categoryPath, bookId: params.bookId, categoryValue, added, bookStatus });
+    selectBook({ authorsList, title, coverPath, pages, votesCount, categoryPath, bookId: params?.bookId, categoryValue, added, bookStatus });
   };
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
@@ -78,56 +82,56 @@ const BookDetails = ({
                 <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
               </View>
             ))}
-          <View styles={styles.info}>
-            <Text style={[styles.item, styles.lightColor, styles.marginTop]}>{t(`categories:${categoryValue}`)}</Text>
-            {pages && (
-              <Text style={[styles.item, styles.mediumColor]}>
-                {t('pages')}
-                <Text style={styles.lightColor}>{pages}</Text>
-              </Text>
-            )}
-            {bookStatus && (
-              <Text style={[styles.item, styles.mediumColor]}>
-                {t('added')}
-                <Text style={styles.lightColor}>{new Date(added).toLocaleDateString('ru-RU')}</Text>
-              </Text>
-            )}
-            <View style={styles.footer}>
-              <Button
-                title={t(bookStatus) || t('noStatus')}
-                style={[styles.statusButton, { borderColor: statusColor }]}
-                titleStyle={[styles.buttonTitle, { color: statusColor }]}
-                icon={<DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />}
-                iconPosition='right'
-                iconClassName={styles.buttonIcon}
-                theme={SECONDARY}
-                onPress={handleChangeStatus}
-              />
-              {updatingVoteForBook ? (
-                <View style={styles.votesSpinnerWrapper}>
-                  <Spinner size={Size.SMALL} />
-                </View>
-              ) : (
-                <Pressable
-                  onPress={() => updateBookVotes({ bookId: params.bookId, shouldAdd: !bookWithVote, bookStatus })}
-                  style={styles.ratingWrapper}
-                >
-                  {bookWithVote ? (
-                    <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
-                  ) : (
-                    <LikeIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
-                  )}
-                  <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
-                </Pressable>
-              )}
-            </View>
-            {annotation && (
-              <Text style={[styles.item, styles.mediumColor, styles.marginTop]}>
-                {t('annotation')}
-                <Text style={[styles.annotation, styles.lightColor]}>{annotation}</Text>
-              </Text>
+        </View>
+        <View styles={styles.info}>
+          <Text style={[styles.item, styles.lightColor, styles.marginTop]}>{t(`categories:${categoryValue}`)}</Text>
+          {pages && (
+            <Text style={[styles.item, styles.mediumColor]}>
+              {t('pages')}
+              <Text style={styles.lightColor}>{pages}</Text>
+            </Text>
+          )}
+          {bookStatus && (
+            <Text style={[styles.item, styles.mediumColor]}>
+              {t('added')}
+              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString('ru-RU')}</Text>
+            </Text>
+          )}
+          <View style={styles.bookStatusWrapper}>
+            <Button
+              title={t(bookStatus) || t('noStatus')}
+              style={[styles.statusButton, { borderColor: statusColor }]}
+              titleStyle={[styles.buttonTitle, { color: statusColor }]}
+              icon={<DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />}
+              iconPosition='right'
+              iconClassName={styles.buttonIcon}
+              theme={SECONDARY}
+              onPress={handleChangeStatus}
+            />
+            {updatingVoteForBook ? (
+              <View style={styles.votesSpinnerWrapper}>
+                <Spinner size={Size.SMALL} />
+              </View>
+            ) : (
+              <Pressable
+                onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })}
+                style={styles.ratingWrapper}
+              >
+                {bookWithVote ? (
+                  <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
+                ) : (
+                  <LikeIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
+                )}
+                <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
+              </Pressable>
             )}
           </View>
+          {annotation && (
+            <Text style={[styles.item, styles.mediumColor, styles.marginTop]}>
+              {t('annotation')}
+              <Text style={[styles.annotation, styles.lightColor]}>{annotation}</Text>
+            </Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -154,7 +154,7 @@ const FilteringModal = ({
         )}
       </View>
       <View style={styles.submitButtonWrapper}>
-        <Button title={t('toFilter')} onPress={handleFilter} />
+        <Button style={styles.submitButton} title={t('toFilter')} onPress={handleFilter} />
       </View>
     </SlideMenu>
   );

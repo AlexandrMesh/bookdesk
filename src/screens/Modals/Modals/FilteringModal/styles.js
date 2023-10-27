@@ -47,10 +47,12 @@ export default StyleSheet.create({
   },
   submitButtonWrapper: {
     display: 'flex',
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
     margin: 15,
+  },
+  submitButton: {
+    maxWidth: 400,
   },
   firstLevel: {
     width: 35,

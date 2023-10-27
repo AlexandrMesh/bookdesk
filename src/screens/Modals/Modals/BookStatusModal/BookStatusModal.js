@@ -69,7 +69,7 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
   };
 
   return (
-    <SlideMenu isVisible={isVisible} title={t('choosingStatus')} onClose={handleClose} shouldAutoClose={shouldAutoClose} onReset={() => undefined}>
+    <SlideMenu isVisible={isVisible} title={book?.title} onClose={handleClose} shouldAutoClose={shouldAutoClose} onReset={() => undefined}>
       <FlashList
         data={actionTypes}
         estimatedItemSize={actionTypes.length}
@@ -77,7 +77,13 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
         keyExtractor={({ title }) => title}
       />
       <View style={styles.submitButtonWrapper}>
-        <Button icon={isLoading && <Spinner size={Size.SMALL} />} title={t('common:save')} disabled={isLoading} onPress={handleUpdate} />
+        <Button
+          style={styles.submitButton}
+          icon={isLoading && <Spinner size={Size.SMALL} />}
+          title={t('common:save')}
+          disabled={isLoading}
+          onPress={handleUpdate}
+        />
       </View>
     </SlideMenu>
   );

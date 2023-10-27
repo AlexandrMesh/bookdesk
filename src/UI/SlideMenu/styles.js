@@ -44,11 +44,14 @@ export default StyleSheet.create({
   },
   titleWrapper: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    display: 'flex',
+    flex: 1,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.neutral_medium,
   },

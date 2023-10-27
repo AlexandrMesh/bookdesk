@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useLayoutEffect } from 'react';
 import { bool, number, func, node, string } from 'prop-types';
-import { Animated, Text, View, Pressable } from 'react-native';
+import { Animated, Text, View, Pressable, Dimensions } from 'react-native';
+import { useKeyboard, useBackHandler } from '@react-native-community/hooks';
 import Button from '~UI/Button';
 import { SECONDARY } from '~constants/themes';
 import { CLOSE_ICON } from '~constants/dimensions';
@@ -9,6 +10,9 @@ import colors from '~styles/colors';
 import styles from './styles';
 
 const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, title, titleReset, menuHeight }) => {
+  const keyboard = useKeyboard();
+  const windowHeight = Dimensions.get('window').height - 40;
+  const [calculatedMenuHeight, setCalculatedMenuHeight] = useState(menuHeight);
   const [shouldDIsplay, setShouldDisplay] = useState(false);
   const [shouldDIsplayOverlay, setShouldDIsplayOverlay] = useState(false);
   const animatedHeight = useMemo(() => new Animated.Value(menuHeight), [menuHeight]);
@@ -18,14 +22,30 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
     setShouldDIsplayOverlay(false);
     Animated.spring(animatedHeight, {
       useNativeDriver: true,
-      toValue: menuHeight,
+      toValue: calculatedMenuHeight,
       duration,
       restSpeedThreshold: 100,
       restDisplacementThreshold: 40,
     }).start(() => {
       onClose();
     });
-  }, [animatedHeight, menuHeight, onClose]);
+  }, [animatedHeight, calculatedMenuHeight, onClose]);
+
+  useBackHandler(() => {
+    if (isVisible) {
+      hideModal();
+      return true;
+    }
+    return false;
+  });
+
+  useLayoutEffect(() => {
+    if (keyboard.keyboardShown) {
+      setCalculatedMenuHeight(windowHeight - keyboard.keyboardHeight < menuHeight ? windowHeight - keyboard.keyboardHeight : menuHeight);
+    } else {
+      setCalculatedMenuHeight(windowHeight < menuHeight ? windowHeight : menuHeight);
+    }
+  }, [menuHeight, windowHeight, keyboard.keyboardHeight, keyboard.keyboardShown]);
 
   useEffect(() => {
     if (isVisible) {
@@ -76,7 +96,7 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
         <Animated.View
           style={[
             {
-              height: menuHeight,
+              height: calculatedMenuHeight,
               transform: [{ translateY: animatedHeight }],
             },
             styles.animatedWrapper,
@@ -86,7 +106,9 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
             <View style={styles.content}>
               <View style={styles.header}>
                 <View style={styles.titleWrapper}>
-                  <Text style={styles.title}>{title}</Text>
+                  <Text style={styles.title} numberOfLines={1}>
+                    {title}
+                  </Text>
                   {titleReset ? (
                     <Button style={styles.resetButton} titleStyle={styles.titleStyle} theme={SECONDARY} title={titleReset} onPress={onReset} />
                   ) : null}

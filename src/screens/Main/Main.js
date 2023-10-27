@@ -33,6 +33,7 @@ import Search from '~screens/Search';
 import Profile from '~screens/Profile';
 import Modals from '~screens/Modals/Modals';
 import About from '~screens/Profile/About';
+import CloseComponent from './CloseComponent';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -46,21 +47,6 @@ const SearchNavigator = () => (
 const HomeNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
-    <Stack.Screen
-      name={BOOK_DETAILS_ROUTE}
-      component={BookDetails}
-      options={{
-        title: getT('books')('bookDetails'),
-        presentation: 'modal',
-        headerStyle: {
-          backgroundColor: colors.primary_dark,
-          shadowColor: 'transparent',
-          borderBottomWidth: 1,
-          borderColor: colors.neutral_medium,
-        },
-        headerTintColor: colors.neutral_light,
-      }}
-    />
   </Stack.Navigator>
 );
 
@@ -88,6 +74,7 @@ const ProfileNavigator = () => (
 const MainNavigator = ({ isTheLatestAppVersion }) => (
   <Tab.Navigator
     initialRouteName={HOME_NAVIGATOR_ROUTE}
+    backBehavior='history'
     screenOptions={({ route }) => ({
       tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_medium },
       tabBarShowLabel: false,
@@ -121,6 +108,25 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
       options={{
         tabBarBadge: !isTheLatestAppVersion ? getT('common')('alert') : null,
         tabBarBadgeStyle: { backgroundColor: colors.success, color: colors.primary_dark },
+      }}
+    />
+    <Tab.Screen
+      name={BOOK_DETAILS_ROUTE}
+      component={BookDetails}
+      options={{
+        headerShown: true,
+        headerRight: CloseComponent,
+        title: getT('books')('bookDetails'),
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        presentation: 'modal',
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
       }}
     />
   </Tab.Navigator>

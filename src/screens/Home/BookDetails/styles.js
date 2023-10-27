@@ -50,8 +50,9 @@ export default StyleSheet.create({
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
-  footer: {
+  bookStatusWrapper: {
     marginTop: 15,
     width: '100%',
     display: 'flex',

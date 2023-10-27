@@ -13,6 +13,7 @@ export default StyleSheet.create({
   },
   content: {
     width: '100%',
+    maxWidth: 400,
   },
   marginBottom: {
     marginBottom: 5,
