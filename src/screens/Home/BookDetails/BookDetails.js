@@ -85,7 +85,7 @@ const BookDetails = ({
         </View>
         <View styles={styles.info}>
           <Text style={[styles.item, styles.lightColor, styles.marginTop]}>{t(`categories:${categoryValue}`)}</Text>
-          {pages && (
+          {!!pages && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('pages')}
               <Text style={styles.lightColor}>{pages}</Text>

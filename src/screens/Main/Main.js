@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { BOTTOM_BAR_ICON } from '~constants/dimensions';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { getT } from '~translations/i18n';
 import {
   SEARCH_ROUTE,
@@ -34,6 +35,7 @@ import Profile from '~screens/Profile';
 import Modals from '~screens/Modals/Modals';
 import About from '~screens/Profile/About';
 import CloseComponent from './CloseComponent';
+import UnderConstruction from './UnderConstruction';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -132,7 +134,15 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
   </Tab.Navigator>
 );
 
-const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion }) => {
+const Main = ({
+  checkAuth,
+  checkingStatus,
+  isSignedIn,
+  isTheLatestAppVersion,
+  checkUnderConstruction,
+  loadingUnderConstructionStatus,
+  underConstruction,
+}) => {
   const checkAuthentication = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -142,11 +152,26 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion }) 
     }
   }, [checkAuth]);
 
-  useEffect(() => {
-    checkAuthentication();
-  }, [checkAuthentication]);
+  const checkData = useCallback(async () => {
+    try {
+      const result = await checkUnderConstruction();
+      if (!result) {
+        await checkAuthentication();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [checkUnderConstruction, checkAuthentication]);
 
-  if (checkingStatus === IDLE || checkingStatus === PENDING) {
+  useEffect(() => {
+    checkData();
+  }, [checkData]);
+
+  if (underConstruction) {
+    return <UnderConstruction />;
+  }
+
+  if (checkingStatus === IDLE || checkingStatus === PENDING || loadingUnderConstructionStatus === PENDING) {
     return <Splash />;
   }
 
@@ -173,8 +198,11 @@ MainNavigator.propTypes = {
 
 Main.propTypes = {
   checkAuth: func.isRequired,
+  underConstruction: string,
+  checkUnderConstruction: func.isRequired,
   isSignedIn: bool.isRequired,
-  checkingStatus: string,
+  checkingStatus: loadingDataStatusShape,
+  loadingUnderConstructionStatus: loadingDataStatusShape,
   isTheLatestAppVersion: bool,
 };
 

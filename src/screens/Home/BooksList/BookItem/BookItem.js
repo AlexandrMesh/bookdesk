@@ -63,7 +63,7 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
           ))}
         <View style={styles.info}>
           <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
-          {pages && (
+          {!!pages && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('pages')}
               <Text style={styles.lightColor}>{pages}</Text>
