@@ -6,7 +6,7 @@ const DataService = () => ({
   getUserBooks: (params) => http.get(`${config.API_URL}/getUserBooks`, { params }),
   updateUserBook: (params) => http.post(`${config.API_URL}/updateUserBook`, params),
   updateBookVotes: (params) => http.post(`${config.API_URL}/updateBookVotes`, params),
-  getCategories: (params) => http.get(`${config.API_URL}/categories`, params),
+  getCategories: (params) => http.get(`${config.API_URL}/categories`, { params }),
   getBookDetails: (params) => http.get(`${config.API_URL}/book`, { params }),
 });
 

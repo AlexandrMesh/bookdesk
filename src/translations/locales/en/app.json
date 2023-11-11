@@ -1,0 +1,12 @@
+{
+  "name": "Name: ",
+  "version": "Version: ",
+  "description": "Description: ",
+  "feedback": "feedback: ",
+  "support": "Contact us",
+  "appName": "BookDesk",
+  "appTitle": "Your read planner",
+  "appLanguage": "App language: ",
+  "ru": "Russian",
+  "en": "English"
+}

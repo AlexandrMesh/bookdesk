@@ -40,4 +40,15 @@ export default StyleSheet.create({
     color: colors.success,
     marginBottom: 10,
   },
+  mTop: {
+    marginTop: 10,
+  },
+  languageButton: {
+    fontSize: 12,
+    width: 110,
+    height: 30,
+  },
+  titleStyle: {
+    fontSize: 14,
+  },
 });

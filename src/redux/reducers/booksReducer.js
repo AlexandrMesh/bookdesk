@@ -54,10 +54,14 @@ import {
   UPDATE_BOOK_VOTES_IN_BOOK_DETAILS,
   UPDATE_BOOK_DETAILS,
   CLEAR_BOOK_DETAILS,
+  TRIGGER_RELOAD_CATEGORIES,
+  TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY,
+  CLEAR_DATA_FOR_CHANGE_LANGUAGE,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
   data: [],
+  shouldReloadData: false,
   loadingDataStatus: IDLE,
 });
 
@@ -71,6 +75,7 @@ const getDefaultSearchState = () => ({
   data: [],
   query: '',
   loadingDataStatus: IDLE,
+  shouldClearSearchQuery: false,
   shouldReloadData: false,
   shouldReloadWithPullRefresh: false,
   pagination: getDefaultPaginationState(),
@@ -248,7 +253,7 @@ export default createReducer(initialState, (state, action) => ({
 
   [CLEAR_SEARCH_RESULTS]: () => ({
     ...state,
-    search: getDefaultSearchState(),
+    search: { ...getDefaultSearchState(), shouldClearSearchQuery: true },
   }),
 
   [ADD_BOOK]: () => ({
@@ -350,6 +355,7 @@ export default createReducer(initialState, (state, action) => ({
     categories: {
       ...state.categories,
       data: action.data,
+      shouldReloadData: false,
       loadingDataStatus: SUCCEEDED,
     },
   }),
@@ -358,7 +364,16 @@ export default createReducer(initialState, (state, action) => ({
     ...state,
     categories: {
       ...state.categories,
+      shouldReloadData: false,
       loadingDataStatus: FAILED,
+    },
+  }),
+
+  [TRIGGER_RELOAD_CATEGORIES]: () => ({
+    ...state,
+    categories: {
+      ...state.categories,
+      shouldReloadData: true,
     },
   }),
 
@@ -636,12 +651,26 @@ export default createReducer(initialState, (state, action) => ({
     },
   }),
 
+  [TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY]: () => ({
+    ...state,
+    search: {
+      ...state.search,
+      shouldClearSearchQuery: false,
+    },
+  }),
+
   [SET_SEARCH_QUERY]: () => ({
     ...state,
     search: {
       ...state.search,
+      shouldClearSearchQuery: false,
       query: action.query,
     },
+  }),
+
+  [CLEAR_DATA_FOR_CHANGE_LANGUAGE]: () => ({
+    ...initialState,
+    activeModal: state.activeModal,
   }),
 
   [CLEAR_BOOKS_DATA]: () => initialState,

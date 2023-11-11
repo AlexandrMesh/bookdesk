@@ -10,6 +10,7 @@ import { IMG_URL } from '~config/api';
 import { SECONDARY } from '~constants/themes';
 import { BOOK_DETAILS_ROUTE } from '~constants/routes';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
+import { RU } from '~constants/languages';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
@@ -25,7 +26,8 @@ const getStatusColor = (bookStatus) =>
   }[bookStatus] || colors.neutral_light);
 
 const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVotes, updatingVoteForBook }) => {
-  const { t } = useTranslation(['books', 'categories']);
+  const { t, i18n } = useTranslation(['books', 'categories']);
+  const { language } = i18n;
   const navigation = useNavigation();
 
   const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
@@ -56,11 +58,15 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
           <Text style={[styles.title, styles.lightColor]}>{title}</Text>
         </Pressable>
         {authorsList.length > 0 &&
-          authorsList.map((author) => (
-            <View key={author}>
-              <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
-            </View>
-          ))}
+          authorsList.map(
+            (author, index) =>
+              index < 2 && (
+                // eslint-disable-next-line react/no-array-index-key
+                <View key={`${author}_${index}`}>
+                  <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
+                </View>
+              ),
+          )}
         <View style={styles.info}>
           <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
           {!!pages && (
@@ -72,7 +78,7 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString('ru-RU')}</Text>
+              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}</Text>
             </Text>
           )}
         </View>

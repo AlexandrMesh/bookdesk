@@ -1,0 +1,17 @@
+{
+  "hasNoValue": "Must not be empty",
+  "isTooLong": "Must be no more than 64 characters",
+  "isNotValidEmailPattern": "Invalid email format",
+  "isTooShort": "Must be at least 6 characters",
+  "noToken": "A token must be provided",
+  "somethingWentWrong": "Something went wrong",
+  "incorrectToken": "Incorrect token",
+  "noEmail": "Email must be provided",
+  "incorrectEmail": "Incorrect email",
+  "noPassword": "A password must be provided",
+  "emailExists": "Email exists",
+  "invalidGoogleEmail": "Invalid Google Email",
+  "noUser": "No such user exists",
+  "wrongEmailOrPassword": "Invalid email or password",
+  "serverNotAvailable": "Server is not available"
+}

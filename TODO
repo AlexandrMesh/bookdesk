@@ -726,3 +726,92 @@ https://thecodebarbarian.com/managing-connections-with-the-mongodb-node-driver.h
 
 30.10.2023
 + Добавить экран Технические работы
+
+31.10.2023
+Удалить книги которые содержат комплекты, упаковки, подарки
+Сделать локализацию английского языка
+Русский для (Россия, Беларусь, Украина, Казахстан, Киргизия, Молдова)
+либо просто определять по первому ru
+Найти крупные зарубежные онлайн магазины книг
+
+2.11.2023
+Логика англоязычной версии + русскоязычной
++ Определяем язык с помощью NativeModule и ставим его в i18next файле (с помощью определия ru_)
++ Если не стоит в локал сторе значение, если стоит то оно имеет более высокий приоритет
++ При переключении языка в настройках используем SlideMenu
++ При переключении языка записываем значение в локал сторе + ставим все доски в режим ShouldReload + подтягиваем новые категории
++ База данных будет одна и в книгах английских будет пометка locale: 'en', тем самым мы сможет использовать одну версию userBooks и userVotes
++ Книги в поиске будут доступны для всех версий
++ В рекомендуемых будут отображаться только те книги язык которых установлен, также и в категориях
++ Приложение будет называться: BookDesk: Read Planner
++ Добавить приставку 'en' в categories и books
+
+3.11.2023
++ Добавить language: 'en' для всех английских книг и категорий
++ Добавить language: 'ru' для всех русских книг и категорий
+
+6.11.2023
+Переводы на англ.
+Описание в приложении:
+BookDesk: Read Planner is the fast and convenient application for storing information about books you have read or plan to read.
+The application contains 4 boards:
+- Recommended
+- Will read
+- Read
+- Have read
+You can add the books you want to them.
+The advantages of the application include convenient statistics, searching and filtering books.
+A large database of books in which you can find something suitable for reading.
+Search, many categories and covers will help you find the books you need.
+You can easily see all your read books, as well as the date of reading.
+It is easy to keep statistics of books you have read with BookDesk!
+==========
+
+Read planner - easy to store all your read books in one place.
+
+BookDesk is a Read planner - the fast and convenient application for storing books you have read and are planning to read.
+You can easily create lists of books to read using the app\s recommendation system.
+A huge number of book ratings will help you choose popular and interesting books to read.
+
+- Convenient and very fast visual boards will help you store current, planned and read books
+- Huge database of books. Constant database updates
+- Fast and convenient book search
+- All books have a rating, each user can change it
+- Powerful mechanism for filtering books by categories and subcategories
+- Recommendation system
+- Finding suitable books for further reading
+- Instant update of book status
+- Quickly switch between boards to view the current status of books
+- Convenient book design: covers, titles, authors, number of pages
+- Ability to view a detailed description of the book
+- Adding date of book status update
+
+7.11.2023
++ Чистка ru базы
++ Чистка en базы
+Тестирование
+Добавление скриншотов
+
+8.11.2023
++ Добавление технической страницы для en
++ Удалить сборник, Набор
++ Добавить en категории
+
+10.11.2023
+Для того чтобы сделать mongoDb доступной для подключения надо в etc/mongod.conf в bindIp: 127.0.0.1,185.12.94.36 через запятую поставить адрес сервера
+Данные новой базы данных:
+логин: "adminPeshka",
+pwd: "JDASD&#ASDgsdds"
+
+db.createUser(
+  {
+    user: "adminPeshka",
+    pwd: "JDASD&#ASDgsdds",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
++ Добавить search language параметр
++ Подумать над key unique prop для авторов
++ Отображать в кратком описании только 2 авторов
+Кнопка наверх

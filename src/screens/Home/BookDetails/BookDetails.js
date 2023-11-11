@@ -12,6 +12,7 @@ import { SECONDARY } from '~constants/themes';
 import { IMG_URL } from '~config/api';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
+import { RU } from '~constants/languages';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
@@ -37,7 +38,8 @@ const BookDetails = ({
   selectBook,
   clearBookDetails,
 }) => {
-  const { t } = useTranslation(['books', 'categories']);
+  const { t, i18n } = useTranslation(['books', 'categories']);
+  const { language } = i18n;
   const isFocused = useIsFocused();
 
   const { params } = useRoute();
@@ -94,7 +96,7 @@ const BookDetails = ({
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString('ru-RU')}</Text>
+              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}</Text>
             </Text>
           )}
           <View style={styles.bookStatusWrapper}>

@@ -20,8 +20,10 @@ import {
   getSearchSortParams,
   getSearchQuery,
   getBookDetailsData,
+  getShouldReloadCategories,
 } from '~redux/selectors/books';
 import { ALL } from '~constants/boardType';
+import i18n from '~translations/i18n';
 
 const PREFIX = 'BOOKS';
 
@@ -35,6 +37,7 @@ export const SET_SEARCH_QUERY = `${PREFIX}/SET_SEARCH_QUERY`;
 export const START_LOADING_SEARCH_RESULTS = `${PREFIX}/START_LOADING_SEARCH_RESULTS`;
 export const LOADING_SEARCH_RESULTS_FAILED = `${PREFIX}/LOADING_SEARCH_RESULTS_FAILED`;
 export const SEARCH_RESULTS_LOADED = `${PREFIX}/SEARCH_RESULTS_LOADED`;
+export const TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY = `${PREFIX}/TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY`;
 
 export const BOOK_LIST_LOADED = `${PREFIX}/BOOK_LIST_LOADED`;
 export const START_LOADING_BOOK_LIST = `${PREFIX}/START_LOADING_BOOK_LIST`;
@@ -53,6 +56,7 @@ export const REMOVE_FILTER_VALUE = `${PREFIX}/REMOVE_FILTER_VALUE`;
 export const CLEAR_FILTERS = `${PREFIX}/CLEAR_FILTERS`;
 export const POPULATE_FILTERS = `${PREFIX}/POPULATE_FILTERS`;
 export const RESET_CATEGORIES = `${PREFIX}/RESET_CATEGORIES`;
+export const TRIGGER_RELOAD_CATEGORIES = `${PREFIX}/TRIGGER_RELOAD_CATEGORIES`;
 export const SEARCH_CATEGORY = `${PREFIX}/SEARCH_CATEGORY`;
 export const CLEAR_SEARCH_QUERY_FOR_CATEGORY = `${PREFIX}/CLEAR_SEARCH_QUERY_FOR_CATEGORY`;
 
@@ -70,6 +74,7 @@ export const INCREMENT_SEARCH_RESULT_PAGE_INDEX = `${PREFIX}/INCREMENT_SEARCH_RE
 export const TRIGGER_RELOAD_BOOK_LIST = `${PREFIX}/TRIGGER_RELOAD_BOOK_LIST`;
 export const TRIGGER_RELOAD_SEARCH_RESULTS = `${PREFIX}/TRIGGER_RELOAD_SEARCH_RESULTS`;
 export const CLEAR_BOOKS_DATA = `${PREFIX}/CLEAR_BOOKS_DATA`;
+export const CLEAR_DATA_FOR_CHANGE_LANGUAGE = `${PREFIX}/CLEAR_DATA_FOR_CHANGE_LANGUAGE`;
 
 export const START_LOADING_CATEGORIES = `${PREFIX}/START_LOADING_CATEGORIES`;
 export const CATEGORIES_LOADED = `${PREFIX}/CATEGORIES_LOADED`;
@@ -135,6 +140,10 @@ export const triggerReloadBookList = (boardType, isPullRefresh) => ({
   boardType,
   isPullRefresh,
 });
+
+export const triggerReloadCategories = {
+  type: TRIGGER_RELOAD_CATEGORIES,
+};
 
 export const startLoadingCategories = {
   type: START_LOADING_CATEGORIES,
@@ -231,6 +240,10 @@ export const clearBooksData = {
   type: CLEAR_BOOKS_DATA,
 };
 
+export const clearDataForChangeLanguage = {
+  type: CLEAR_DATA_FOR_CHANGE_LANGUAGE,
+};
+
 export const startUpdatingUsersBook = {
   type: START_UPDATING_USERS_BOOK,
 };
@@ -246,6 +259,10 @@ export const incrementSearchResultPageIndex = {
 
 export const clearSearchResults = {
   type: CLEAR_SEARCH_RESULTS,
+};
+
+export const triggerShouldNotClearSearchQuery = {
+  type: TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY,
 };
 
 export const updatingUsersBookFailed = {
@@ -417,6 +434,7 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
   const pageIndex = getSearchResultsPageIndex(state);
   const searchText = deriveSearchQuery(state);
   const sortParams = getSearchSortParams(state);
+  const { language } = i18n;
 
   const params = {
     limit: PAGE_SIZE,
@@ -425,6 +443,7 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
     title: searchText,
     sortType: sortParams.type,
     sortDirection: sortParams.direction,
+    language,
   };
   try {
     dispatch(startLoadingSearchResults);
@@ -454,6 +473,7 @@ export const loadBookList =
     const pageIndex = deriveBookListPageIndex(boardType)(state);
     const filterParams = deriveFilterBookCategoryPaths(boardType)(state);
     const sortParams = deriveBookListSortParams(boardType)(state);
+    const { language } = i18n;
 
     const params = {
       pageIndex: shouldLoadMoreResults ? pageIndex + 1 : 0,
@@ -462,6 +482,7 @@ export const loadBookList =
       categoryPaths: filterParams,
       sortType: sortParams.type,
       sortDirection: sortParams.direction,
+      language,
     };
 
     try {
@@ -499,12 +520,15 @@ export const loadMoreBooks = (boardType) => async (dispatch, getState) => {
   }
 };
 
-export const loadCategories = () => async (dispatch, getState) => {
-  const categories = getCategoriesData(getState());
-  if (categories.length === 0) {
+export const loadCategories = (shouldRewrite) => async (dispatch, getState) => {
+  const state = getState();
+  const categories = getCategoriesData(state);
+  const shouldReloadCategories = getShouldReloadCategories(state);
+  const { language } = i18n;
+  if (categories.length === 0 || shouldReloadCategories || shouldRewrite) {
     try {
       dispatch(startLoadingCategories);
-      const { data } = (await DataService().getCategories()) || {};
+      const { data } = (await DataService().getCategories({ language })) || {};
       dispatch(categoriesLoaded(data));
     } catch (e) {
       dispatch(loadingCategoriesFailed);

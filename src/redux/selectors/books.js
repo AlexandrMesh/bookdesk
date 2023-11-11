@@ -23,8 +23,11 @@ export const getSearchResultsPageIndex = (state) => getSearchResultsPagination(s
 export const getSearchSortParams = (state) => getSearch(state).sortParams;
 export const getSearchSortType = (state) => getSearchSortParams(state).type;
 export const getSearchSortDirection = (state) => getSearchSortParams(state).direction;
+export const getShouldClearSearchQuery = (state) => getSearch(state).shouldClearSearchQuery;
+
 export const getUpdatingBookStatus = (state) => getBooks(state).updatingBookStatus;
 export const getCategoriesData = (state) => getCategories(state).data;
+export const getShouldReloadCategories = (state) => getCategories(state).shouldReloadData;
 
 export const getLoadingBookDetailsStatus = (state) => getBookDetails(state).loadingDataStatus;
 export const getBookDetailsData = (state) => getBookDetails(state).data;

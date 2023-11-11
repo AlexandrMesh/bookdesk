@@ -29,7 +29,12 @@ export default createReducer(initialState, (state, action) => ({
   }),
   [APP_INFO_LOADED]: () => ({
     ...state,
-    data: action.data,
+    data: {
+      name: action.name,
+      version: action.version,
+      description: action.description,
+      email: action.email,
+    },
     loadingDataStatus: SUCCEEDED,
   }),
   [LOADING_APP_INFO_FAILED]: () => ({

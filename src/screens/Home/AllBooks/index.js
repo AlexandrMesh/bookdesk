@@ -12,7 +12,7 @@ import {
 import { loadBookList, loadMoreBooks, loadCategories, setBoardType, showModal } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import { FILTERING } from '~constants/modalTypes';
-import SearchResults from './AllBooks';
+import AllBooks from './AllBooks';
 
 const mapStateToProps = (state) => ({
   bookList: deriveBookListData(ALL)(state),
@@ -33,4 +33,4 @@ const mapDispatchToProps = (dispatch) => ({
   showFilters: () => dispatch(showModal(FILTERING)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchResults);
+export default connect(mapStateToProps, mapDispatchToProps)(AllBooks);

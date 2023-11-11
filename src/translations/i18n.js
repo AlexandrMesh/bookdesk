@@ -1,4 +1,6 @@
 import i18n from 'i18next';
+import { RU, EN } from '~constants/languages';
+import detectLanguage from '~utils/detectLanguage';
 import common from './locales/ru/common.json';
 import auth from './locales/ru/auth.json';
 import books from './locales/ru/books.json';
@@ -7,13 +9,33 @@ import errors from './locales/ru/errors.json';
 import profile from './locales/ru/profile.json';
 import app from './locales/ru/app.json';
 import categories from './locales/ru/categories.json';
+import commonEn from './locales/en/common.json';
+import authEn from './locales/en/auth.json';
+import booksEn from './locales/en/books.json';
+import searchEn from './locales/en/search.json';
+import errorsEn from './locales/en/errors.json';
+import profileEn from './locales/en/profile.json';
+import appEn from './locales/en/app.json';
+import categoriesEn from './locales/en/categories.json';
 
-i18n.init({
+const LanguageDetector = {
+  type: 'languageDetector',
+  async: true,
+  detect: async (callback) => {
+    const language = await detectLanguage();
+    callback(language);
+  },
+  init: () => {},
+  cacheUserLanguage: () => {},
+};
+
+i18n.use(LanguageDetector).init({
+  fallbackLng: EN,
   compatibilityJSON: 'v3',
-  lng: 'ru',
-  whitelist: ['ru'],
+  languages: [RU, EN],
+  whitelist: [RU, EN],
   resources: {
-    ru: {
+    [RU]: {
       common,
       auth,
       books,
@@ -22,6 +44,16 @@ i18n.init({
       profile,
       app,
       categories,
+    },
+    [EN]: {
+      common: commonEn,
+      auth: authEn,
+      books: booksEn,
+      search: searchEn,
+      errors: errorsEn,
+      profile: profileEn,
+      app: appEn,
+      categories: categoriesEn,
     },
   },
 });

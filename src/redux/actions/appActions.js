@@ -1,4 +1,6 @@
 import AppService from '~http/services/app';
+import i18n from '~translations/i18n';
+import { RU } from '~constants/languages';
 
 const PREFIX = 'APP';
 
@@ -19,9 +21,12 @@ export const loadingAppInfoFailed = {
   type: LOADING_APP_INFO_FAILED,
 };
 
-export const appInfoLoaded = (data) => ({
+export const appInfoLoaded = ({ name, version, description, email }) => ({
   type: APP_INFO_LOADED,
-  data,
+  name,
+  version,
+  description,
+  email,
 });
 
 export const startLoadingUnderConstruction = {
@@ -45,8 +50,13 @@ export const checkUnderConstruction = () => async (dispatch) => {
   dispatch(startLoadingUnderConstruction);
   try {
     const { data } = await AppService().getUnderConstruction();
-    dispatch(underConstructionLoaded(data.underConstruction));
-    return data.underConstruction;
+    const underConstruction = i18n.language === RU ? data.underConstruction : data.underConstructionEn;
+    if (underConstruction) {
+      dispatch(underConstructionLoaded(underConstruction));
+      return data.underConstruction;
+    }
+    dispatch(loadingUnderConstructionFailed);
+    return false;
   } catch (error) {
     dispatch(loadingUnderConstructionFailed);
   }
@@ -57,7 +67,14 @@ export const loadAppInfo = () => async (dispatch) => {
   try {
     dispatch(startLoadingAppInfo);
     const { data } = (await AppService().getAppInfo()) || {};
-    dispatch(appInfoLoaded(data));
+    dispatch(
+      appInfoLoaded({
+        name: data.name,
+        version: data.version,
+        description: i18n.language === RU ? data.description : data.descriptionEn,
+        email: data.email,
+      }),
+    );
   } catch (e) {
     dispatch(loadingAppInfoFailed);
   }
