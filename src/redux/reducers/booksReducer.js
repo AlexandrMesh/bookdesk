@@ -670,6 +670,7 @@ export default createReducer(initialState, (state, action) => ({
 
   [CLEAR_DATA_FOR_CHANGE_LANGUAGE]: () => ({
     ...initialState,
+    bookVotes: state.bookVotes,
     activeModal: state.activeModal,
   }),
 

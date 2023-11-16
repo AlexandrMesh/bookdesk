@@ -815,3 +815,111 @@ db.createUser(
 + Подумать над key unique prop для авторов
 + Отображать в кратком описании только 2 авторов
 Кнопка наверх
+
+11.11.2023
+Запуск приложения: NODE_ENV=production pm2 start /var/www/html/bookdesk_api/bin/www
+Обновить node.js до 20
+
+13.11.2023
+Добавить сохранение в базу страны пользователя
+20 Ноября зарегить проект на https://www.producthunt.com/
+Нашел google search api для картинок, дается квота 100 запросов в день бесплатно
+https://programmablesearchengine.google.com/controlpanel/overview?cx=42a8480a652154a54
+https://console.cloud.google.com/apis/api/customsearch.googleapis.com/quotas?project=bookdesk-401611
+https://www.googleapis.com/customsearch/v1?searchType=image&key=AIzaSyD0Gx2sBVthtxNrNGLZwQYVpGSeKaBnvUM&q=сказать жизни да книга&cx=42a8480a652154a54
+API https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list
+
+Custom Search JSON API provides 100 search queries per day for free.
+If you need more, you may sign up for billing in the API Console. Additional requests cost $5 per 1000 queries, up to 10k queries per day.
+
+15.11.2023 вывести сообщение на старой версии что необходимо обновить версию для продолжения пользования и продержать ее неделю
+
+Поля для добавления custom book:
+1. Название - после ввода названия автоматически подставляется обложка - 5 вариантов на выбор - автоматом селектится первая (но перед этим проверка идет по базе книг нашей)
+2. Обложка - можно не ставить обложку
+3. Категория - из списка
+4. Статус (автоматически ставится статус Хочу прочитать)
+5. Автор? - можно добавлять до 5 полей или через запятую
+6. Страниц? - нумерованое текстовое поле
+7. Описание? - text area
+8. Рейтинг поставится автоматом 0
+
+Надо разбивать на шаги, логика такая, что если пользователю на первом шаге выдаст книгу которая есть, ему не надо дальше заполнять все
+
+Книга должна быть доступна в общем списке и на доске определенной если добавлена
+При переходе во внутрь надо проверять если этом custom то открывать через customBooks
+
++ писать в таблицу customBooks: { userId: '', added: '' }
++Добавить индекс для books, userBooks
+
+16.11.2023
++ Изменить ключевые слова. Основное слово для ru: читательский дневник
++ для en: reading diary
+
+BookDesk: Читательский дневник
+
+Читательский дневник - надёжное место для хранения Ваших книг для чтения.
+
+BookDesk: Читательский дневник это дневник чтения книг, быстрое и удобное приложение для хранения прочитанных книг, книг которые читаете в данный момент и планируемых к прочтению книг.
+Вы легко сможете составлять списки книг для чтения с помощью рекомендательной системы читательского дневника.
+Рейтинг книг в приложении и рекомендательная система помогут подобрать для Вас подходящую книгу для чтения.
+
+Главная особенность - наш читательский дневник содержит четыре удобные доски для добавления книг и огромную базу книг в которой Вы с легкостью сможете найти при помощи умного поиска или фильтрации.
+Молниеносная скорость работы приложения, удобные доски и управление статусом книг поможет Вам быстро вносить книги в читательский дневник.
+
+С помощью приложения BookDesk: Читательский дневник Вы легко упорядочите и отсортируете Все ваши прочитанные книги, ведь в приложении есть одноименная доска.
+Также Вы легко и просто запланируете книги для будущего чтения на доске под названием "Планирую" к чтению.
+И наконец, сможете добавить все Ваши книги, которые читаете в данный момент, на доску "Читаю".
+
+Преимущества читательского дневника:
+- Удобные и очень быстрые визуальные доски помогут Вам хранить текущие, запланированные и прочитанные книги
+- Огромная база книг. Постоянные обновления базы
+- Быстрый и удобный поиск книг
+- Все книги имеют рейтинг, каждый пользователь может его изменять
+- Мощный механизм фильтрации книг по категориям и подкатегориям
+- Рекомендательная система
+- Поиск подходящих книг для дальнейшего чтения
+- Мгновенное обновление статуса книг
+- Шустрое переключение между досками для просмотра текущего статуса книг
+- Удобное оформление книг: обложки, заголовки, авторы, кол-во страниц
+- Возможность просматривать подробное описание книги
+- Добавление даты обновления статуса книг
+
+Теперь не надо волноваться о хранении Ваших книг, ведь наш читательский дневник хранит их в одном и надежном облачном хранилище.
+
+Становитесь пользователем нашего читательского дневника и ставьте свои оценки и отзывы для книг, советуйте книги другим пользотвалеям и храните все ваши книги в одном и надёжном месте.
+
+-------- English ----------
+
+BookDesk: Reading Diary
+
+The reading diary is a safe place to store all your reading books.
+
+BookDesk: Reading Diary is a book reading diary, a fast and convenient application for storing books you have read, books you are currently reading, and books you are planning to read.
+You can easily create lists of books to read using the reading diary recommendation system.
+The book ratings in the app and the recommendation system will help you choose the right book for you to read.
+
+The main feature is that our reading diary contains four convenient boards for adding books and a huge database of books in which you can easily find using smart search or filtering.
+Lightning-fast speed of the application, convenient boards and book status management will help you quickly add books to your reading diary.
+
+Using the BookDesk: Reading Diary application, you can easily organize and sort all your read books, because the application has a board of the same name.
+You can also easily and simply plan books for future reading on the board called “Will read” for reading.
+And finally, you can add all your books that you are currently reading to the “Read” board.
+
+Advantages of the reading diary:
+- Convenient and very fast visual boards will help you store current, planned and read books
+- Huge database of books. Constant database updates
+- Fast and convenient book search
+- All books have a rating, each user can change it
+- Powerful mechanism for filtering books by categories and subcategories
+- Recommendation system
+- Finding suitable books for further reading
+- Instant update of book status
+- Quickly switch between boards to view the current status of books
+- Convenient book design: covers, titles, authors, number of pages
+- Ability to view a detailed description of the book
+- Adding a book status update date
+
+Now you do not have to worry about storing your books, because our reading diary stores them in one reliable cloud storage.
+
+Become a user of our reading diary and put your ratings and reviews for books, recommend books to other users and store all your books in one safe place.

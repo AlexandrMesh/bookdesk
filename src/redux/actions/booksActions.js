@@ -22,6 +22,7 @@ import {
   getBookDetailsData,
   getShouldReloadCategories,
 } from '~redux/selectors/books';
+import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/actions/customBookActions';
 import { ALL } from '~constants/boardType';
 import i18n from '~translations/i18n';
 
@@ -593,6 +594,7 @@ export const updateUserBook =
       // It's because we don't want to refresh all books list to preserve scrolling
       dispatch(updateBook(bookId, ALL, data.bookStatus, data.added));
       dispatch(updateBookInSearchResults(bookId, ALL, data.bookStatus, data.added));
+      dispatch(updateSuggestedBook(bookId, data.bookStatus, data.added));
 
       if (newBookStatus !== ALL) {
         // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
@@ -617,6 +619,7 @@ export const updateBookVotes =
       dispatch(updatedBookVotes(data.userVotes, bookId));
       dispatch(updateBookVotesAction(ALL, bookId, data.votesCount));
       dispatch(updateBookVotesInSearch(bookId, data.votesCount));
+      dispatch(updateBookVotesInSuggestedBook(bookId, data.votesCount));
       if (!isEmpty(bookDetailsData)) {
         dispatch(updateBookVotesInBookDetails(data.votesCount));
       }

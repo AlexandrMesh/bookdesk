@@ -3,6 +3,11 @@ export const BOTTOM_BAR_ICON = {
   height: '22',
 };
 
+export const BOTTOM_BAR_ADD_ICON = {
+  width: '28',
+  height: '28',
+};
+
 export const GOOGLE_ICON = {
   width: '26',
   height: '26',

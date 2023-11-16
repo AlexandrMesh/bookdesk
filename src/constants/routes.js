@@ -12,3 +12,5 @@ export const PLANNED_BOOKS_ROUTE = 'PlannedBooks';
 export const IN_PROGRESS_BOOKS_ROUTE = 'InProgressBooks';
 export const COMPLETED_BOOKS_ROUTE = 'CompletedBooks';
 export const BOOK_DETAILS_ROUTE = 'BookDetails';
+export const ADD_CUSTOM_BOOK_ROUTE = 'AddCustomBook';
+export const ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE = 'AddCustomBookNavigator';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { arrayOf, shape, string, number, func } from 'prop-types';
+import { bool, arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
@@ -12,7 +12,17 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus, triggerReloadBookList, boardType }) => {
+const BookList = ({
+  data,
+  loadMoreBooks,
+  showModal,
+  selectBook,
+  loadingDataStatus,
+  triggerReloadBookList,
+  boardType,
+  horizontal,
+  enablePullRefresh,
+}) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -24,12 +34,13 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
     <View style={styles.container}>
       {data.length > 0 && (
         <FlashList
+          horizontal={horizontal}
           estimatedItemSize={data.length}
           data={data}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
-          onRefresh={() => triggerReloadBookList(boardType, true)}
-          refreshing={loadingDataStatus === REFRESHING}
+          onRefresh={() => enablePullRefresh && triggerReloadBookList(boardType, true)}
+          refreshing={enablePullRefresh && loadingDataStatus === REFRESHING}
           onEndReached={loadMoreBooks}
           onEndReachedThreshold={0.5}
           ListFooterComponent={getSpinner}
@@ -39,7 +50,14 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
   );
 };
 
+BookList.defaultProps = {
+  loadMoreBooks: () => undefined,
+  enablePullRefresh: true,
+};
+
 BookList.propTypes = {
+  horizontal: bool,
+  enablePullRefresh: bool,
   data: arrayOf(
     shape({
       _id: string,
@@ -54,7 +72,7 @@ BookList.propTypes = {
       added: number,
     }),
   ).isRequired,
-  loadMoreBooks: func.isRequired,
+  loadMoreBooks: func,
   showModal: func.isRequired,
   triggerReloadBookList: func.isRequired,
   boardType: string,

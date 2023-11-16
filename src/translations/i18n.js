@@ -7,6 +7,7 @@ import books from './locales/ru/books.json';
 import search from './locales/ru/search.json';
 import errors from './locales/ru/errors.json';
 import profile from './locales/ru/profile.json';
+import customBook from './locales/ru/customBook.json';
 import app from './locales/ru/app.json';
 import categories from './locales/ru/categories.json';
 import commonEn from './locales/en/common.json';
@@ -44,6 +45,7 @@ i18n.use(LanguageDetector).init({
       profile,
       app,
       categories,
+      customBook,
     },
     [EN]: {
       common: commonEn,

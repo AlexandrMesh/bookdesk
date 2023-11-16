@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
-import { BOTTOM_BAR_ICON } from '~constants/dimensions';
+import { BOTTOM_BAR_ICON, BOTTOM_BAR_ADD_ICON } from '~constants/dimensions';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { getT } from '~translations/i18n';
 import {
@@ -20,13 +20,17 @@ import {
   PROFILE_NAVIGATOR_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_UP_ROUTE,
+  ADD_CUSTOM_BOOK_ROUTE,
+  ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE,
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import SearchIcon from '~assets/search.svg';
 import ProfileIcon from '~assets/profile.svg';
+import AddCustomBookIcon from '~assets/add.svg';
 import colors from '~styles/colors';
 import Splash from '~screens/Splash';
 import Home from '~screens/Home';
+import AddCustomBook from '~screens/AddCustomBook';
 import BookDetails from '~screens/Home/BookDetails';
 import SignIn from '~screens/Auth/SignIn';
 import SignUp from '~screens/Auth/SignUp';
@@ -49,6 +53,12 @@ const SearchNavigator = () => (
 const HomeNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const AddCustomBookNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen name={ADD_CUSTOM_BOOK_ROUTE} component={AddCustomBook} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
 
@@ -89,6 +99,14 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
           SearchNavigator: (
             <SearchIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
           ),
+          AddCustomBookNavigator: (
+            <AddCustomBookIcon
+              width={BOTTOM_BAR_ADD_ICON.width}
+              height={BOTTOM_BAR_ADD_ICON.height}
+              strokeWidth={1.5}
+              stroke={focused ? colors.neutral_light : colors.neutral_medium}
+            />
+          ),
           ProfileNavigator: (
             <ProfileIcon
               width={BOTTOM_BAR_ICON.width}
@@ -104,6 +122,7 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
   >
     <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
     <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
+    <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
     <Tab.Screen
       name={PROFILE_NAVIGATOR_ROUTE}
       component={ProfileNavigator}

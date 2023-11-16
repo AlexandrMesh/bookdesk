@@ -4,15 +4,28 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Input from '~UI/TextInput';
 import useDebouncedSearch from '~hooks/useDebouncedSearch';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import { PENDING, IDLE } from '~constants/loadingStatuses';
 import styles from './styles';
 
-const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults, shouldClearSearchQuery, triggerShouldNotClearSearchQuery }) => {
+const SearchBar = ({
+  searchQuery,
+  setSearchQuery,
+  clearSearchResults,
+  shouldClearSearchQuery,
+  triggerShouldNotClearSearchQuery,
+  loadingDataStatus,
+}) => {
   const { t } = useTranslation(['books', 'common', 'search']);
-  const [searchQueryValue, handleChangeQuery, clearSearchText] = useDebouncedSearch(setSearchQuery, searchQuery, 600);
+  const [searchQueryValue, handleChangeQuery, clearSearchText, isBusy] = useDebouncedSearch(setSearchQuery, searchQuery, 600);
 
   const handleClear = () => {
+    if (loadingDataStatus === PENDING || loadingDataStatus === IDLE || isBusy) {
+      return false;
+    }
     clearSearchText();
     clearSearchResults();
+    return true;
   };
 
   useEffect(() => {
@@ -30,7 +43,7 @@ const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults, shouldClea
           handleChangeQuery(value);
         }}
         value={searchQueryValue}
-        shouldDisplayClearButton={!!searchQueryValue}
+        shouldDisplayClearButton={!!searchQueryValue && !isBusy && loadingDataStatus !== PENDING && loadingDataStatus !== IDLE}
         validateable={false}
         onClear={handleClear}
       />
@@ -39,6 +52,7 @@ const SearchBar = ({ searchQuery, setSearchQuery, clearSearchResults, shouldClea
 };
 
 SearchBar.propTypes = {
+  loadingDataStatus: loadingDataStatusShape,
   triggerShouldNotClearSearchQuery: func.isRequired,
   searchQuery: string.isRequired,
   setSearchQuery: func.isRequired,
