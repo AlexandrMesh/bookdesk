@@ -39,6 +39,7 @@ export default StyleSheet.create({
   },
   label: {
     color: colors.neutral_light,
+    fontWeight: 600,
     fontSize: 17,
   },
   currentLabel: {

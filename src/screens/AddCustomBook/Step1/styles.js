@@ -3,6 +3,7 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   container: {
+    maxWidth: 400,
     marginTop: 10,
     height: '100%',
     width: '100%',

@@ -923,3 +923,8 @@ Advantages of the reading diary:
 Now you do not have to worry about storing your books, because our reading diary stores them in one reliable cloud storage.
 
 Become a user of our reading diary and put your ratings and reviews for books, recommend books to other users and store all your books in one safe place.
+
+20.11.2023
+Если очищаешь вручную поле название книги то также очищать результаты выдачи suggestedBooks
+Выводить категории в suggestedBooks
+Добавить параметр определения размера айтемов грида в booklist чтобы лучше рендерился

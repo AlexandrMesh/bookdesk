@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { func } from 'prop-types';
 import Stepper from '~UI/Stepper';
 import Step1 from './Step1';
+import Step2 from './Step2';
 import styles from './styles';
 
 const AddCustomBook = ({ completeStep }) => {
@@ -30,7 +31,19 @@ const AddCustomBook = ({ completeStep }) => {
     },
     {
       step: 2,
-      component: <Text style={styles.title}>Добавить книгу 2</Text>,
+      component: (
+        <Step2
+          setAvailableStep={setAvailableStep}
+          onPressNext={() => {
+            completeStep(2);
+            setCurrentStep(3);
+            setAvailableStep(3);
+          }}
+          onPressBack={() => {
+            setCurrentStep(1);
+          }}
+        />
+      ),
     },
     {
       step: 3,
