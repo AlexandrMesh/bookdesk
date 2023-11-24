@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.0.0
+
+###### 2023-11-11
+
+- [New] Added add custom book feature
+
 ## 1.7.0
 
 ###### 2023-11-11
