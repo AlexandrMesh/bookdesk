@@ -17,6 +17,9 @@ export default StyleSheet.create({
     paddingHorizontal: 15,
     color: colors.neutral_light,
   },
+  inputWithClearButton: {
+    paddingRight: 50,
+  },
   errorInput: {
     borderColor: colors.error,
   },

@@ -130,13 +130,14 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
 
 SlideMenu.defaultProps = {
   menuHeight: 336,
+  onReset: () => undefined,
 };
 
 SlideMenu.propTypes = {
   isVisible: bool,
   shouldAutoClose: bool,
   onClose: func.isRequired,
-  onReset: func.isRequired,
+  onReset: func,
   children: node.isRequired,
   menuHeight: number,
   title: string,

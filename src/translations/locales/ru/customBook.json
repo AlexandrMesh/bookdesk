@@ -1,3 +1,26 @@
 {
-  "enterBookName": "Введите название книги"
+  "enterBookName": "Введите название книги",
+  "enterPagesCount": "Введите количество страниц",
+  "enterAuthorsName": "Введите имя автора",
+  "enterAnnotation": "Введите описание",
+  "noCategory": "Нет категории",
+  "category": "Категория",
+  "status": "Статус",
+  "pages": "Страниц",
+  "authorsList": "Авторы",
+  "annotation": "Описание",
+  "addBook": "Добавить книгу",
+  "pressNextToAddTheBook": "Нажмите далее чтобы добавить эту книгу",
+  "weHaveTheSimilarBooks": "В нашей базе есть похожие книги. Нажмите Далее если Вы все-равно хотите добавить данную книгу",
+  "bookCover": "Обложка",
+  "theExampleOfTheBookCover": "Так будет выглядеть обложка книги",
+  "chooseTheBookCover": "Выберите подходящую обложку из предложенных и нажмите Далее",
+  "addAuthor": "Добавить автора",
+  "congratulations": "Поздравляем!",
+  "theBookWasAdded": "Ваша книга успешно добавлена!",
+  "addOneMoreBook": "Добавить еще книгу",
+  "backToTheDesk": "Вернуться на доску",
+  "withoutCover": "Без обложки",
+  "findCover": "Найти обложку",
+  "chooseTheOptionForBookCover": "Выберите вариант для обложки книги"
 }

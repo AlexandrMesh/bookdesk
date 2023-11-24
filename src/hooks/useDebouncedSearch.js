@@ -21,9 +21,11 @@ const useDebouncedSearch = (searchFunc, searchText, delay) => {
     [setSearchQuery, searchText],
   );
 
+  const cancelExecution = () => debouncedSearch.current.cancel();
+
   const clearSearchText = () => setSearchQuery('');
 
-  return [searchQuery, handleChange, clearSearchText, isBusy];
+  return [searchQuery, handleChange, clearSearchText, isBusy, cancelExecution];
 };
 
 export default useDebouncedSearch;

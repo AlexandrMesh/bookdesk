@@ -18,5 +18,8 @@
   "update": "Обновить",
   "alert": "!",
   "next": "Далее",
-  "back": "Назад"
+  "back": "Назад",
+  "required": "*",
+  "choose": "Выбрать",
+  "requiredFields": "* обязательные поля"
 }

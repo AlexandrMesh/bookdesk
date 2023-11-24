@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
-import { View, ToastAndroid, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { View, Platform, UIManager, LayoutAnimation } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
@@ -52,7 +52,6 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
       if (boardType !== ALL) {
         LayoutAnimation.configureNext(layoutAnimConfig);
       }
-      ToastAndroid.show(t('bookStatusUpdated'), ToastAndroid.SHORT);
     }
   };
 

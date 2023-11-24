@@ -1,30 +1,27 @@
 import { connect } from 'react-redux';
-import {
-  getNewCustomBookName,
-  getSuggestedBooksData,
-  getSuggestedBooksLoadingStatus,
-  deriveAllowsNextActionInTheStep1,
-  getBookExists,
-  deriveIsStepCompleted,
-} from '~redux/selectors/customBook';
-import { setNewCustomBookName, loadSuggestedBooks, setBookExists, clearSuggestedBooks, removeCompletedStep } from '~redux/actions/customBookActions';
+import { getNewCustomBookName, deriveSuggestBooksData, getSuggestedBooksLoadingStatus, deriveIsValidStep1 } from '~redux/selectors/customBook';
+import { setCurrentStep, setAvailableStep, setNewCustomBookName, loadSuggestedBooks, clearStep2, clearStep3 } from '~redux/actions/customBookActions';
 import Step1 from './Step1';
 
 const mapStateToProps = (state) => ({
   bookName: getNewCustomBookName(state),
-  suggestedBooks: getSuggestedBooksData(state),
+  suggestedBooks: deriveSuggestBooksData(state),
   loadingDataStatus: getSuggestedBooksLoadingStatus(state),
-  allowsNextAction: deriveAllowsNextActionInTheStep1(state),
-  bookExists: getBookExists(state),
-  isStepCompleted: deriveIsStepCompleted(1)(state),
+  allowsNextAction: deriveIsValidStep1(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setBookName: (name) => dispatch(setNewCustomBookName(name)),
-  setBookExists: (value) => dispatch(setBookExists(value)),
-  loadSuggestedBooks: () => dispatch(loadSuggestedBooks()),
-  clearSuggestedBooks: () => dispatch(clearSuggestedBooks),
-  removeCompletedStep: () => dispatch(removeCompletedStep(1)),
+  onPressNext: () => {
+    dispatch(setCurrentStep(2));
+    dispatch(setAvailableStep(2));
+  },
+  setAvailableStep: (step) => dispatch(setAvailableStep(step)),
+  setBookName: (name, error) => dispatch(setNewCustomBookName(name, error)),
+  loadSuggestedBooks: (bookName) => dispatch(loadSuggestedBooks(bookName)),
+  clearSteps: () => {
+    dispatch(clearStep2);
+    dispatch(clearStep3);
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Step1);

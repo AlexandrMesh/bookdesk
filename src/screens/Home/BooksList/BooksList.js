@@ -1,5 +1,6 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import { bool, arrayOf, shape, string, number, func } from 'prop-types';
+import { bool, any, arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
@@ -22,6 +23,7 @@ const BookList = ({
   boardType,
   horizontal,
   enablePullRefresh,
+  extraData,
 }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
@@ -37,6 +39,7 @@ const BookList = ({
           horizontal={horizontal}
           estimatedItemSize={data.length}
           data={data}
+          extraData={extraData}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
           onRefresh={() => enablePullRefresh && triggerReloadBookList(boardType, true)}
@@ -73,6 +76,7 @@ BookList.propTypes = {
     }),
   ).isRequired,
   loadMoreBooks: func,
+  extraData: any,
   showModal: func.isRequired,
   triggerReloadBookList: func.isRequired,
   boardType: string,

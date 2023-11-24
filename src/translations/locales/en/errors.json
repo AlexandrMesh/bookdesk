@@ -1,8 +1,8 @@
 {
   "hasNoValue": "Must not be empty",
-  "isTooLong": "Must be no more than 64 characters",
+  "isTooLong": "Must be no more than {{length}} characters",
   "isNotValidEmailPattern": "Invalid email format",
-  "isTooShort": "Must be at least 6 characters",
+  "isTooShort": "Must be at least {{length}} characters",
   "noToken": "A token must be provided",
   "somethingWentWrong": "Something went wrong",
   "incorrectToken": "Incorrect token",
@@ -13,5 +13,10 @@
   "invalidGoogleEmail": "Invalid Google Email",
   "noUser": "No such user exists",
   "wrongEmailOrPassword": "Invalid email or password",
-  "serverNotAvailable": "Server is not available"
+  "serverNotAvailable": "Server is not available",
+  "containsSpecialCharacters": "The use of special characters is not allowed",
+  "mustContainOnlyLetters": "Only letters can be used",
+  "mustContainOnlyNumbers": "Only numbers can be used",
+  "mustContainOnlyLettersAndNumbers": "Only alphanumeric can be used",
+  "bookExists": "This book is already in our database"
 }

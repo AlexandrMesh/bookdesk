@@ -10,21 +10,25 @@ import { FILTER_ICON } from '~constants/dimensions';
 import ArrowDown from '~assets/arrow-down.svg';
 import styles from './styles';
 
-const CategoryChooserModal = ({
+const CustomBookCategoryModal = ({
   isVisible,
   onClose,
   categories,
   toggleExpandedCategory,
   searchQuery,
   categoriesSearchResult,
-  searchCategory,
+  setSearchQuery,
+  selectCategory,
   clearSearchQueryForCategory,
+  selectedCategoryPath,
+  submitCategory,
 }) => {
   const { t } = useTranslation(['common', 'categories']);
   const [shouldAutoClose, setShouldAutoClose] = useState(false);
 
   const handleSave = () => {
     setShouldAutoClose(true);
+    submitCategory();
   };
 
   const shouldDisplaySearchResults = searchQuery;
@@ -60,9 +64,9 @@ const CategoryChooserModal = ({
             ) : null}
           </Pressable>
         )}
-        <Pressable style={styles.labelWrapper} onPress={() => console.log('select category')}>
+        <Pressable style={styles.labelWrapper} onPress={() => (level === 3 ? selectCategory({ label: value, path }) : toggleExpandedCategory(path))}>
           <Text style={styles.menuItemTitle}>{t(`categories:${value}`)}</Text>
-          <RadioButton isSelected={selectedCategoryPath === path} />
+          {level === 3 && <RadioButton isSelected={selectedCategoryPath === path} />}
         </Pressable>
       </View>
     );
@@ -109,7 +113,7 @@ const CategoryChooserModal = ({
     <SlideMenu isVisible={isVisible} shouldAutoClose={shouldAutoClose} title={t('categoriesTitle')} onClose={onClose} menuHeight={500}>
       <Input
         placeholder={t('searchCategory')}
-        onChangeText={searchCategory}
+        onChangeText={setSearchQuery}
         value={searchQuery}
         validateable={false}
         shouldDisplayClearButton={!!searchQuery}
@@ -138,15 +142,18 @@ const CategoryChooserModal = ({
   );
 };
 
-CategoryChooserModal.propTypes = {
+CustomBookCategoryModal.propTypes = {
   isVisible: bool.isRequired,
   onClose: func.isRequired,
-  searchCategory: func.isRequired,
+  setSearchQuery: func.isRequired,
+  selectCategory: func.isRequired,
+  submitCategory: func.isRequired,
   toggleExpandedCategory: func.isRequired,
   clearSearchQueryForCategory: func.isRequired,
   categories: arrayOf(shape({ path: string, title: string, isExpanded: bool })),
   categoriesSearchResult: arrayOf(shape({ path: string, title: string })),
   searchQuery: string,
+  selectedCategoryPath: string,
 };
 
-export default CategoryChooserModal;
+export default CustomBookCategoryModal;

@@ -12,7 +12,23 @@ export default StyleSheet.create({
     flex: 1,
   },
   inputWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
     paddingHorizontal: 10,
+  },
+  bookNameInputWrapper: {
+    flex: 2,
+  },
+  bookNameInputWithErrorWrapper: {
+    height: 90,
+  },
+  errorWrapperClassName: {
+    height: 40,
+  },
+  addButton: {
+    flex: 1,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
   },
   bookListWrapper: {
     flex: 1,
@@ -27,6 +43,9 @@ export default StyleSheet.create({
     color: colors.neutral_light,
     marginBottom: 10,
     textAlign: 'center',
+  },
+  successLabel: {
+    color: colors.success,
   },
   nextButtonWrapper: {
     display: 'flex',

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
+import { ScrollView, View, Text, Image, Pressable } from 'react-native';
 import { bool, string, func, number, arrayOf, shape } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { FlashList } from '@shopify/flash-list';
@@ -24,6 +24,7 @@ const Step2 = ({
   selectCover,
   selectedCover,
   onPressBack,
+  onPressNext,
 }) => {
   const { t } = useTranslation(['customBook, common']);
 
@@ -33,22 +34,18 @@ const Step2 = ({
 
   const handlePressOnWithCover = () => setShouldAddCover(true);
 
-  const handlePressBack = () => {
-    console.log('back');
-  };
-
   const suggestedCoversExist = suggestedCoversData.length > 0;
 
   useEffect(() => {
-    if (bookName && shouldAddCover && !suggestedCoversExist) {
+    if (bookName.value && shouldAddCover && !suggestedCoversExist) {
       loadSuggestedCovers();
     }
-  }, [bookName, shouldAddCover, loadSuggestedCovers, suggestedCoversExist]);
+  }, [bookName.value, shouldAddCover, loadSuggestedCovers, suggestedCoversExist]);
 
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
-        <Text style={styles.subTitle}>Обложка</Text>
+        {shouldAddCover === undefined && <Text style={styles.suggestionLabel}>{t('customBook:chooseTheOptionForBookCover')}</Text>}
 
         <View style={styles.buttonsWrapper}>
           <Button
@@ -56,62 +53,67 @@ const Step2 = ({
             theme={SECONDARY}
             style={styles.button}
             onPress={handlePressOnWithoutCover}
-            title='Без обложки'
+            title={t('customBook:withoutCover')}
           />
-          <Button disabled={shouldAddCover} style={styles.button} onPress={handlePressOnWithCover} title='Найти обложку' />
+          <Button disabled={shouldAddCover} style={styles.button} onPress={handlePressOnWithCover} title={t('customBook:findCover')} />
         </View>
 
-        <View style={styles.contentWrapper}>
-          {shouldAddCover === false && (
-            <View style={styles.defaultCoverWrapper}>
-              <Text style={styles.suggestionLabel}>Так будет выглядеть обложка книги.</Text>
-              <View>
-                <View style={[styles.defaultCover, styles.selectedCover]}>
-                  <RadioButton style={styles.selectedCoverRadioButton} isSelected />
-                  <Image
-                    style={styles.cover}
-                    source={{
-                      uri: IMG_URL(`${DEFAULT_COVER}.webp`),
-                    }}
-                  />
+        {shouldAddCover && loadingDataStatus === PENDING ? (
+          <View style={styles.contentWrapper}>
+            <Spinner />
+          </View>
+        ) : (
+          <ScrollView style={styles.contentWrapper} keyboardShouldPersistTaps='handled'>
+            {shouldAddCover === false && (
+              <View style={styles.defaultCoverWrapper}>
+                <Text style={styles.suggestionLabel}>{t('customBook:theExampleOfTheBookCover')}</Text>
+                <View>
+                  <View style={[styles.defaultCover, styles.selectedCover]}>
+                    <RadioButton style={styles.selectedCoverRadioButton} isSelected />
+                    <Image
+                      style={styles.cover}
+                      source={{
+                        uri: IMG_URL(`${DEFAULT_COVER}.webp`),
+                      }}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
-          {shouldAddCover && loadingDataStatus === PENDING && <Spinner />}
-          {shouldAddCover && loadingDataStatus === SUCCEEDED && suggestedCoversData.length > 0 && (
-            <View style={styles.suggestedCovers}>
-              <Text style={styles.suggestionLabel}>Выберите подходящую обложку из предложенных и нажмите Далее.</Text>
-              <FlashList
-                data={suggestedCoversData}
-                estimatedItemSize={suggestedCoversData.length}
-                estimatedListSize={{ height: 260, width: 1000 }}
-                horizontal
-                extraData={selectedCover}
-                renderItem={({ item, extraData }) => {
-                  const selected = extraData === item.coverPath;
-                  return (
-                    <Pressable style={[styles.coverWrapper, selected && styles.selectedCover]} onPress={() => selectCover(item.coverPath)}>
-                      <RadioButton style={styles.selectedCoverRadioButton} isSelected={selected} />
-                      <Image
-                        style={styles.cover}
-                        source={{
-                          uri: item.coverPath,
-                        }}
-                      />
-                    </Pressable>
-                  );
-                }}
-                keyExtractor={({ coverPath }) => coverPath}
-              />
-            </View>
-          )}
-        </View>
+            )}
+            {shouldAddCover && loadingDataStatus === SUCCEEDED && suggestedCoversData.length > 0 && (
+              <View style={styles.suggestedCovers}>
+                <Text style={styles.suggestionLabel}>{t('customBook:chooseTheBookCover')}</Text>
+                <FlashList
+                  data={suggestedCoversData}
+                  estimatedItemSize={suggestedCoversData.length}
+                  estimatedListSize={{ height: 260, width: 1000 }}
+                  horizontal
+                  extraData={selectedCover}
+                  renderItem={({ item, extraData }) => {
+                    const selected = extraData === item.coverPath;
+                    return (
+                      <Pressable style={[styles.coverWrapper, selected && styles.selectedCover]} onPress={() => selectCover(item.coverPath)}>
+                        <RadioButton style={styles.selectedCoverRadioButton} isSelected={selected} />
+                        <Image
+                          style={styles.cover}
+                          source={{
+                            uri: item.coverPath,
+                          }}
+                        />
+                      </Pressable>
+                    );
+                  }}
+                  keyExtractor={({ coverPath }) => coverPath}
+                />
+              </View>
+            )}
+          </ScrollView>
+        )}
       </View>
 
       <View style={styles.footerButtonsWrapper}>
         <Button theme={SECONDARY} style={styles.footerButton} onPress={onPressBack} title={t('common:back')} />
-        <Button disabled={!allowsNextActionInTheStep2} style={styles.footerButton} onPress={handlePressBack} title={t('common:next')} />
+        <Button disabled={!allowsNextActionInTheStep2} style={styles.footerButton} onPress={onPressNext} title={t('common:next')} />
       </View>
     </View>
   );
@@ -129,11 +131,15 @@ Step2.propTypes = {
       }),
     }),
   ),
-  bookName: string,
+  bookName: shape({
+    value: string,
+    error: string,
+  }),
   shouldAddCover: bool,
   allowsNextActionInTheStep2: bool,
   setShouldAddCover: func.isRequired,
   loadSuggestedCovers: func.isRequired,
+  onPressNext: func.isRequired,
   selectCover: func.isRequired,
   onPressBack: func.isRequired,
   selectedCover: string,

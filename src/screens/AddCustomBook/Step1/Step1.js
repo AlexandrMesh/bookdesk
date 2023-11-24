@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { bool, string, func, number, arrayOf, shape } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import isEmpty from 'lodash/isEmpty';
-import useDebouncedSearch from '~hooks/useDebouncedSearch';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import { getValidationFailure, validationTypes } from '~utils/validation';
 import BooksList from '~screens/Home/BooksList';
 import Button from '~UI/Button';
 import { Spinner } from '~UI/Spinner';
 import Input from '~UI/TextInput';
-import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
+import { PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import styles from './styles';
 
@@ -21,41 +21,49 @@ const Step1 = ({
   loadingDataStatus,
   loadSuggestedBooks,
   allowsNextAction,
-  bookExists,
-  setBookExists,
-  clearSuggestedBooks,
-  isStepCompleted,
-  removeCompletedStep,
   setAvailableStep,
+  clearSteps,
 }) => {
-  const { t } = useTranslation(['customBook, common']);
-  const [queryValue, handleChangeQuery, clearValue, isBusy] = useDebouncedSearch(setBookName, bookName, 600);
+  const { t } = useTranslation(['customBook, common, errors']);
+  const [bookNameTemp, setBookNameTemp] = useState(bookName.value);
+  const [bookNameErrorTemp, setBookNameErrorTemp] = useState(bookName.error);
 
-  useEffect(() => {
-    if (!isEmpty(bookName) && !isStepCompleted) {
-      loadSuggestedBooks();
+  const handleAddBook = async () => {
+    const params = { minLength: 3, maxLength: 64 };
+    const error = getValidationFailure(
+      bookNameTemp,
+      [validationTypes.mustContainOnlyLettersAndNumbers, validationTypes.isTooShort, validationTypes.isTooLong],
+      params,
+    );
+    const hasError = error ? t(`errors:${error}`, params) : null;
+    setBookNameErrorTemp(hasError);
+
+    if (isEmpty(error) && !isEmpty(bookNameTemp)) {
+      clearSteps();
+      setAvailableStep(1);
+      const error = await loadSuggestedBooks(bookNameTemp);
+      setBookNameErrorTemp(error);
+      if (!error) {
+        setBookName(bookNameTemp, null);
+      }
     }
-  }, [bookName, loadSuggestedBooks, isStepCompleted]);
+  };
 
   const handleClear = () => {
-    if (loadingDataStatus === PENDING || isBusy) {
+    if (loadingDataStatus === PENDING) {
       return false;
     }
-    setAvailableStep(1);
-    removeCompletedStep();
-    setBookName('');
-    clearValue();
-    setBookExists(false);
-    clearSuggestedBooks();
+    setBookNameErrorTemp(null);
+    setBookNameTemp('');
     return true;
   };
 
   const handleChangeBookName = (value) => {
-    setAvailableStep(1);
-    removeCompletedStep();
-    setBookExists(false);
-    handleChangeQuery(value);
+    setBookNameErrorTemp(null);
+    setBookNameTemp(value);
   };
+
+  const shouldDisplayError = !!bookNameErrorTemp;
 
   return (
     <View style={styles.container}>
@@ -63,24 +71,38 @@ const Step1 = ({
         <Input
           placeholder={t('customBook:enterBookName')}
           onChangeText={handleChangeBookName}
-          value={queryValue}
-          shouldDisplayClearButton={!!queryValue && !isBusy && loadingDataStatus !== PENDING && loadingDataStatus !== IDLE}
-          error={bookExists ? 'Такая книга уже есть в нашей базе' : ''}
-          validateable={bookExists}
+          value={bookNameTemp}
+          wrapperClassName={[styles.bookNameInputWrapper, shouldDisplayError && styles.bookNameInputWithErrorWrapper]}
+          errorWrapperClassName={styles.errorWrapperClassName}
+          shouldDisplayClearButton={!!bookNameTemp && loadingDataStatus !== PENDING}
+          error={bookNameErrorTemp}
+          disabled={loadingDataStatus === PENDING}
+          validateable={shouldDisplayError}
           onClear={handleClear}
+        />
+        <Button
+          disabled={!bookNameTemp || !!bookNameErrorTemp || loadingDataStatus === PENDING || (bookNameTemp && bookNameTemp === bookName.value)}
+          style={styles.addButton}
+          onPress={handleAddBook}
+          title={t('common:add')}
         />
       </View>
       <View style={styles.bookListWrapper}>
-        {loadingDataStatus === SUCCEEDED && suggestedBooks.length === 0 && (
-          <Text style={styles.suggestionLabel}>Вы можете добавить такую книгу. Нажмите Далее.</Text>
+        {bookNameTemp === bookName.value && bookNameTemp && !bookNameErrorTemp && loadingDataStatus === SUCCEEDED && suggestedBooks.length === 0 && (
+          <Text style={[styles.suggestionLabel, styles.successLabel]}>{t('customBook:pressNextToAddTheBook')}</Text>
         )}
         {loadingDataStatus === PENDING && <Spinner />}
         {loadingDataStatus !== PENDING && suggestedBooks.length > 0 && (
           <>
-            {!bookExists && (
-              <Text style={styles.suggestionLabel}>Мы нашли похожие книги. Жмите Далее если в списке нет книги, которую хотели бы добавить.</Text>
-            )}
-            <BooksList searchText={bookName} enablePullRefresh={false} boardType={ALL} data={suggestedBooks} loadingDataStatus={loadingDataStatus} />
+            {!bookNameErrorTemp && <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>}
+            <BooksList
+              searchText={bookName.value}
+              enablePullRefresh={false}
+              boardType={ALL}
+              data={suggestedBooks}
+              loadingDataStatus={loadingDataStatus}
+              extraData={suggestedBooks}
+            />
           </>
         )}
       </View>
@@ -94,16 +116,15 @@ const Step1 = ({
 
 Step1.propTypes = {
   allowsNextAction: bool,
-  bookExists: bool,
-  isStepCompleted: bool,
   onPressNext: func.isRequired,
   setBookName: func.isRequired,
-  setBookExists: func.isRequired,
-  clearSuggestedBooks: func.isRequired,
   loadSuggestedBooks: func.isRequired,
-  removeCompletedStep: func.isRequired,
   setAvailableStep: func.isRequired,
-  bookName: string,
+  clearSteps: func.isRequired,
+  bookName: shape({
+    value: string,
+    error: string,
+  }),
   loadingDataStatus: loadingDataStatusShape,
   suggestedBooks: arrayOf(
     shape({

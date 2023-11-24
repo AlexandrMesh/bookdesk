@@ -1,14 +1,27 @@
 import { connect } from 'react-redux';
-import { getNewCustomBookName } from '~redux/selectors/customBook';
-import { completeStep } from '~redux/actions/customBookActions';
+import {
+  getNewCustomBookName,
+  getAvailableStep,
+  getCurrentStep,
+  getAddedCustomBook,
+  getSavingCustomBookStatus,
+  getStatus,
+} from '~redux/selectors/customBook';
+import { setCurrentStep, clearAddCustomBookState } from '~redux/actions/customBookActions';
 import AddCustomBook from './AddCustomBook';
 
 const mapStateToProps = (state) => ({
   bookName: getNewCustomBookName(state),
+  availableStep: getAvailableStep(state),
+  currentStep: getCurrentStep(state),
+  addedCustomBook: getAddedCustomBook(state),
+  savingCustomBookStatus: getSavingCustomBookStatus(state),
+  customBookStatus: getStatus(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  completeStep: (step) => dispatch(completeStep(step)),
+  setCurrentStep: (step) => dispatch(setCurrentStep(step)),
+  clearAddCustomBookState: () => dispatch(clearAddCustomBookState),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCustomBook);

@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 import { getT } from '~translations/i18n';
+// eslint-disable-next-line import/no-cycle
+import { getExpandedCategories } from '~redux/selectors/customBook';
 
 const getBooks = (state) => state.books;
 const getSearch = (state) => getBooks(state).search;
@@ -210,44 +212,47 @@ export const deriveManageTopLevelCategorySelection = (fullPath, status) =>
     },
   );
 
-export const deriveCategories = (boardType) =>
-  createSelector([getCategoriesData, deriveEditableExpandedCategories(boardType)], (categories, expandedCategories) =>
-    categories
-      .map(({ path, value }) => {
-        const firstLevel = path.split('.');
-        if (firstLevel.length === 1) {
-          return {
-            path,
-            title: value,
-            isExpanded: expandedCategories.includes(path),
-            data: categories
-              .map(({ path, value }) => {
-                const secondLevel = path.split('.');
-                if (secondLevel.length === 2 && firstLevel[0] === secondLevel[0]) {
-                  return {
-                    path,
-                    title: value,
-                    isExpanded: expandedCategories.includes(path),
-                    data: categories
-                      .map(({ path, value }) => {
-                        const thirdLevel = path.split('.');
-                        if (thirdLevel.length === 3 && firstLevel[0] === thirdLevel[0] && thirdLevel[1] === secondLevel[1]) {
-                          return {
-                            path,
-                            title: value,
-                          };
-                        }
-                        return null;
-                      })
-                      .filter((item) => item !== null),
-                  };
-                }
-                return null;
-              })
-              .filter((item) => item !== null),
-          };
-        }
-        return null;
-      })
-      .filter((item) => item !== null),
+export const deriveCategories = (boardType, isForCustomBook) =>
+  createSelector(
+    [getCategoriesData, deriveEditableExpandedCategories(boardType), getExpandedCategories],
+    (categories, editableExpandedCategories, expandedCategoriesFromCustomBook) =>
+      categories
+        .map(({ path, value }) => {
+          const firstLevel = path.split('.');
+          if (firstLevel.length === 1) {
+            const expandedCategories = isForCustomBook ? expandedCategoriesFromCustomBook : editableExpandedCategories;
+            return {
+              path,
+              title: value,
+              isExpanded: expandedCategories.includes(path),
+              data: categories
+                .map(({ path, value }) => {
+                  const secondLevel = path.split('.');
+                  if (secondLevel.length === 2 && firstLevel[0] === secondLevel[0]) {
+                    return {
+                      path,
+                      title: value,
+                      isExpanded: expandedCategories.includes(path),
+                      data: categories
+                        .map(({ path, value }) => {
+                          const thirdLevel = path.split('.');
+                          if (thirdLevel.length === 3 && firstLevel[0] === thirdLevel[0] && thirdLevel[1] === secondLevel[1]) {
+                            return {
+                              path,
+                              title: value,
+                            };
+                          }
+                          return null;
+                        })
+                        .filter((item) => item !== null),
+                    };
+                  }
+                  return null;
+                })
+                .filter((item) => item !== null),
+            };
+          }
+          return null;
+        })
+        .filter((item) => item !== null),
   );

@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useState } from 'react';
-import { string, func, bool, oneOf, any } from 'prop-types';
+import { string, func, bool, oneOf, any, number } from 'prop-types';
 import { View, TextInput, Text, Pressable } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 import { CLOSE_ICON } from '~constants/dimensions';
@@ -21,6 +21,9 @@ const Input = ({
   onClear,
   inputMode,
   validateable,
+  numberOfLines,
+  multiline,
+  errorWrapperClassName,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -50,12 +53,22 @@ const Input = ({
           onBlur={onBlur}
           placeholder={placeholder}
           placeholderTextColor={colors.neutral_medium}
-          style={[styles.input, isFocused ? styles.focusedInput : '', error ? styles.errorInput : '', disabled ? styles.disabled : '', className]}
+          style={[
+            styles.input,
+            shouldDisplayClearButton && styles.inputWithClearButton,
+            isFocused ? styles.focusedInput : '',
+            error ? styles.errorInput : '',
+            disabled ? styles.disabled : '',
+            className,
+          ]}
           onChangeText={handleChangeText}
           value={value}
           editable={!disabled}
           secureTextEntry={secureTextEntry}
           inputMode={inputMode}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
+          textAlign='left'
         />
         {shouldDisplayClearButton && (
           <Pressable onPress={onClear} style={styles.clearButtonWrapper}>
@@ -63,7 +76,9 @@ const Input = ({
           </Pressable>
         )}
       </View>
-      {validateable ? <View style={styles.errorWrapper}>{!isEmpty(error) && <Text style={styles.errorText}>{error}</Text>}</View> : null}
+      {validateable ? (
+        <View style={[styles.errorWrapper, errorWrapperClassName]}>{!isEmpty(error) && <Text style={styles.errorText}>{error}</Text>}</View>
+      ) : null}
     </View>
   );
 };
@@ -71,11 +86,13 @@ const Input = ({
 Input.defaultProps = {
   validateable: true,
   onClear: () => undefined,
+  numberOfLines: 1,
 };
 
 Input.propTypes = {
   className: any,
   wrapperClassName: any,
+  errorWrapperClassName: any,
   onChangeText: func.isRequired,
   value: string,
   placeholder: string,
@@ -84,6 +101,8 @@ Input.propTypes = {
   onClear: func,
   disabled: bool,
   secureTextEntry: bool,
+  numberOfLines: number,
+  multiline: bool,
   validateable: bool,
   inputMode: oneOf(['decimal', 'email', 'none', 'numeric', 'search', 'tel', 'text', 'url']),
 };

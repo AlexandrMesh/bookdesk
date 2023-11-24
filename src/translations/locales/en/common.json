@@ -16,5 +16,10 @@
   "searchCategory": "Enter name of category",
   "noCategories": "No categories",
   "update": "Update",
-  "alert": "!"
+  "alert": "!",
+  "next": "Next",
+  "back": "Back",
+  "required": "*",
+  "choose": "Choose",
+  "requiredFields": "* required fields"
 }

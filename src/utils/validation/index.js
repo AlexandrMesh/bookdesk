@@ -11,6 +11,18 @@ const isTooLong = (value, { maxLength = 64 }) => value.length >= maxLength;
 // if the input val is too short
 const isTooShort = (value, { minLength = 6 }) => value.length < minLength;
 
+// should be contain only letters
+const mustContainOnlyLetters = (value) => !/^[а-яёa-z ]+$/i.test(value);
+
+// should be contain only numbers
+const mustContainOnlyNumbers = (value) => !/^[0-9]+$/.test(value);
+
+// if the input value contains special characters
+const containsSpecialCharacters = (value) => /[^а-яёa-z0-9., ]/gi.test(value);
+
+// if the input value contains special characters
+const mustContainOnlyLettersAndNumbers = (value) => /[^а-яёa-z0-9 ]/gi.test(value);
+
 // if the input val matches a predefined pattern
 const isNotValidEmailPattern = (value) => !isValidEmailPattern(value);
 
@@ -20,6 +32,10 @@ const validationFuncs = {
   isTooLong,
   isNotValidEmailPattern,
   isTooShort,
+  mustContainOnlyLetters,
+  containsSpecialCharacters,
+  mustContainOnlyNumbers,
+  mustContainOnlyLettersAndNumbers,
 };
 
 // exporting the enumerated rule types
