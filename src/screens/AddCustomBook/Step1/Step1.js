@@ -23,6 +23,7 @@ const Step1 = ({
   allowsNextAction,
   setAvailableStep,
   clearSteps,
+  clearSuggestedBooks,
 }) => {
   const { t } = useTranslation(['customBook, common, errors']);
   const [bookNameTemp, setBookNameTemp] = useState(bookName.value);
@@ -53,6 +54,8 @@ const Step1 = ({
     if (loadingDataStatus === PENDING) {
       return false;
     }
+    setBookName('', null);
+    clearSuggestedBooks();
     setBookNameErrorTemp(null);
     setBookNameTemp('');
     return true;
@@ -94,7 +97,9 @@ const Step1 = ({
         {loadingDataStatus === PENDING && <Spinner />}
         {loadingDataStatus !== PENDING && suggestedBooks.length > 0 && (
           <>
-            {!bookNameErrorTemp && <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>}
+            {bookNameTemp === bookName.value && !bookNameErrorTemp && (
+              <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>
+            )}
             <BooksList
               searchText={bookName.value}
               enablePullRefresh={false}
@@ -125,6 +130,7 @@ Step1.propTypes = {
     value: string,
     error: string,
   }),
+  clearSuggestedBooks: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
   suggestedBooks: arrayOf(
     shape({

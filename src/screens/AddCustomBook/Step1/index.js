@@ -1,6 +1,14 @@
 import { connect } from 'react-redux';
 import { getNewCustomBookName, deriveSuggestBooksData, getSuggestedBooksLoadingStatus, deriveIsValidStep1 } from '~redux/selectors/customBook';
-import { setCurrentStep, setAvailableStep, setNewCustomBookName, loadSuggestedBooks, clearStep2, clearStep3 } from '~redux/actions/customBookActions';
+import {
+  setCurrentStep,
+  setAvailableStep,
+  setNewCustomBookName,
+  loadSuggestedBooks,
+  clearStep2,
+  clearStep3,
+  clearSuggestedBooks,
+} from '~redux/actions/customBookActions';
 import Step1 from './Step1';
 
 const mapStateToProps = (state) => ({
@@ -15,6 +23,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setCurrentStep(2));
     dispatch(setAvailableStep(2));
   },
+  clearSuggestedBooks: () => dispatch(clearSuggestedBooks),
   setAvailableStep: (step) => dispatch(setAvailableStep(step)),
   setBookName: (name, error) => dispatch(setNewCustomBookName(name, error)),
   loadSuggestedBooks: (bookName) => dispatch(loadSuggestedBooks(bookName)),
