@@ -50,5 +50,13 @@ export default StyleSheet.create({
   },
   component: {
     flex: 1,
+    maxWidth: 400,
+  },
+  componentWrapper: {
+    flex: 1,
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });

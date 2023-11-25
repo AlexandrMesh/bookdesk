@@ -25,7 +25,9 @@ const Stepper = ({ steps, currentStep, lastAvailableStep, onStepPress }) => {
           </Fragment>
         ))}
       </View>
-      <View style={styles.component}>{steps.find(({ step }) => step === currentStep)?.component}</View>
+      <View style={styles.componentWrapper}>
+        <View style={styles.component}>{steps.find(({ step }) => step === currentStep)?.component}</View>
+      </View>
     </>
   );
 };
