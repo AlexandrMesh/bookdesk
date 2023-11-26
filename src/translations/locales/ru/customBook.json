@@ -10,8 +10,8 @@
   "authorsList": "Авторы",
   "annotation": "Описание",
   "addBook": "Добавить книгу",
-  "pressNextToAddTheBook": "Нажмите далее чтобы добавить эту книгу",
-  "weHaveTheSimilarBooks": "В нашей базе есть похожие книги. Нажмите Далее если Вы все-равно хотите добавить данную книгу",
+  "pressNextToAddTheBook": "Нажмите кнопку Далее чтобы добавить данную книгу",
+  "weHaveTheSimilarBooks": "В нашей базе есть похожие книги. Нажмите кнопку Далее если Вы все-равно хотите добавить данную книгу",
   "bookCover": "Обложка",
   "theExampleOfTheBookCover": "Так будет выглядеть обложка книги",
   "chooseTheBookCover": "Выберите подходящую обложку из предложенных и нажмите Далее",
@@ -22,5 +22,7 @@
   "backToTheDesk": "Вернуться на доску",
   "withoutCover": "Без обложки",
   "findCover": "Найти обложку",
-  "chooseTheOptionForBookCover": "Выберите вариант для обложки книги"
+  "chooseTheOptionForBookCover": "Выберите вариант для обложки книги",
+  "charactersCount": "Символов: {{count}}/100",
+  "addBookManually": "Добавьте эту книгу в каталог вручную"
 }

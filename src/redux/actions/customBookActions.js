@@ -36,6 +36,7 @@ export const ADD_AUTHOR = `${PREFIX}/ADD_AUTHOR`;
 export const REMOVE_AUTHOR = `${PREFIX}/REMOVE_AUTHOR`;
 export const UPDATE_AUTHOR = `${PREFIX}/UPDATE_AUTHOR`;
 export const SET_ANNOTATION = `${PREFIX}/SET_ANNOTATION`;
+export const SET_ANNOTATION_ERROR = `${PREFIX}/SET_ANNOTATION_ERROR`;
 export const CLEAR_STEP_3 = `${PREFIX}/CLEAR_STEP_3`;
 
 // common
@@ -99,6 +100,11 @@ export const addAuthor = (id) => ({
 export const setAnnotation = (annotation, error) => ({
   type: SET_ANNOTATION,
   annotation,
+  error,
+});
+
+export const setAnnotationError = (error) => ({
+  type: SET_ANNOTATION_ERROR,
   error,
 });
 

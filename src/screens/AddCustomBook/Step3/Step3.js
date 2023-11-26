@@ -26,6 +26,7 @@ const Step3 = ({
   updateAuthor,
   annotation,
   setAnnotation,
+  setAnnotationError,
   onPressBack,
   isValidForm,
   addCustomBook,
@@ -63,16 +64,29 @@ const Step3 = ({
   };
 
   const handleChangeAnnotation = (value) => {
+    setAnnotation(value, null);
+  };
+
+  const validateAnnotation = () => {
     const params = {
       minLength: 100,
       maxLength: 1000,
     };
     const error = getValidationFailure(
-      value,
+      annotation.value,
       [validationTypes.containsSpecialCharacters, validationTypes.isTooShort, validationTypes.isTooLong],
       params,
     );
-    setAnnotation(value, error ? t(`errors:${error}`, params) : null);
+    setAnnotationError(error ? t(`errors:${error}`, params) : null);
+    return !error;
+  };
+
+  const handleAddBook = () => {
+    const isAnnotationValid = validateAnnotation();
+
+    if (isAnnotationValid) {
+      addCustomBook();
+    }
   };
 
   return (
@@ -152,10 +166,14 @@ const Step3 = ({
         </View>
 
         <View style={styles.block}>
-          <Text style={styles.subTitle}>
-            {t('customBook:annotation')}
-            {t('common:required')}
-          </Text>
+          <View style={styles.annotationLabelWrapper}>
+            <Text style={styles.subTitle}>
+              {t('customBook:annotation')}
+              {t('common:required')}
+            </Text>
+            {annotation.value && <Text style={styles.subTitle}>{t('customBook:charactersCount', { count: annotation.value.length })}</Text>}
+          </View>
+
           <Input
             placeholder={t('customBook:enterAnnotation')}
             wrapperClassName={styles.annotationWrapperClassName}
@@ -164,7 +182,7 @@ const Step3 = ({
             value={annotation.value}
             error={annotation.error}
             shouldDisplayClearButton={!!annotation.value}
-            onClear={() => setAnnotation(null)}
+            onClear={() => setAnnotation('')}
             multiline
             numberOfLines={5}
           />
@@ -175,7 +193,7 @@ const Step3 = ({
         <Text style={styles.tip}>{t('common:requiredFields')}</Text>
         <View style={styles.footerButtonsWrapper}>
           <Button theme={SECONDARY} style={styles.footerButton} onPress={onPressBack} title={t('common:back')} />
-          <Button disabled={!isValidForm} style={styles.footerButton} onPress={addCustomBook} title={t('common:add')} />
+          <Button disabled={!isValidForm} style={styles.footerButton} onPress={handleAddBook} title={t('common:add')} />
         </View>
       </View>
     </View>
@@ -186,6 +204,7 @@ Step3.propTypes = {
   selectedCategoryLabel: string,
   showCategoryChooser: func.isRequired,
   showCustomBookStatusChooser: func.isRequired,
+  setAnnotationError: func.isRequired,
   onPressBack: func.isRequired,
   addAuthor: func.isRequired,
   setPages: func.isRequired,

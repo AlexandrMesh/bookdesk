@@ -18,10 +18,7 @@ const mustContainOnlyLetters = (value) => !/^[а-яёa-z ]+$/i.test(value);
 const mustContainOnlyNumbers = (value) => !/^[0-9]+$/.test(value);
 
 // if the input value contains special characters
-const containsSpecialCharacters = (value) => /[^а-яёa-z0-9., ]/gi.test(value);
-
-// if the input value contains special characters
-const mustContainOnlyLettersAndNumbers = (value) => /[^а-яёa-z0-9 ]/gi.test(value);
+const containsSpecialCharacters = (value) => /[@^&/\\#+$~%;~`*<>=%[\]{}_|]/g.test(value);
 
 // if the input val matches a predefined pattern
 const isNotValidEmailPattern = (value) => !isValidEmailPattern(value);
@@ -35,7 +32,6 @@ const validationFuncs = {
   mustContainOnlyLetters,
   containsSpecialCharacters,
   mustContainOnlyNumbers,
-  mustContainOnlyLettersAndNumbers,
 };
 
 // exporting the enumerated rule types

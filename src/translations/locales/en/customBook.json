@@ -10,8 +10,8 @@
   "authorsList": "Authors",
   "annotation": "Description",
   "addBook": "Add book",
-  "pressNextToAddTheBook": "Press Next to add this book",
-  "weHaveTheSimilarBooks": "We have similar books in our database. Press Next if you still want to add this book",
+  "pressNextToAddTheBook": "Press Next button to add this book",
+  "weHaveTheSimilarBooks": "We have similar books in our database. Press Next button if you still want to add this book",
   "bookCover": "Cover",
   "theExampleOfTheBookCover": "This is what the book cover will look like",
   "chooseTheBookCover": "Select the appropriate cover from the suggested ones and press Next",
@@ -22,5 +22,7 @@
   "backToTheDesk": "Return to board",
   "withoutCover": "No cover",
   "findCover": "Find cover",
-  "chooseTheOptionForBookCover": "Select an option for the book cover"
+  "chooseTheOptionForBookCover": "Select an option for the book cover",
+  "charactersCount": "Characters: {{count}}/100",
+  "addBookManually": "Add this book to the catalog manually"
 }

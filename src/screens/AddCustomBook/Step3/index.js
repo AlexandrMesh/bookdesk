@@ -7,6 +7,7 @@ import {
   removeAuthor,
   updateAuthor,
   setAnnotation,
+  setAnnotationError,
   setCurrentStep,
   setAvailableStep,
   addCustomBook,
@@ -33,6 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeAuthor: (id) => dispatch(removeAuthor(id)),
   updateAuthor: (id, name, error) => dispatch(updateAuthor(id, name, error)),
   setAnnotation: (annotation, error) => dispatch(setAnnotation(annotation, error)),
+  setAnnotationError: (error) => dispatch(setAnnotationError(error)),
   addCustomBook: () => dispatch(addCustomBook()),
 });
 

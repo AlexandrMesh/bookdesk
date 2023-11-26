@@ -82,7 +82,7 @@ export const deriveIsValidAuthorsList = createSelector(
 export const deriveIsValidStep3 = createSelector(
   [getSelectedCategoryPath, getPages, deriveIsValidAuthorsList, getAnnotation],
   (selectedCategoryPath, pages, isValidAuthorsList, annotation) =>
-    selectedCategoryPath && pages.value && !pages.error && isValidAuthorsList && annotation.value && !annotation.error,
+    !!selectedCategoryPath && !!pages.value && !pages.error && isValidAuthorsList && !!annotation.value && !annotation.error,
 );
 
 export const deriveIsValidFullForm = createSelector(

@@ -33,7 +33,7 @@ const Step1 = ({
     const params = { minLength: 3, maxLength: 64 };
     const error = getValidationFailure(
       bookNameTemp,
-      [validationTypes.mustContainOnlyLettersAndNumbers, validationTypes.isTooShort, validationTypes.isTooLong],
+      [validationTypes.containsSpecialCharacters, validationTypes.isTooShort, validationTypes.isTooLong],
       params,
     );
     const hasError = error ? t(`errors:${error}`, params) : null;
@@ -56,6 +56,8 @@ const Step1 = ({
     }
     setBookName('', null);
     clearSuggestedBooks();
+    clearSteps();
+    setAvailableStep(1);
     setBookNameErrorTemp(null);
     setBookNameTemp('');
     return true;

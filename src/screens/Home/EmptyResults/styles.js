@@ -17,7 +17,19 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   label: {
+    textAlign: 'center',
     fontSize: 18,
     color: colors.neutral_light,
+  },
+  addButtonWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingHorizontal: 30,
+  },
+  addButton: {
+    marginTop: 15,
+    paddingHorizontal: 15,
   },
 });

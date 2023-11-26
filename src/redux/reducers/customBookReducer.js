@@ -26,6 +26,7 @@ import {
   REMOVE_AUTHOR,
   UPDATE_AUTHOR,
   SET_ANNOTATION,
+  SET_ANNOTATION_ERROR,
   ALLOW_TO_ADD_BOOK,
   CLEAR_STEP_2,
   CLEAR_STEP_3,
@@ -82,7 +83,7 @@ const getDefaultStep2State = () => ({
 });
 
 const getDefaultValueState = () => ({
-  value: null,
+  value: '',
   error: null,
 });
 
@@ -96,7 +97,7 @@ const getDefaultStep3State = () => ({
   editableCategory: getDefaultCategoryState(),
   status: ALL,
   pages: getDefaultValueState(),
-  authorsList: [],
+  authorsList: [{ id: 'default', name: null, error: null }],
   annotation: getDefaultValueState(),
 });
 
@@ -272,6 +273,22 @@ export default createReducer(initialState, (state, action) => ({
           ...state.add.steps[3],
           annotation: {
             value: action.annotation,
+            error: action.error,
+          },
+        },
+      },
+    },
+  }),
+  [SET_ANNOTATION_ERROR]: () => ({
+    ...state,
+    add: {
+      ...state.add,
+      steps: {
+        ...state.add.steps,
+        3: {
+          ...state.add.steps[3],
+          annotation: {
+            ...state.add.steps[3].annotation,
             error: action.error,
           },
         },

@@ -14,9 +14,8 @@
   "noUser": "No such user exists",
   "wrongEmailOrPassword": "Invalid email or password",
   "serverNotAvailable": "Server is not available",
-  "containsSpecialCharacters": "The use of special characters is not allowed",
   "mustContainOnlyLetters": "Only letters can be used",
   "mustContainOnlyNumbers": "Only numbers can be used",
-  "mustContainOnlyLettersAndNumbers": "Only alphanumeric can be used",
+  "containsSpecialCharacters": "Unacceptable symbols @^&/#+$~%;~`*<>=%[]{}_|",
   "bookExists": "This book is already in our database"
 }

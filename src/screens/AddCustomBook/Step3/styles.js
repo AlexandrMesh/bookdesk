@@ -101,6 +101,12 @@ export default StyleSheet.create({
     fontSize: 18,
     color: colors.neutral_medium,
   },
+  annotationLabelWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   footerButtonsWrapper: {
     display: 'flex',
     flexDirection: 'row',
