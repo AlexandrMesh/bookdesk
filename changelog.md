@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.0.1
+
+###### 2023-11-24
+
+- [Fix] Fix add custom book validation
+
 ## 2.0.0
 
 ###### 2023-11-24
