@@ -1,7 +1,9 @@
+import { NativeModules } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
 import AuthService from '~http/services/auth';
+import { getT } from '~translations/i18n';
 
 const PREFIX = 'AUTH';
 
@@ -133,9 +135,9 @@ const signInFailed = (error) => async (dispatch) => {
   const responseData = error?.response?.data;
   if (responseData) {
     const { fieldName, key } = responseData;
-    dispatch(setSignInError(fieldName, key));
+    dispatch(setSignInError(fieldName, getT('errors')(key)));
   } else {
-    dispatch(setSignInError('password', 'serverNotAvailable'));
+    dispatch(setSignInError('password', getT('errors')('serverNotAvailable')));
   }
 };
 
@@ -150,7 +152,11 @@ export const signIn =
           idToken,
           user: { email: googleEmail },
         } = await GoogleSignin.signIn();
-        const { data } = await AuthService().signIn({ email: googleEmail, googleToken: idToken });
+        const { data } = await AuthService().signIn({
+          email: googleEmail,
+          googleToken: idToken,
+          language: NativeModules?.I18nManager?.localeIdentifier,
+        });
         if (data) {
           dispatch(signedIn);
           dispatch(setProfile(data.profile));
@@ -192,7 +198,7 @@ export const signUp =
   async (dispatch) => {
     dispatch(startSignUp);
     try {
-      const { data } = await AuthService().signUp({ email, password });
+      const { data } = await AuthService().signUp({ email, password, language: NativeModules?.I18nManager?.localeIdentifier });
       if (data) {
         dispatch(signedUp);
         dispatch(signedIn);
@@ -209,9 +215,9 @@ export const signUp =
       const responseData = error?.response?.data;
       if (responseData) {
         const { fieldName, key } = responseData;
-        dispatch(setSignUpError(fieldName, key));
+        dispatch(setSignUpError(fieldName, getT('errors')(key)));
       } else {
-        dispatch(setSignUpError('password', 'serverNotAvailable'));
+        dispatch(setSignUpError('password', getT('errors')('serverNotAvailable')));
       }
     }
     return true;

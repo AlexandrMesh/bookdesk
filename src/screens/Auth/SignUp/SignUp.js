@@ -26,7 +26,7 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
   const isValidForm = () => {
     const emailError = getValidationFailure(email, [validationTypes.hasNoValue, validationTypes.isNotValidEmailPattern]);
     const passwordError = getValidationFailure(password, [validationTypes.hasNoValue, validationTypes.isTooShort, validationTypes.isTooLong]);
-    setSignUpError('email', emailError);
+    setSignUpError('email', emailError ? t(`errors:${emailError}`) : null);
     setSignUpError('password', passwordError ? t(`errors:${passwordError}`, { minLength: 6, maxLength: 64 }) : null);
     return !(emailError || passwordError);
   };
@@ -73,7 +73,7 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
           <View style={styles.formWrapper}>
             <Input
               wrapperClassName={styles.marginBottom}
-              error={errors.email && t(`errors:${errors.email}`)}
+              error={errors.email}
               placeholder={t('email')}
               onChangeText={handleSetEmail}
               value={email}

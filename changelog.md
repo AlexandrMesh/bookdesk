@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.0.2
+
+###### 2023-11-24
+
+- [Fix] Fixed translations and displaying validation API errors in SignIn and SignUp screens
+
 ## 2.0.1
 
 ###### 2023-11-24
