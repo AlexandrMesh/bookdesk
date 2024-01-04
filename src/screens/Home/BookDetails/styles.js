@@ -52,6 +52,16 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  addedContainer: {
+    height: 25,
+  },
+  addedWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    borderStyle: 'dotted',
+    borderBottomWidth: 2,
+    borderColor: colors.neutral_light,
+  },
   bookStatusWrapper: {
     marginTop: 15,
     width: '100%',

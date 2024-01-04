@@ -1,6 +1,6 @@
 {
   "name": "bookdesk",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -29,6 +29,7 @@
     "react-i18next": "^11.18.6",
     "react-native": "0.72.5",
     "react-native-actions-sheet": "^0.9.0-alpha.21",
+    "react-native-date-picker": "^4.3.5",
     "react-native-device-info": "^10.11.0",
     "react-native-gesture-handler": "^2.13.1",
     "react-native-pager-view": "^6.2.1",

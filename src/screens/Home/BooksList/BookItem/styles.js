@@ -23,6 +23,16 @@ export default StyleSheet.create({
     marginLeft: 15,
     flex: 1,
   },
+  addedContainer: {
+    height: 20,
+  },
+  addedWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    borderStyle: 'dotted',
+    borderBottomWidth: 1,
+    borderColor: colors.neutral_light,
+  },
   footer: {
     marginTop: 15,
     width: '100%',

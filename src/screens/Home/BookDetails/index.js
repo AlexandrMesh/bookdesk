@@ -1,6 +1,21 @@
 import { connect } from 'react-redux';
-import { getLoadingBookDetailsStatus, deriveBookDetails, deriveBookVotes, deriveUpdatingVoteForBook } from '~redux/selectors/books';
-import { loadBookDetails, updateBookVotes, showModal, selectBook, clearBookDetails } from '~redux/actions/booksActions';
+import {
+  getLoadingBookDetailsStatus,
+  deriveBookDetails,
+  deriveBookVotes,
+  deriveUpdatingVoteForBook,
+  getBookValuesUpdatingStatus,
+} from '~redux/selectors/books';
+import {
+  loadBookDetails,
+  updateBookVotes,
+  showModal,
+  selectBook,
+  clearBookDetails,
+  setBookToUpdate,
+  setBookValuesToUpdate,
+} from '~redux/actions/booksActions';
+import { DATE_UPDATER } from '~constants/modalTypes';
 import BookDetails from './BookDetails';
 
 const mapStateToProps = (state, ownProps) => ({
@@ -8,6 +23,7 @@ const mapStateToProps = (state, ownProps) => ({
   updatingVoteForBook: deriveUpdatingVoteForBook(ownProps.route.params.bookId)(state),
   loadingDataStatus: getLoadingBookDetailsStatus(state),
   bookDetailsData: deriveBookDetails(state),
+  bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -16,6 +32,9 @@ const mapDispatchToProps = (dispatch) => ({
   showModal: (modal) => dispatch(showModal(modal)),
   selectBook: (book) => dispatch(selectBook(book)),
   clearBookDetails: () => dispatch(clearBookDetails),
+  setBookToUpdate: (bookId, bookStatus) => dispatch(setBookToUpdate(bookId, bookStatus)),
+  setBookValuesToUpdate: (added) => dispatch(setBookValuesToUpdate(added)),
+  showDateUpdater: () => dispatch(showModal(DATE_UPDATER)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookDetails);

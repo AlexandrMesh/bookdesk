@@ -57,6 +57,11 @@ import {
   TRIGGER_RELOAD_CATEGORIES,
   TRIGGER_SHOULD_NOT_CLEAR_SEARCH_QUERY,
   CLEAR_DATA_FOR_CHANGE_LANGUAGE,
+  SET_BOOK_TO_UPDATE,
+  SET_BOOK_VALUES_TO_UPDATE,
+  START_UPDATING_BOOK_ADDED_DATE,
+  UPDATING_BOOK_ADDED_DATE_FAILED,
+  BOOK_ADDED_DATE_UPDATED,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -116,6 +121,17 @@ const initialState = {
   boardType: ALL,
   selectedBook: null,
   activeModal: null,
+  activeAlert: null,
+  updatedBookValues: {
+    bookToUpdate: {
+      bookId: '',
+      bookStatus: '',
+    },
+    valuesToUpdate: {
+      added: null,
+    },
+    loadingDataStatus: IDLE,
+  },
   bookVotes: [],
   updatingVotesForBooks: [],
   bookDetails: getDefaultBookDetailsState(),
@@ -179,6 +195,51 @@ export default createReducer(initialState, (state, action) => ({
         bookStatus: action.bookStatus,
         added: action.added,
       },
+    },
+  }),
+
+  [SET_BOOK_TO_UPDATE]: () => ({
+    ...state,
+    updatedBookValues: {
+      ...state.updatedBookValues,
+      bookToUpdate: {
+        bookId: action.bookId,
+        bookStatus: action.bookStatus,
+      },
+    },
+  }),
+
+  [SET_BOOK_VALUES_TO_UPDATE]: () => ({
+    ...state,
+    updatedBookValues: {
+      ...state.updatedBookValues,
+      valuesToUpdate: {
+        added: action.added,
+      },
+    },
+  }),
+
+  [START_UPDATING_BOOK_ADDED_DATE]: () => ({
+    ...state,
+    updatedBookValues: {
+      ...state.updatedBookValues,
+      loadingDataStatus: PENDING,
+    },
+  }),
+
+  [UPDATING_BOOK_ADDED_DATE_FAILED]: () => ({
+    ...state,
+    updatedBookValues: {
+      ...state.updatedBookValues,
+      loadingDataStatus: FAILED,
+    },
+  }),
+
+  [BOOK_ADDED_DATE_UPDATED]: () => ({
+    ...state,
+    updatedBookValues: {
+      ...state.updatedBookValues,
+      loadingDataStatus: SUCCEEDED,
     },
   }),
 

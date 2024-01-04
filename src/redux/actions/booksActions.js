@@ -21,6 +21,7 @@ import {
   getSearchQuery,
   getBookDetailsData,
   getShouldReloadCategories,
+  getBookToUpdate,
 } from '~redux/selectors/books';
 // eslint-disable-next-line import/no-cycle
 import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/actions/customBookActions';
@@ -98,6 +99,24 @@ export const BOOK_DETAILS_LOADED = `${PREFIX}/BOOK_DETAILS_LOADED`;
 export const LOADING_BOOK_DETAILS_FAILED = `${PREFIX}/LOADING_BOOK_DETAILS_FAILED`;
 export const CLEAR_BOOK_DETAILS = `${PREFIX}/CLEAR_BOOK_DETAILS`;
 
+export const SET_BOOK_TO_UPDATE = `${PREFIX}/SET_BOOK_TO_UPDATE`;
+export const SET_BOOK_VALUES_TO_UPDATE = `${PREFIX}/SET_BOOK_VALUES_TO_UPDATE`;
+
+export const START_UPDATING_BOOK_ADDED_DATE = `${PREFIX}/START_UPDATING_BOOK_ADDED_DATE`;
+export const BOOK_ADDED_DATE_UPDATED = `${PREFIX}/BOOK_ADDED_DATE_UPDATED`;
+export const UPDATING_BOOK_ADDED_DATE_FAILED = `${PREFIX}/UPDATING_BOOK_ADDED_DATE_FAILED`;
+
+export const setBookToUpdate = (bookId, bookStatus) => ({
+  type: SET_BOOK_TO_UPDATE,
+  bookId,
+  bookStatus,
+});
+
+export const setBookValuesToUpdate = (added) => ({
+  type: SET_BOOK_VALUES_TO_UPDATE,
+  added,
+});
+
 export const setBoardType = (boardType) => ({
   type: SET_BOARD_TYPE,
   boardType,
@@ -159,6 +178,18 @@ export const categoriesLoaded = (data) => ({
   type: CATEGORIES_LOADED,
   data,
 });
+
+export const startUpdatingBookAddedDate = {
+  type: START_UPDATING_BOOK_ADDED_DATE,
+};
+
+export const updatingBookAddedDateFailed = {
+  type: UPDATING_BOOK_ADDED_DATE_FAILED,
+};
+
+export const bookAddedDateUpdated = {
+  type: BOOK_ADDED_DATE_UPDATED,
+};
 
 export const startLoadingBookDetails = {
   type: START_LOADING_BOOK_DETAILS,
@@ -572,6 +603,25 @@ export const reloadBookList = (boardType) => async (dispatch, getState) => {
     dispatch(triggerReloadBookList(boardType));
   }
 };
+
+export const updateUserBookAddedDate =
+  ({ added }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch(startUpdatingBookAddedDate);
+      const { bookId, bookStatus } = getBookToUpdate(getState());
+      const { data } = await DataService().updateUserBookAddedValue({ bookId, date: added });
+
+      dispatch(updateBookDetails(bookStatus, data.added));
+      dispatch(updateBook(bookId, ALL, bookStatus, data.added));
+      dispatch(updateBook(bookId, bookStatus, bookStatus, data.added));
+      dispatch(updateBookInSearchResults(bookId, ALL, bookStatus, data.added));
+      dispatch(updateSuggestedBook(bookId, bookStatus, data.added));
+      dispatch(bookAddedDateUpdated);
+    } catch (e) {
+      dispatch(updatingBookAddedDateFailed);
+    }
+  };
 
 export const updateUserBook =
   ({ book, newBookStatus, boardType }) =>

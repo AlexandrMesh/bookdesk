@@ -6,6 +6,7 @@
   "votesCount": "Rating",
   "title": "Title",
   "pages": "Pages",
+  "cancel": "Cancel",
   "year": "Year",
   "filter": "Filter",
   "sort": "Sort",
@@ -21,5 +22,7 @@
   "back": "Back",
   "required": "*",
   "choose": "Choose",
-  "requiredFields": "* required fields"
+  "requiredFields": "* required fields",
+  "selectDate": "Select date",
+  "confirm": "Confirm"
 }

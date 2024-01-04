@@ -12,6 +12,8 @@ import { BOOK_DETAILS_ROUTE } from '~constants/routes';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { RU } from '~constants/languages';
 import { BOOK_STATUS } from '~constants/modalTypes';
+import { PENDING } from '~constants/loadingStatuses';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
@@ -25,7 +27,19 @@ const getStatusColor = (bookStatus) =>
     [COMPLETED]: colors.completed,
   }[bookStatus] || colors.neutral_light);
 
-const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVotes, updatingVoteForBook }) => {
+const BookItem = ({
+  bookItem,
+  showModal,
+  selectBook,
+  bookWithVote,
+  updateBookVotes,
+  updatingVoteForBook,
+  setBookToUpdate,
+  setBookValuesToUpdate,
+  showDateUpdater,
+  bookValuesUpdatingStatus,
+  bookIdToUpdateAddedDate,
+}) => {
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
   const navigation = useNavigation();
@@ -37,6 +51,12 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
   const handleChangeStatus = () => {
     showModal(BOOK_STATUS);
     selectBook(bookItem);
+  };
+
+  const handleAddedPress = () => {
+    setBookToUpdate(bookId, bookStatus);
+    setBookValuesToUpdate(added);
+    showDateUpdater();
   };
 
   const navigateToBookDetails = () => navigation.navigate(BOOK_DETAILS_ROUTE, { bookId });
@@ -78,7 +98,18 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}</Text>
+
+              <View style={styles.addedContainer}>
+                {bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? (
+                  <Spinner size={Size.SMALL} />
+                ) : (
+                  <View style={styles.addedWrapper}>
+                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                      {new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </Text>
           )}
         </View>
@@ -115,6 +146,7 @@ const BookItem = ({ bookItem, showModal, selectBook, bookWithVote, updateBookVot
 };
 
 BookItem.propTypes = {
+  bookValuesUpdatingStatus: loadingDataStatusShape,
   bookItem: shape({
     _id: string,
     bookId: string,
@@ -129,9 +161,13 @@ BookItem.propTypes = {
     added: number,
   }).isRequired,
   showModal: func.isRequired,
+  setBookToUpdate: func.isRequired,
+  setBookValuesToUpdate: func.isRequired,
+  showDateUpdater: func.isRequired,
   selectBook: func.isRequired,
   updateBookVotes: func.isRequired,
   bookWithVote: bool,
+  bookIdToUpdateAddedDate: string,
   updatingVoteForBook: bool,
 };
 

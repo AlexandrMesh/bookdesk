@@ -10,6 +10,7 @@
   "filter": "Фильтр",
   "sort": "Сортировка",
   "toFilter": "Фильтровать",
+  "cancel": "Отмена",
   "clear": "Очистить",
   "categoriesTitle": "Категории",
   "categoriesCount": "Категории ({{count}})",
@@ -21,5 +22,7 @@
   "back": "Назад",
   "required": "*",
   "choose": "Выбрать",
-  "requiredFields": "* обязательные поля"
+  "requiredFields": "* обязательные поля",
+  "selectDate": "Выберите дату",
+  "confirm": "Подтвердить"
 }

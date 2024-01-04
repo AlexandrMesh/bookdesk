@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { View, ScrollView, SafeAreaView, Text, Image, Pressable } from 'react-native';
+import { View, Pressable, ScrollView, SafeAreaView, Text, Image } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { Spinner, Size } from '~UI/Spinner';
@@ -36,6 +36,10 @@ const BookDetails = ({
   showModal,
   selectBook,
   clearBookDetails,
+  setBookToUpdate,
+  setBookValuesToUpdate,
+  showDateUpdater,
+  bookValuesUpdatingStatus,
 }) => {
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
@@ -60,6 +64,12 @@ const BookDetails = ({
   const handleChangeStatus = () => {
     showModal(BOOK_STATUS);
     selectBook({ authorsList, title, coverPath, pages, votesCount, categoryPath, bookId: params?.bookId, categoryValue, added, bookStatus });
+  };
+
+  const handleAddedPress = () => {
+    setBookToUpdate(params?.bookId, bookStatus);
+    setBookValuesToUpdate(added);
+    showDateUpdater();
   };
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
@@ -95,7 +105,17 @@ const BookDetails = ({
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-              <Text style={styles.lightColor}>{new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}</Text>
+              <View style={styles.addedContainer}>
+                {bookValuesUpdatingStatus === PENDING ? (
+                  <Spinner size={Size.SMALL} />
+                ) : (
+                  <View style={styles.addedWrapper}>
+                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                      {new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </Text>
           )}
           <View style={styles.bookStatusWrapper}>
@@ -141,8 +161,12 @@ const BookDetails = ({
 
 BookDetails.propTypes = {
   loadingDataStatus: loadingDataStatusShape,
+  bookValuesUpdatingStatus: loadingDataStatusShape,
   loadBookDetails: func.isRequired,
   updateBookVotes: func.isRequired,
+  setBookToUpdate: func.isRequired,
+  setBookValuesToUpdate: func.isRequired,
+  showDateUpdater: func.isRequired,
   showModal: func.isRequired,
   selectBook: func.isRequired,
   clearBookDetails: func.isRequired,

@@ -1,17 +1,11 @@
 module.exports = {
   root: true,
-  extends: '@react-native',
   env: {
     browser: true,
     es6: true,
     jest: true,
   },
-  extends: [
-    '@react-native',
-    'airbnb',
-    'plugin:prettier/recommended',
-    'plugin:react/recommended',
-  ],
+  extends: ['@react-native', 'airbnb', 'plugin:prettier/recommended', 'plugin:react/recommended'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
@@ -29,18 +23,15 @@ module.exports = {
     'no-shadow': 'off',
     'global-require': 0,
     'arrow-parens': ['error'],
-    'object-curly-newline': ['error', {consistent: true}],
-    'no-underscore-dangle': ['error', {allow: ['_id']}],
-    'react/jsx-filename-extension': ['error', {extensions: ['.js', '.jsx']}],
+    'object-curly-newline': ['error', { consistent: true }],
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
+    'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'react/require-default-props': 0,
-    'react/prop-types': ['error', {ignore: ['navigation']}],
+    'react/prop-types': ['error', { ignore: ['navigation'] }],
     'linebreak-style': 0,
-    'max-len': ['error', {code: 150}],
-    'no-unused-expressions': ['error', {allowShortCircuit: true}],
-    'react/function-component-definition': [
-      2,
-      {namedComponents: 'arrow-function'},
-    ],
+    'max-len': ['error', { code: 150 }],
+    'no-unused-expressions': ['error', { allowShortCircuit: true }],
+    'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     'prettier/prettier': [
       'error',
       {

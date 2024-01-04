@@ -8,6 +8,7 @@ const getSearch = (state) => getBooks(state).search;
 const getCategories = (state) => getBooks(state).categories;
 const getBoard = (state) => getBooks(state).board;
 const getBookDetails = (state) => getBooks(state).bookDetails;
+const getUpdatedBookValues = (state) => getBooks(state).updatedBookValues;
 
 export const getBoardType = (state) => getBooks(state).boardType;
 export const getBookVotes = (state) => getBooks(state).bookVotes;
@@ -33,6 +34,10 @@ export const getShouldReloadCategories = (state) => getCategories(state).shouldR
 
 export const getLoadingBookDetailsStatus = (state) => getBookDetails(state).loadingDataStatus;
 export const getBookDetailsData = (state) => getBookDetails(state).data;
+
+export const getBookToUpdate = (state) => getUpdatedBookValues(state).bookToUpdate;
+export const getBookValuesToUpdate = (state) => getUpdatedBookValues(state).valuesToUpdate;
+export const getBookValuesUpdatingStatus = (state) => getUpdatedBookValues(state).loadingDataStatus;
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);

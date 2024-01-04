@@ -38,6 +38,7 @@ import Search from '~screens/Search';
 import Profile from '~screens/Profile';
 import Modals from '~screens/Modals/Modals';
 import About from '~screens/Profile/About';
+import DateUpdater from '~screens/Home/DateUpdater';
 import CloseComponent from './CloseComponent';
 import UnderConstruction from './UnderConstruction';
 
@@ -207,6 +208,7 @@ const Main = ({
         )}
       </NavigationContainer>
       <Modals />
+      <DateUpdater />
     </SafeAreaProvider>
   );
 };
