@@ -106,6 +106,8 @@ export const START_UPDATING_BOOK_ADDED_DATE = `${PREFIX}/START_UPDATING_BOOK_ADD
 export const BOOK_ADDED_DATE_UPDATED = `${PREFIX}/BOOK_ADDED_DATE_UPDATED`;
 export const UPDATING_BOOK_ADDED_DATE_FAILED = `${PREFIX}/UPDATING_BOOK_ADDED_DATE_FAILED`;
 
+export const SET_BOOK_COUNT_BY_YEAR = `${PREFIX}/SET_BOOK_COUNT_BY_YEAR`;
+
 export const setBookToUpdate = (bookId, bookStatus) => ({
   type: SET_BOOK_TO_UPDATE,
   bookId,
@@ -125,6 +127,12 @@ export const setBoardType = (boardType) => ({
 export const selectBook = (book) => ({
   type: SELECT_BOOK,
   book,
+});
+
+export const setBookCountByYear = (boardType, data) => ({
+  type: SET_BOOK_COUNT_BY_YEAR,
+  boardType,
+  data,
 });
 
 export const showModal = (modal) => ({
@@ -499,6 +507,15 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
   }
 };
 
+export const loadBooksCountByYear = (boardType) => async (dispatch) => {
+  try {
+    const { data } = (await DataService().getBooksCountByYear({ boardType })) || {};
+    dispatch(setBookCountByYear(boardType, data));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const loadBookList =
   ({ boardType, shouldLoadMoreResults }) =>
   async (dispatch, getState) => {
@@ -519,6 +536,9 @@ export const loadBookList =
     };
 
     try {
+      if (boardType !== ALL) {
+        await dispatch(loadBooksCountByYear(boardType));
+      }
       const { data } = (await DataService().getBookList({ ...params })) || {};
       const { items, pagination } = data || {};
       dispatch(
@@ -632,6 +652,7 @@ export const updateUserBook =
     const bookDetailsData = getBookDetailsData(state);
     try {
       const { data } = await DataService().updateUserBook({ bookId, bookStatus: newBookStatus });
+      await dispatch(loadBooksCountByYear(boardType));
 
       if (!isEmpty(bookDetailsData)) {
         dispatch(updateBookDetails(data.bookStatus, data.added));

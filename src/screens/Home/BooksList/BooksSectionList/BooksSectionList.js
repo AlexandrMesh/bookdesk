@@ -1,30 +1,21 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import { bool, any, arrayOf, shape, string, number, func } from 'prop-types';
-import { Platform, UIManager, View } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { arrayOf, shape, string, number, func } from 'prop-types';
+import { SectionList, Platform, UIManager, View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Spinner } from '~UI/Spinner';
-import { PENDING, REFRESHING } from '~constants/loadingStatuses';
+import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import BookItem from './BookItem';
-import styles from './styles';
+import { PAGE_SIZE } from '~constants/bookList';
+import BookItem from '../BookItem';
+import styles from '../styles';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({
-  data,
-  loadMoreBooks,
-  showModal,
-  selectBook,
-  loadingDataStatus,
-  triggerReloadBookList,
-  boardType,
-  horizontal,
-  enablePullRefresh,
-  extraData,
-}) => {
+const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus }) => {
+  const { t } = useTranslation('common');
+
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -35,22 +26,27 @@ const BookList = ({
   return (
     <View style={styles.container}>
       {data.length > 0 && (
-        <FlashList
-          horizontal={horizontal}
-          estimatedItemSize={data.length}
-          data={data}
-          extraData={extraData}
-          renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
-          keyExtractor={(item) => item.bookId}
-          onRefresh={() => enablePullRefresh && triggerReloadBookList(boardType, true)}
-          refreshing={enablePullRefresh && loadingDataStatus === REFRESHING}
-          onEndReachedThreshold={0.5}
+        <SectionList
+          initialNumToRender={PAGE_SIZE}
+          sections={data}
           onEndReached={() => {
             if (loadingDataStatus !== PENDING) {
               loadMoreBooks();
             }
           }}
+          onEndReachedThreshold={0.5}
           ListFooterComponent={getSpinner}
+          renderItem={({ item }) => <BookItem itemStyle={styles.bookItem} bookItem={item} showModal={showModal} selectBook={selectBook} />}
+          renderSectionHeader={({ section }) => (
+            <View style={styles.stickyHeader}>
+              <View style={styles.headerTitle}>
+                <Text style={styles.headerTitleText}>{section.title}</Text>
+              </View>
+              <View style={[styles.taskCount, styles.headerTitle]}>
+                <Text style={styles.headerTitleText}>{t('count', { count: section.count })}</Text>
+              </View>
+            </View>
+          )}
         />
       )}
     </View>
@@ -59,12 +55,9 @@ const BookList = ({
 
 BookList.defaultProps = {
   loadMoreBooks: () => undefined,
-  enablePullRefresh: true,
 };
 
 BookList.propTypes = {
-  horizontal: bool,
-  enablePullRefresh: bool,
   data: arrayOf(
     shape({
       _id: string,
@@ -80,10 +73,7 @@ BookList.propTypes = {
     }),
   ).isRequired,
   loadMoreBooks: func,
-  extraData: any,
   showModal: func.isRequired,
-  triggerReloadBookList: func.isRequired,
-  boardType: string,
   selectBook: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
 };

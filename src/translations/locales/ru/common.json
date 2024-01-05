@@ -24,5 +24,6 @@
   "choose": "Выбрать",
   "requiredFields": "* обязательные поля",
   "selectDate": "Выберите дату",
-  "confirm": "Подтвердить"
+  "confirm": "Подтвердить",
+  "count": "{{count}} шт."
 }

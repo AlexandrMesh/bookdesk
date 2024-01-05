@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect';
+import groupBy from 'lodash/groupBy';
+import map from 'lodash/map';
 import { getT } from '~translations/i18n';
 // eslint-disable-next-line import/no-cycle
 import { getExpandedCategories } from '~redux/selectors/customBook';
@@ -65,6 +67,8 @@ export const deriveCategorySearchQuery = (status) =>
 export const deriveFilterBookCategoryPaths = (status) =>
   createSelector([deriveBookListFilterParams(status)], (filterParams) => filterParams.categoryPaths.filter((item) => item.split('.').length === 3));
 
+export const deriveBooksCountByYear = (status) => createSelector([getBoard], (board) => board[status].booksCountByYear);
+
 export const deriveSearchQuery = createSelector([getSearchQuery], (query) => query.trim());
 
 export const deriveCategoriesSearchResult = (status) =>
@@ -81,6 +85,23 @@ export const deriveCategoriesSearchResult = (status) =>
 export const deriveBookListData = (status) =>
   createSelector([getBoard, getCategoriesData], (board, categories) =>
     board[status].data.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath).value })),
+  );
+
+export const deriveSectionedBookListData = (status) =>
+  createSelector([deriveBookListData(status), deriveBooksCountByYear(status)], (books, booksCountByYear) =>
+    map(
+      groupBy(
+        books.map((item) => ({ ...item, year: new Date(item?.added)?.getFullYear() })),
+        'year',
+      ),
+      (value, key) => {
+        return {
+          title: key,
+          count: booksCountByYear.find(({ year }) => key === year)?.count,
+          data: value,
+        };
+      },
+    ).sort((a, b) => Number(b.title) - Number(a.title)),
   );
 
 export const deriveSearchBookListData = createSelector([getSearchResults, getCategoriesData], (searchResults, categories) =>

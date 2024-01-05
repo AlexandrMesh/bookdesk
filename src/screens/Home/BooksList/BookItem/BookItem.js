@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, func, string, number, bool, arrayOf } from 'prop-types';
+import { any, shape, func, string, number, bool, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -39,6 +39,7 @@ const BookItem = ({
   showDateUpdater,
   bookValuesUpdatingStatus,
   bookIdToUpdateAddedDate,
+  itemStyle,
 }) => {
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
@@ -62,7 +63,7 @@ const BookItem = ({
   const navigateToBookDetails = () => navigation.navigate(BOOK_DETAILS_ROUTE, { bookId });
 
   return (
-    <View style={styles.bookItem}>
+    <View style={[styles.bookItem, itemStyle]}>
       <View style={styles.leftSide}>
         <Pressable onPress={navigateToBookDetails}>
           <Image
@@ -169,6 +170,8 @@ BookItem.propTypes = {
   bookWithVote: bool,
   bookIdToUpdateAddedDate: string,
   updatingVoteForBook: bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  itemStyle: any,
 };
 
 export default BookItem;

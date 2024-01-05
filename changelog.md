@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.1.0
+
+###### 2024-01-04
+
+- [New] Added updatable date for added books
+
 ## 2.0.2
 
 ###### 2023-11-24

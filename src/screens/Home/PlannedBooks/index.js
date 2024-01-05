@@ -1,22 +1,20 @@
 import { connect } from 'react-redux';
 import {
   deriveLoadingBookListStatus,
-  deriveBookListData,
   deriveBookListHasNextPage,
   deriveShouldReloadBookList,
   deriveBookListTotalItems,
-  deriveShouldReloadWithPullRefresh,
+  deriveSectionedBookListData,
 } from '~redux/selectors/books';
 import { loadBookList, loadMoreBooks, setBoardType } from '~redux/actions/booksActions';
 import { PLANNED } from '~constants/boardType';
 import PlannedBooks from './PlannedBooks';
 
 const mapStateToProps = (state) => ({
-  bookList: deriveBookListData(PLANNED)(state),
+  sectionedBookListData: deriveSectionedBookListData(PLANNED)(state),
   loadingDataStatus: deriveLoadingBookListStatus(PLANNED)(state),
   hasNextPage: deriveBookListHasNextPage(PLANNED)(state),
   shouldReloadData: deriveShouldReloadBookList(PLANNED)(state),
-  shouldReloadWithPullRefresh: deriveShouldReloadWithPullRefresh(PLANNED)(state),
   totalItems: deriveBookListTotalItems(PLANNED)(state),
 });
 

@@ -24,5 +24,6 @@
   "choose": "Choose",
   "requiredFields": "* required fields",
   "selectDate": "Select date",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "count": "{{count}} pcs"
 }

@@ -62,6 +62,7 @@ import {
   START_UPDATING_BOOK_ADDED_DATE,
   UPDATING_BOOK_ADDED_DATE_FAILED,
   BOOK_ADDED_DATE_UPDATED,
+  SET_BOOK_COUNT_BY_YEAR,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -104,6 +105,7 @@ const getDefaultBookDetailsState = () => ({
 
 const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
   data: [],
+  booksCountByYear: [],
   loadingDataStatus: IDLE,
   shouldReloadData: false,
   shouldReloadWithPullRefresh: false,
@@ -386,6 +388,17 @@ export default createReducer(initialState, (state, action) => ({
           totalItems: action.totalItems,
           hasNextPage: action.hasNextPage,
         },
+      },
+    },
+  }),
+
+  [SET_BOOK_COUNT_BY_YEAR]: () => ({
+    ...state,
+    board: {
+      ...state.board,
+      [action.boardType]: {
+        ...state.board[action.boardType],
+        booksCountByYear: action.data,
       },
     },
   }),
