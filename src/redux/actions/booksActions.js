@@ -508,8 +508,9 @@ export const loadSearchResults = (shouldLoadMoreResults) => async (dispatch, get
 };
 
 export const loadBooksCountByYear = (boardType) => async (dispatch) => {
+  const { language } = i18n;
   try {
-    const { data } = (await DataService().getBooksCountByYear({ boardType })) || {};
+    const { data } = (await DataService().getBooksCountByYear({ boardType, language })) || {};
     dispatch(setBookCountByYear(boardType, data));
   } catch (e) {
     console.error(e);
