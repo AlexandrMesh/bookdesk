@@ -1,4 +1,5 @@
 import union from 'lodash/union';
+import uniqBy from 'lodash/uniqBy';
 import createReducer from '~utils/createReducer';
 import updateIn from '~utils/updateIn';
 import { IDLE, PENDING, REFRESHING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
@@ -379,7 +380,7 @@ export default createReducer(initialState, (state, action) => ({
       ...state.board,
       [action.boardType]: {
         ...state.board[action.boardType],
-        data: action.shouldLoadMoreResults ? [...state.board[action.boardType].data, ...action.data] : action.data,
+        data: action.shouldLoadMoreResults ? uniqBy([...state.board[action.boardType].data, ...action.data], 'bookId') : action.data,
         loadingDataStatus: SUCCEEDED,
         shouldReloadData: false,
         shouldReloadWithPullRefresh: false,

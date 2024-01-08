@@ -1,25 +1,15 @@
 import React, { useEffect } from 'react';
-import { string, func, bool, number, arrayOf, shape } from 'prop-types';
+import { any, func, bool, number } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
 import { Spinner } from '~UI/Spinner';
-
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE } from '~constants/loadingStatuses';
 import { IN_PROGRESS } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import BooksList from '../BooksList';
+import BooksSectionList from '../BooksList/BooksSectionList';
 
-const InProgressBooks = ({
-  loadingDataStatus,
-  loadBookList,
-  bookList,
-  totalItems,
-  loadMoreBooks,
-  shouldReloadData,
-  setBoardType,
-  shouldReloadWithPullRefresh,
-}) => {
+const InProgressBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shouldReloadData, totalItems, setBoardType, sectionedBookListData }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -37,18 +27,18 @@ const InProgressBooks = ({
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
+  if (loadingDataStatus === IDLE || shouldReloadData) {
     return <Spinner />;
   }
-  if (bookList.length > 0) {
+  if (sectionedBookListData.length > 0) {
     return (
       <>
         <TotalCount count={totalItems} />
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={IN_PROGRESS} loadingDataStatus={loadingDataStatus} />
+        <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }
-  if (bookList.length === 0) {
+  if (sectionedBookListData.length === 0) {
     return <EmptyBoard />;
   }
   return undefined;
@@ -59,19 +49,10 @@ InProgressBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
-  shouldReloadWithPullRefresh: bool,
-  setBoardType: func.isRequired,
-  bookList: arrayOf(
-    shape({
-      _id: string,
-      title: string,
-      categoryPath: string,
-      coverPath: string,
-      votesCount: number,
-      type: string,
-    }),
-  ).isRequired,
   totalItems: number.isRequired,
+  setBoardType: func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  sectionedBookListData: any,
 };
 
 export default InProgressBooks;

@@ -98,7 +98,7 @@ export const deriveSectionedBookListData = (status) =>
         return {
           title: key,
           count: booksCountByYear.find(({ year }) => key === year)?.count,
-          data: value,
+          data: value.sort((a, b) => Number(b.added) - Number(a.added)),
         };
       },
     ).sort((a, b) => Number(b.title) - Number(a.title)),

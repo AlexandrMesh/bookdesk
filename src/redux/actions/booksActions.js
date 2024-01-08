@@ -536,7 +536,7 @@ export const loadBookList =
     };
 
     try {
-      if (boardType !== ALL) {
+      if (boardType !== ALL && !shouldLoadMoreResults) {
         await dispatch(loadBooksCountByYear(boardType));
       }
       const { data } = (await DataService().getBookList({ ...params })) || {};
@@ -631,6 +631,7 @@ export const updateUserBookAddedDate =
       dispatch(startUpdatingBookAddedDate);
       const { bookId, bookStatus } = getBookToUpdate(getState());
       const { data } = await DataService().updateUserBookAddedValue({ bookId, date: added });
+      await dispatch(loadBooksCountByYear(bookStatus));
 
       dispatch(updateBookDetails(bookStatus, data.added));
       dispatch(updateBook(bookId, ALL, bookStatus, data.added));

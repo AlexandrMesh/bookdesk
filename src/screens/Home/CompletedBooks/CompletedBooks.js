@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { string, func, bool, number, arrayOf, shape } from 'prop-types';
+import { any, func, bool, number } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
 import { Spinner } from '~UI/Spinner';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
@@ -7,18 +7,9 @@ import EmptyBoard from '~screens/Home/EmptyBoard';
 import { IDLE } from '~constants/loadingStatuses';
 import { COMPLETED } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import BooksList from '../BooksList';
+import BooksSectionList from '../BooksList/BooksSectionList';
 
-const CompletedBooks = ({
-  loadingDataStatus,
-  loadBookList,
-  bookList,
-  loadMoreBooks,
-  shouldReloadData,
-  totalItems,
-  setBoardType,
-  shouldReloadWithPullRefresh,
-}) => {
+const CompletedBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shouldReloadData, totalItems, setBoardType, sectionedBookListData }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -36,18 +27,18 @@ const CompletedBooks = ({
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
+  if (loadingDataStatus === IDLE || shouldReloadData) {
     return <Spinner />;
   }
-  if (bookList.length > 0) {
+  if (sectionedBookListData.length > 0) {
     return (
       <>
         <TotalCount count={totalItems} />
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} boardType={COMPLETED} loadingDataStatus={loadingDataStatus} />
+        <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }
-  if (bookList.length === 0) {
+  if (sectionedBookListData.length === 0) {
     return <EmptyBoard />;
   }
   return undefined;
@@ -58,19 +49,10 @@ CompletedBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
-  shouldReloadWithPullRefresh: bool,
   totalItems: number.isRequired,
   setBoardType: func.isRequired,
-  bookList: arrayOf(
-    shape({
-      _id: string,
-      title: string,
-      categoryPath: string,
-      coverPath: string,
-      votesCount: number,
-      type: string,
-    }),
-  ).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  sectionedBookListData: any,
 };
 
 export default CompletedBooks;

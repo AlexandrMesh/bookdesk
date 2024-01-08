@@ -1,25 +1,21 @@
 import { connect } from 'react-redux';
 import {
-  deriveBookListData,
   deriveBookListHasNextPage,
   deriveLoadingBookListStatus,
-  deriveBookListFilterParams,
   deriveBookListTotalItems,
   deriveShouldReloadBookList,
-  deriveShouldReloadWithPullRefresh,
+  deriveSectionedBookListData,
 } from '~redux/selectors/books';
 import { loadBookList, loadMoreBooks, setBoardType } from '~redux/actions/booksActions';
 import { IN_PROGRESS } from '~constants/boardType';
 import InProgressBooks from './InProgressBooks';
 
 const mapStateToProps = (state) => ({
-  bookList: deriveBookListData(IN_PROGRESS)(state),
+  sectionedBookListData: deriveSectionedBookListData(IN_PROGRESS)(state),
   loadingDataStatus: deriveLoadingBookListStatus(IN_PROGRESS)(state),
   hasNextPage: deriveBookListHasNextPage(IN_PROGRESS)(state),
-  filterParams: deriveBookListFilterParams(IN_PROGRESS)(state),
-  totalItems: deriveBookListTotalItems(IN_PROGRESS)(state),
-  shouldReloadWithPullRefresh: deriveShouldReloadWithPullRefresh(IN_PROGRESS)(state),
   shouldReloadData: deriveShouldReloadBookList(IN_PROGRESS)(state),
+  totalItems: deriveBookListTotalItems(IN_PROGRESS)(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

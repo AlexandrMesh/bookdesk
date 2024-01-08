@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.2.0
+
+###### 2024-01-08
+
+- [New] Added sectioned book lists by year
+
 ## 2.1.0
 
 ###### 2024-01-04
