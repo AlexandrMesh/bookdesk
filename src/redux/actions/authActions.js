@@ -111,8 +111,9 @@ export const checkAuth = (token) => async (dispatch) => {
   } else {
     dispatch(startAuthChecking);
     try {
-      const isGoogleSignedIn = await GoogleSignin.isSignedIn();
-      const { data } = await AuthService().checkAuth(token);
+      const result = await Promise.all([GoogleSignin.isSignedIn(), AuthService().checkAuth(token)]);
+      const isGoogleSignedIn = result[0];
+      const { data } = result[1];
       if (data.profile) {
         const { _id, email, registered, updated } = data.profile;
         const { version, googlePlayUrl } = data;

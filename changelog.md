@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.2.2
+
+###### 2024-01-09
+
+- [Fix] Performance improvements for loading data
+
 ## 2.2.1
 
 ###### 2024-01-08
