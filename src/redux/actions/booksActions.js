@@ -629,10 +629,11 @@ export const updateUserBookAddedDate =
   ({ added }) =>
   async (dispatch, getState) => {
     try {
+      const { language } = i18n;
       dispatch(startUpdatingBookAddedDate);
       const { bookId, bookStatus } = getBookToUpdate(getState());
-      const result = await Promise.all([DataService().updateUserBookAddedValue({ bookId, date: added }), dispatch(loadBooksCountByYear(bookStatus))]);
-      const data = result[0]?.data;
+      const { data } = await DataService().updateUserBookAddedValue({ bookId, date: added, language, boardType: bookStatus });
+      dispatch(setBookCountByYear(bookStatus, data.countByYear));
 
       dispatch(updateBookDetails(bookStatus, data.added));
       dispatch(updateBook(bookId, ALL, bookStatus, data.added));
@@ -648,16 +649,14 @@ export const updateUserBookAddedDate =
 export const updateUserBook =
   ({ book, newBookStatus, boardType }) =>
   async (dispatch, getState) => {
+    const { language } = i18n;
     dispatch(startUpdatingUsersBook);
     const { bookId, bookStatus } = book;
     const state = getState();
     const bookDetailsData = getBookDetailsData(state);
     try {
-      const result = await Promise.all([
-        DataService().updateUserBook({ bookId, bookStatus: newBookStatus }),
-        dispatch(loadBooksCountByYear(boardType)),
-      ]);
-      const data = result[0]?.data;
+      const { data } = await DataService().updateUserBook({ bookId, bookStatus: newBookStatus, language, boardType: bookStatus });
+      dispatch(setBookCountByYear(bookStatus, data.countByYear));
 
       if (!isEmpty(bookDetailsData)) {
         dispatch(updateBookDetails(data.bookStatus, data.added));
