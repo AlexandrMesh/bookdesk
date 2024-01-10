@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
-import { View, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { Pressable, View, Text, Platform, UIManager, LayoutAnimation } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
+import DatePicker from 'react-native-date-picker';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
 import SlideMenu from '~UI/SlideMenu';
@@ -22,9 +23,19 @@ const layoutAnimConfig = {
 };
 
 const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType, isLoading }) => {
-  const { t } = useTranslation(['books', 'common']);
+  const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
+  const [isVisibleDatePicker, setIsVisibleDatePicker] = useState(false);
+  const [added, setAdded] = useState(book?.added || new Date().getTime());
   const [shouldAutoClose, setShouldAutoClose] = useState(false);
+  const { language } = i18n;
+
+  const showDatePicker = () => {
+    if (!isLoading) {
+      setIsVisibleDatePicker(true);
+    }
+  };
+  const hideDatePicker = () => setIsVisibleDatePicker(false);
 
   const actionTypes = [
     { title: t('noStatus'), isSelected: newBookStatus === ALL, action: () => setNewBookStatus(ALL) },
@@ -33,18 +44,24 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
     { title: t('completed'), isSelected: newBookStatus === COMPLETED, action: () => setNewBookStatus(COMPLETED) },
   ];
 
+  const handleConfirmChangeDate = (date) => {
+    setAdded(date.getTime());
+    hideDatePicker();
+  };
+
   useEffect(() => {
     const bookStatus = book?.bookStatus || ALL;
-    setNewBookStatus(bookStatus);
-    if (!isVisible) {
+    if (isVisible) {
       setNewBookStatus(bookStatus);
+      setAdded(book?.added || new Date().getTime());
     }
-  }, [book?.bookStatus, isVisible]);
+  }, [book?.bookStatus, book?.added, isVisible]);
 
   const handleUpdate = async () => {
     if (!isLoading) {
       await updateUserBook({
         book,
+        added,
         newBookStatus,
         boardType,
       });
@@ -68,13 +85,30 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
   };
 
   return (
-    <SlideMenu isVisible={isVisible} title={book?.title} onClose={handleClose} shouldAutoClose={shouldAutoClose} onReset={() => undefined}>
+    <SlideMenu
+      menuHeight={386}
+      isVisible={isVisible}
+      title={book?.title}
+      onClose={handleClose}
+      shouldAutoClose={shouldAutoClose}
+      onReset={() => undefined}
+    >
       <FlashList
         data={actionTypes}
         estimatedItemSize={actionTypes.length}
         renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} isLoading={isLoading} />}
         keyExtractor={({ title }) => title}
       />
+      {newBookStatus !== ALL ? (
+        <View style={styles.dateWrapper}>
+          <View>
+            <Text style={styles.menuItemTitle}>{t('books:dateAdded')}</Text>
+          </View>
+          <Pressable onPress={showDatePicker} style={styles.dateValue}>
+            <Text style={styles.menuItemTitle}>{new Date(added).toLocaleDateString(language)}</Text>
+          </Pressable>
+        </View>
+      ) : null}
       <View style={styles.submitButtonWrapper}>
         <Button
           style={styles.submitButton}
@@ -84,6 +118,20 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
           onPress={handleUpdate}
         />
       </View>
+      {isVisibleDatePicker ? (
+        <DatePicker
+          modal
+          theme='dark'
+          mode='date'
+          title={t('common:selectDate')}
+          confirmText={t('common:confirm')}
+          cancelText={t('common:cancel')}
+          open={isVisibleDatePicker}
+          date={new Date(added)}
+          onConfirm={handleConfirmChangeDate}
+          onCancel={hideDatePicker}
+        />
+      ) : null}
     </SlideMenu>
   );
 };

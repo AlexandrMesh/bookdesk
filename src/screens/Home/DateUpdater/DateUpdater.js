@@ -12,7 +12,7 @@ const DateUpdater = ({ added, isVisible, hideDateUpdater, updateUserBookAddedDat
     hideDateUpdater();
   };
 
-  return (
+  return isVisible ? (
     <DatePicker
       modal
       theme='dark'
@@ -25,7 +25,7 @@ const DateUpdater = ({ added, isVisible, hideDateUpdater, updateUserBookAddedDat
       onConfirm={handleConfirm}
       onCancel={hideDateUpdater}
     />
-  );
+  ) : null;
 };
 
 DateUpdater.propTypes = {

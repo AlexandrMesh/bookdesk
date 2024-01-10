@@ -10,7 +10,6 @@ import { IMG_URL } from '~config/api';
 import { SECONDARY } from '~constants/themes';
 import { BOOK_DETAILS_ROUTE } from '~constants/routes';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
-import { RU } from '~constants/languages';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
@@ -106,7 +105,7 @@ const BookItem = ({
                 ) : (
                   <View style={styles.addedWrapper}>
                     <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                      {new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}
+                      {new Date(added).toLocaleDateString(language)}
                     </Text>
                   </View>
                 )}

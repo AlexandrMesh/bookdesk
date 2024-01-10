@@ -647,7 +647,7 @@ export const updateUserBookAddedDate =
   };
 
 export const updateUserBook =
-  ({ book, newBookStatus, boardType }) =>
+  ({ book, newBookStatus, added, boardType }) =>
   async (dispatch, getState) => {
     const { language } = i18n;
     dispatch(startUpdatingUsersBook);
@@ -655,7 +655,7 @@ export const updateUserBook =
     const state = getState();
     const bookDetailsData = getBookDetailsData(state);
     try {
-      const { data } = await DataService().updateUserBook({ bookId, bookStatus: newBookStatus, language, boardType: bookStatus });
+      const { data } = await DataService().updateUserBook({ bookId, added, bookStatus: newBookStatus, language, boardType: bookStatus });
       dispatch(setBookCountByYear(bookStatus, data.countByYear));
 
       if (!isEmpty(bookDetailsData)) {

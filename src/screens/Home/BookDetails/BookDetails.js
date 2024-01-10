@@ -11,7 +11,6 @@ import { SECONDARY } from '~constants/themes';
 import { IMG_URL } from '~config/api';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
-import { RU } from '~constants/languages';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
@@ -111,7 +110,7 @@ const BookDetails = ({
                 ) : (
                   <View style={styles.addedWrapper}>
                     <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                      {new Date(added).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}
+                      {new Date(added).toLocaleDateString(language)}
                     </Text>
                   </View>
                 )}

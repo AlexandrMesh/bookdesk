@@ -1013,3 +1013,9 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 09.01.2024
 + Добавить для юзера поле, lastLoggedIn
 + Порефакторить места где можно применить Promise.all для комбинации запросов для ускорения
+Добавить призыв к действию оценить приложение и поставить отзыв
+
+10.01.2024
++ Поправить ошибку с переключеним радикнопок в SlideMenu (из за стиля absolute в topWrapper) - ошибка была в useEffect в Modal где находится SlideMenu
++ Поменять везде toLocaleDateString на language без стрингс
++ Протестировать англ версию (на изменение даты в модалке при изменении статус и посмотреть как смотрится дата с toLocaleDateString)

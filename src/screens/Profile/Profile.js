@@ -3,7 +3,6 @@ import { View, Text, Linking } from 'react-native';
 import { string, func, number, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
-import { RU } from '~constants/languages';
 import { ABOUT_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
 import Button from '~UI/Button';
@@ -22,7 +21,7 @@ const Profile = ({ email, registered, signOut, googlePlayUrl, isTheLatestAppVers
           {t('email')} <Text style={styles.value}>{email}</Text>
         </Text>
         <Text style={styles.label}>
-          {t('registered')} <Text style={styles.value}>{new Date(Number(registered)).toLocaleDateString(language === RU ? 'ru-RU' : 'en-EN')}</Text>
+          {t('registered')} <Text style={styles.value}>{new Date(Number(registered)).toLocaleDateString(language)}</Text>
         </Text>
         <Text style={[styles.label, styles.mTop]}>
           {t('app:appLanguage')}

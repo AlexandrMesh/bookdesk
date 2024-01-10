@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.3.0
+
+###### 2024-01-10
+Added ability to change date added book in book status slide menu
+- [New] 
+
 ## 2.2.3
 
 ###### 2024-01-09
