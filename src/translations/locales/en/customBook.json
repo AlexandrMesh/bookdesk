@@ -23,6 +23,5 @@
   "withoutCover": "No cover",
   "findCover": "Find cover",
   "chooseTheOptionForBookCover": "Select an option for the book cover",
-  "charactersCount": "Characters: {{count}}/100",
   "addBookManually": "Add this book to the catalog manually"
 }

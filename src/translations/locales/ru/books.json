@@ -15,5 +15,7 @@
   "recommended": "Рекомендуем",
   "bookStatusUpdated": "Статус обновлён!",
   "bookDetails": "Информация о книге",
-  "dateAdded": "Дата добавления"
+  "dateAdded": "Дата добавления",
+  "comment": "Комментарий",
+  "enterComment": "Введите Ваш комментарий к книге"
 }

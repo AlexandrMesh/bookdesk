@@ -15,5 +15,7 @@
   "recommended": "Recommended",
   "bookStatusUpdated": "Status udated!",
   "bookDetails": "Book details",
-  "dateAdded": "Date added"
+  "dateAdded": "Date added",
+  "comment": "Comment",
+  "enterComment": "Enter your comment for the book"
 }

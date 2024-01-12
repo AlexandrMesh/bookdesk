@@ -137,6 +137,10 @@ const initialState = {
   },
   bookVotes: [],
   updatingVotesForBooks: [],
+  bookComments: {
+    data: [{ bookId: '1', comment: '', added: '' }],
+    loadingDataStatus: IDLE,
+  },
   bookDetails: getDefaultBookDetailsState(),
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),

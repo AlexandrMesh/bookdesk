@@ -1,6 +1,7 @@
 {
   "save": "Save",
   "add": "Add",
+  "change": "Change",
   "toSort": "Sort",
   "added": "Added",
   "votesCount": "Rating",
@@ -25,5 +26,6 @@
   "requiredFields": "* required fields",
   "selectDate": "Select date",
   "confirm": "Confirm",
-  "count": "{{count}} pcs"
+  "count": "{{count}} pcs",
+  "charactersCount": "Characters: {{count}}/{{maxCount}}"
 }

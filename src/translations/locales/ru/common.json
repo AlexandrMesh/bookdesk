@@ -1,6 +1,7 @@
 {
   "save": "Сохранить",
   "add": "Добавить",
+  "change": "Изменить",
   "toSort": "Сортировать",
   "added": "Дата добавления",
   "votesCount": "Рейтинг",
@@ -25,5 +26,6 @@
   "requiredFields": "* обязательные поля",
   "selectDate": "Выберите дату",
   "confirm": "Подтвердить",
-  "count": "{{count}} шт."
+  "count": "{{count}} шт.",
+  "charactersCount": "Символов: {{count}}/{{maxCount}}"
 }

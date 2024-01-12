@@ -683,6 +683,19 @@ export const updateUserBook =
     }
   };
 
+export const updateUserComment =
+  ({ book, comment, added }) =>
+  async (dispatch) => {
+    dispatch(startUpdatingUsersBook);
+    const { bookId } = book;
+    try {
+      const { data } = await DataService().updateUserBook({ bookId, added, comment });
+      dispatch(reloadBookList(boardType));
+    } catch (e) {
+      dispatch(updatingUsersBookFailed);
+    }
+  };
+
 export const updateBookVotes =
   ({ bookId, shouldAdd, bookStatus }) =>
   async (dispatch, getState) => {

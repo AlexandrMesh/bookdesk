@@ -9,7 +9,7 @@ import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
 
-const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, title, titleReset, menuHeight }) => {
+const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, title, titleReset, menuHeight, shouldRecalculateDimensions }) => {
   const keyboard = useKeyboard();
   const windowHeight = Dimensions.get('window').height - 40;
   const [calculatedMenuHeight, setCalculatedMenuHeight] = useState(menuHeight);
@@ -63,14 +63,24 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
   }, [shouldAutoClose, hideModal]);
 
   useEffect(() => {
-    if (shouldDIsplay) {
+    if (shouldDIsplay && !shouldRecalculateDimensions) {
       Animated.spring(animatedHeight, {
         useNativeDriver: true,
         toValue: 0,
         duration,
       }).start();
     }
-  }, [shouldDIsplay, animatedHeight]);
+  }, [shouldDIsplay, animatedHeight, shouldRecalculateDimensions]);
+
+  useEffect(() => {
+    if (shouldDIsplay && shouldRecalculateDimensions) {
+      Animated.timing(animatedHeight, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [shouldDIsplay, animatedHeight, shouldRecalculateDimensions]);
 
   const shouldShowModal = shouldDIsplay;
 
@@ -134,6 +144,7 @@ SlideMenu.defaultProps = {
 };
 
 SlideMenu.propTypes = {
+  shouldRecalculateDimensions: bool,
   isVisible: bool,
   shouldAutoClose: bool,
   onClose: func.isRequired,

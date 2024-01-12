@@ -171,7 +171,9 @@ const Step3 = ({
               {t('customBook:annotation')}
               {t('common:required')}
             </Text>
-            {annotation.value && <Text style={styles.subTitle}>{t('customBook:charactersCount', { count: annotation.value.length })}</Text>}
+            {annotation.value && (
+              <Text style={styles.subTitle}>{t('common:charactersCount', { count: annotation.value.length, maxCount: 100 })}</Text>
+            )}
           </View>
 
           <Input
