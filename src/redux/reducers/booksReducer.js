@@ -64,6 +64,11 @@ import {
   UPDATING_BOOK_ADDED_DATE_FAILED,
   BOOK_ADDED_DATE_UPDATED,
   SET_BOOK_COUNT_BY_YEAR,
+  BOOK_COMMENT_UPDATED,
+  START_UPDATING_BOOK_COMMENT,
+  UPDATING_BOOK_COMMENT_FAILED,
+  START_LOADING_BOOK_COMMENT,
+  LOADING_BOOK_COMMENT_FAILED,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -137,9 +142,10 @@ const initialState = {
   },
   bookVotes: [],
   updatingVotesForBooks: [],
-  bookComments: {
-    data: [{ bookId: '1', comment: '', added: '' }],
+  bookComment: {
+    data: {},
     loadingDataStatus: IDLE,
+    updatingDataStatus: IDLE,
   },
   bookDetails: getDefaultBookDetailsState(),
   board: {
@@ -176,6 +182,48 @@ export default createReducer(initialState, (state, action) => ({
   [HIDE_MODAL]: () => ({
     ...state,
     activeModal: null,
+  }),
+
+  [START_UPDATING_BOOK_COMMENT]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      updatingDataStatus: PENDING,
+    },
+  }),
+
+  [BOOK_COMMENT_UPDATED]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      data: action.comment,
+      updatingDataStatus: SUCCEEDED,
+      loadingDataStatus: SUCCEEDED,
+    },
+  }),
+
+  [UPDATING_BOOK_COMMENT_FAILED]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      updatingDataStatus: FAILED,
+    },
+  }),
+
+  [START_LOADING_BOOK_COMMENT]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      loadingDataStatus: PENDING,
+    },
+  }),
+
+  [LOADING_BOOK_COMMENT_FAILED]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      loadingDataStatus: FAILED,
+    },
   }),
 
   [UPDATE_BOOK]: () => ({

@@ -60,6 +60,10 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.neutral_light,
   },
+  loadingCommentSpinnerWrapper: {
+    marginLeft: 20,
+    position: 'relative',
+  },
   menuItemSubTitle: {
     flex: 1,
     fontSize: 16,
@@ -75,6 +79,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  commentButtonWrapper: {
+    marginLeft: 5,
   },
   commentButton: {
     width: 100,

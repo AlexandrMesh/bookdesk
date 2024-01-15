@@ -7,8 +7,10 @@ import DatePicker from 'react-native-date-picker';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
 import SlideMenu from '~UI/SlideMenu';
+import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { getValidationFailure, validationTypes } from '~utils/validation';
+import { PENDING } from '~constants/loadingStatuses';
 import Input from '~UI/TextInput';
 import BookStatusItem from './BookStatusItem';
 import styles from './styles';
@@ -24,7 +26,17 @@ const layoutAnimConfig = {
   },
 };
 
-const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType, isLoading }) => {
+const BookStatusModal = ({
+  isVisible,
+  book,
+  updateUserBook,
+  bookCommentLoadingStatus,
+  getBookComment,
+  updateUserComment,
+  hideModal,
+  boardType,
+  isLoading,
+}) => {
   const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
   const [isVisibleDatePicker, setIsVisibleDatePicker] = useState(false);
@@ -74,12 +86,24 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
   };
 
   useEffect(() => {
-    const bookStatus = book?.bookStatus || ALL;
     if (isVisible) {
-      setMenuHeight(bookStatus !== ALL ? 436 : 336);
-      setNewBookStatus(bookStatus);
-      setAdded(book?.added || new Date().getTime());
+      const loadData = async () => {
+        try {
+          const bookStatus = book?.bookStatus || ALL;
+          setMenuHeight(bookStatus !== ALL ? 436 : 336);
+          setNewBookStatus(bookStatus);
+          setAdded(book?.added || new Date().getTime());
+          if (book?.bookStatus && book?.bookStatus !== ALL) {
+            const data = await getBookComment(book?.bookId);
+            setComment(data?.comment || '');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      loadData();
     } else {
+      setComment('');
       hideCommentForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,6 +117,10 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
         newBookStatus,
         boardType,
       });
+      if (comment) {
+        const added = new Date().getTime();
+        await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
+      }
       setShouldRecalculateDimensions(false);
       setShouldAutoClose(true);
       if (boardType !== ALL) {
@@ -121,7 +149,7 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
       maxLength: 1000,
     };
     const error = getValidationFailure(
-      comment,
+      comment.trim(),
       [validationTypes.containsSpecialCharacters, validationTypes.isTooShort, validationTypes.isTooLong],
       params,
     );
@@ -138,8 +166,106 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
     const isCommentValid = validateComment();
 
     if (isCommentValid) {
-      console.log('comment saved, go back');
+      hideCommentForm();
     }
+  };
+
+  const handleCloseCommentForm = () => {
+    const isCommentValid = validateComment();
+    if (!isCommentValid) {
+      setComment('');
+    }
+    setCommentError(null);
+    hideCommentForm();
+  };
+
+  const renderContent = () => {
+    return isCommentFormVisible ? (
+      <View style={styles.commentFormWrapper}>
+        <View style={styles.commentForm}>
+          <View style={styles.labelWrapper}>
+            <Text style={styles.subTitle}>{t('books:comment')}</Text>
+            {comment && <Text style={styles.subTitle}>{t('common:charactersCount', { count: comment.trim().length, maxCount: 1000 })}</Text>}
+          </View>
+          <Input
+            placeholder={t('books:enterComment')}
+            wrapperClassName={styles.commentWrapperClassName}
+            className={styles.commentInput}
+            onChangeText={handleChangeComment}
+            value={comment}
+            error={commentError}
+            shouldDisplayClearButton={!!comment}
+            onClear={() => setComment('')}
+            multiline
+            numberOfLines={5}
+          />
+        </View>
+        <View style={[styles.buttonWrapper, styles.buttonsWrapper]}>
+          <Button style={styles.rowButton} title={t('common:back')} disabled={isLoading} onPress={handleCloseCommentForm} />
+          <Button style={styles.rowButton} title={t('common:save')} disabled={isLoading} onPress={handleSaveComment} />
+        </View>
+      </View>
+    ) : (
+      <>
+        <FlashList
+          data={actionTypes}
+          estimatedItemSize={actionTypes.length}
+          renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} isLoading={isLoading} />}
+          keyExtractor={({ title }) => title}
+        />
+        {newBookStatus !== ALL ? (
+          <>
+            <View style={styles.customItem}>
+              <View>
+                <Text style={styles.menuItemTitle}>{t('books:dateAdded')}</Text>
+              </View>
+              <Pressable disabled={isLoading} onPress={showDatePicker} style={styles.dateValue}>
+                <Text style={styles.menuItemTitle}>{new Date(added).toLocaleDateString(language)}</Text>
+              </Pressable>
+            </View>
+            <View style={styles.customItem}>
+              <View style={styles.menuItemTitleWrapper}>
+                <View style={styles.menuItemTitleWrapperLeft}>
+                  <Text style={styles.menuItemTitle}>{t('books:comment')}</Text>
+                  {comment ? (
+                    <Text style={styles.menuItemTitle} numberOfLines={1}>
+                      :{' '}
+                    </Text>
+                  ) : null}
+                  {bookCommentLoadingStatus === PENDING ? (
+                    <View style={styles.loadingCommentSpinnerWrapper}>
+                      <Spinner />
+                    </View>
+                  ) : (
+                    <Text style={styles.menuItemSubTitle} numberOfLines={1}>
+                      {comment.trim()}
+                    </Text>
+                  )}
+                </View>
+              </View>
+              <View style={styles.commentButtonWrapper}>
+                <Button
+                  disabled={isLoading || bookCommentLoadingStatus === PENDING}
+                  style={styles.commentButton}
+                  titleStyle={styles.commentButtonTitle}
+                  onPress={showCommentForm}
+                  title={t(comment ? 'common:change' : 'common:add')}
+                />
+              </View>
+            </View>
+          </>
+        ) : null}
+        <View style={styles.buttonWrapper}>
+          <Button
+            style={styles.submitButton}
+            icon={isLoading && <Spinner size={Size.SMALL} />}
+            title={t('common:save')}
+            disabled={isLoading}
+            onPress={handleUpdate}
+          />
+        </View>
+      </>
+    );
   };
 
   return (
@@ -152,81 +278,7 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
       onReset={() => undefined}
       shouldRecalculateDimensions={shouldRecalculateDimensions}
     >
-      {isCommentFormVisible ? (
-        <View style={styles.commentFormWrapper}>
-          <View style={styles.commentForm}>
-            <View style={styles.labelWrapper}>
-              <Text style={styles.subTitle}>
-                {t('books:comment')}
-                {t('common:required')}
-              </Text>
-              {comment && <Text style={styles.subTitle}>{t('common:charactersCount', { count: comment.length, maxCount: 1000 })}</Text>}
-            </View>
-            <Input
-              placeholder={t('books:enterComment')}
-              wrapperClassName={styles.commentWrapperClassName}
-              className={styles.commentInput}
-              onChangeText={handleChangeComment}
-              value={comment}
-              error={commentError}
-              shouldDisplayClearButton={!!comment}
-              onClear={() => setComment('')}
-              multiline
-              numberOfLines={5}
-            />
-          </View>
-          <View style={[styles.buttonWrapper, styles.buttonsWrapper]}>
-            <Button style={styles.rowButton} title={t('common:back')} disabled={isLoading} onPress={hideCommentForm} />
-            <Button style={styles.rowButton} title={t('common:save')} disabled={isLoading} onPress={handleSaveComment} />
-          </View>
-        </View>
-      ) : (
-        <>
-          <FlashList
-            data={actionTypes}
-            estimatedItemSize={actionTypes.length}
-            renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} isLoading={isLoading} />}
-            keyExtractor={({ title }) => title}
-          />
-          {newBookStatus !== ALL ? (
-            <>
-              <View style={styles.customItem}>
-                <View>
-                  <Text style={styles.menuItemTitle}>{t('books:dateAdded')}</Text>
-                </View>
-                <Pressable onPress={showDatePicker} style={styles.dateValue}>
-                  <Text style={styles.menuItemTitle}>{new Date(added).toLocaleDateString(language)}</Text>
-                </Pressable>
-              </View>
-              <View style={styles.customItem}>
-                <View style={styles.menuItemTitleWrapper}>
-                  <View style={styles.menuItemTitleWrapperLeft}>
-                    <Text style={styles.menuItemTitle}>{t('books:comment')}</Text>
-                    <Text style={styles.menuItemTitle} numberOfLines={1}>
-                      :{' '}
-                    </Text>
-                    <Text style={styles.menuItemSubTitle} numberOfLines={1}>
-                      Личный рейтинг книге 10 баллов и потому хочу написать этот комментарий для себя
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.commentButtonWrapper}>
-                  <Button style={styles.commentButton} titleStyle={styles.commentButtonTitle} onPress={showCommentForm} title={t('common:add')} />
-                </View>
-              </View>
-            </>
-          ) : null}
-          <View style={styles.buttonWrapper}>
-            <Button
-              style={styles.submitButton}
-              icon={isLoading && <Spinner size={Size.SMALL} />}
-              title={t('common:save')}
-              disabled={isLoading}
-              onPress={handleUpdate}
-            />
-          </View>
-        </>
-      )}
+      {renderContent()}
       {isVisibleDatePicker ? (
         <DatePicker
           modal
@@ -246,11 +298,14 @@ const BookStatusModal = ({ isVisible, book, updateUserBook, hideModal, boardType
 };
 
 BookStatusModal.propTypes = {
+  bookCommentLoadingStatus: loadingDataStatusShape,
   isVisible: bool,
   book: shape({
     bookId: string,
     bookStatus: string,
   }),
+  getBookComment: func.isRequired,
+  updateUserComment: func.isRequired,
   updateUserBook: func.isRequired,
   hideModal: func.isRequired,
   boardType: string,

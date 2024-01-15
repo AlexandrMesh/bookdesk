@@ -108,6 +108,34 @@ export const UPDATING_BOOK_ADDED_DATE_FAILED = `${PREFIX}/UPDATING_BOOK_ADDED_DA
 
 export const SET_BOOK_COUNT_BY_YEAR = `${PREFIX}/SET_BOOK_COUNT_BY_YEAR`;
 
+export const START_UPDATING_BOOK_COMMENT = `${PREFIX}/START_UPDATING_BOOK_COMMENT`;
+export const BOOK_COMMENT_UPDATED = `${PREFIX}/BOOK_COMMENT_UPDATED`;
+export const UPDATING_BOOK_COMMENT_FAILED = `${PREFIX}/UPDATING_BOOK_COMMENT_FAILED`;
+
+export const START_LOADING_BOOK_COMMENT = `${PREFIX}/START_LOADING_BOOK_COMMENT`;
+export const LOADING_BOOK_COMMENT_FAILED = `${PREFIX}/LOADING_BOOK_COMMENT_FAILED`;
+
+export const startLoadingBookComment = {
+  type: START_LOADING_BOOK_COMMENT,
+};
+
+export const loadingBookCommentFailed = {
+  type: LOADING_BOOK_COMMENT_FAILED,
+};
+
+export const startUpdatingBookComment = {
+  type: START_UPDATING_BOOK_COMMENT,
+};
+
+export const updatingBookCommentFailed = {
+  type: UPDATING_BOOK_COMMENT_FAILED,
+};
+
+export const commentUpdated = (comment) => ({
+  type: BOOK_COMMENT_UPDATED,
+  comment,
+});
+
 export const setBookToUpdate = (bookId, bookStatus) => ({
   type: SET_BOOK_TO_UPDATE,
   bookId,
@@ -684,17 +712,28 @@ export const updateUserBook =
   };
 
 export const updateUserComment =
-  ({ book, comment, added }) =>
+  ({ bookId, comment, added }) =>
   async (dispatch) => {
-    dispatch(startUpdatingUsersBook);
-    const { bookId } = book;
+    dispatch(startUpdatingBookComment);
     try {
-      const { data } = await DataService().updateUserBook({ bookId, added, comment });
-      dispatch(reloadBookList(boardType));
+      const { data } = await DataService().updateUserComment({ bookId, added, comment });
+      dispatch(commentUpdated(data));
     } catch (e) {
-      dispatch(updatingUsersBookFailed);
+      dispatch(updatingBookCommentFailed);
     }
   };
+
+export const getBookComment = (bookId) => async (dispatch) => {
+  dispatch(startLoadingBookComment);
+  try {
+    const { data } = await DataService().getBookComment({ bookId });
+    dispatch(commentUpdated(data));
+    return data;
+  } catch (e) {
+    dispatch(loadingBookCommentFailed);
+    return {};
+  }
+};
 
 export const updateBookVotes =
   ({ bookId, shouldAdd, bookStatus }) =>
