@@ -94,6 +94,10 @@ export default StyleSheet.create({
     width: '48%',
     maxWidth: 400,
   },
+  rowButton3: {
+    width: '32%',
+    maxWidth: 200,
+  },
   submitButton: {
     maxWidth: 400,
   },

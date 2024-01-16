@@ -10,6 +10,7 @@ import SlideMenu from '~UI/SlideMenu';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { getValidationFailure, validationTypes } from '~utils/validation';
+import { SECONDARY } from '~constants/themes';
 import { PENDING } from '~constants/loadingStatuses';
 import Input from '~UI/TextInput';
 import BookStatusItem from './BookStatusItem';
@@ -36,6 +37,8 @@ const BookStatusModal = ({
   hideModal,
   boardType,
   isLoading,
+  bookComment,
+  clearBookComment,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
@@ -46,6 +49,7 @@ const BookStatusModal = ({
   const [menuHeight, setMenuHeight] = useState(336);
   const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
   const [comment, setComment] = useState('');
+  const [savedComment, setSavedComment] = useState('');
   const [commentError, setCommentError] = useState(null);
   const { language } = i18n;
 
@@ -87,11 +91,17 @@ const BookStatusModal = ({
 
   useEffect(() => {
     if (isVisible) {
+      const bookStatus = book?.bookStatus || ALL;
+      setMenuHeight(bookStatus !== ALL ? 436 : 336);
+      setNewBookStatus(bookStatus);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (isVisible) {
       const loadData = async () => {
         try {
-          const bookStatus = book?.bookStatus || ALL;
-          setMenuHeight(bookStatus !== ALL ? 436 : 336);
-          setNewBookStatus(bookStatus);
           setAdded(book?.added || new Date().getTime());
           if (book?.bookStatus && book?.bookStatus !== ALL) {
             const data = await getBookComment(book?.bookId);
@@ -103,7 +113,9 @@ const BookStatusModal = ({
       };
       loadData();
     } else {
+      clearBookComment();
       setComment('');
+      setSavedComment('');
       hideCommentForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,7 +169,7 @@ const BookStatusModal = ({
     return !error;
   };
 
-  const handleChangeComment = (value) => {
+  const handleEditComment = (value) => {
     setComment(value);
     setCommentError(null);
   };
@@ -166,15 +178,22 @@ const BookStatusModal = ({
     const isCommentValid = validateComment();
 
     if (isCommentValid) {
+      setSavedComment(comment);
       hideCommentForm();
     }
   };
 
+  const handleRemoveBookComment = () => {
+    setComment('');
+    setSavedComment('');
+
+    setCommentError(null);
+    hideCommentForm();
+  };
+
   const handleCloseCommentForm = () => {
-    const isCommentValid = validateComment();
-    if (!isCommentValid) {
-      setComment('');
-    }
+    setComment(savedComment || bookComment || '');
+
     setCommentError(null);
     hideCommentForm();
   };
@@ -191,7 +210,7 @@ const BookStatusModal = ({
             placeholder={t('books:enterComment')}
             wrapperClassName={styles.commentWrapperClassName}
             className={styles.commentInput}
-            onChangeText={handleChangeComment}
+            onChangeText={handleEditComment}
             value={comment}
             error={commentError}
             shouldDisplayClearButton={!!comment}
@@ -201,8 +220,29 @@ const BookStatusModal = ({
           />
         </View>
         <View style={[styles.buttonWrapper, styles.buttonsWrapper]}>
-          <Button style={styles.rowButton} title={t('common:back')} disabled={isLoading} onPress={handleCloseCommentForm} />
-          <Button style={styles.rowButton} title={t('common:save')} disabled={isLoading} onPress={handleSaveComment} />
+          <Button
+            theme={SECONDARY}
+            style={[styles.rowButton, savedComment || bookComment ? styles.rowButton3 : null]}
+            title={t('common:back')}
+            disabled={isLoading}
+            onPress={handleCloseCommentForm}
+          />
+          {savedComment || bookComment ? (
+            <Button
+              theme={SECONDARY}
+              disabled={isLoading || !comment}
+              style={styles.rowButton3}
+              title={t('common:remove')}
+              onPress={handleRemoveBookComment}
+            />
+          ) : null}
+
+          <Button
+            style={[styles.rowButton, savedComment || bookComment ? styles.rowButton3 : null]}
+            disabled={isLoading}
+            title={t('common:save')}
+            onPress={handleSaveComment}
+          />
         </View>
       </View>
     ) : (
@@ -249,7 +289,7 @@ const BookStatusModal = ({
                   style={styles.commentButton}
                   titleStyle={styles.commentButtonTitle}
                   onPress={showCommentForm}
-                  title={t(comment ? 'common:change' : 'common:add')}
+                  title={t(comment ? 'common:edit' : 'common:add')}
                 />
               </View>
             </View>
@@ -304,7 +344,9 @@ BookStatusModal.propTypes = {
     bookId: string,
     bookStatus: string,
   }),
+  bookComment: string,
   getBookComment: func.isRequired,
+  clearBookComment: func.isRequired,
   updateUserComment: func.isRequired,
   updateUserBook: func.isRequired,
   hideModal: func.isRequired,

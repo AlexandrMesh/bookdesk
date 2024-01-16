@@ -42,7 +42,7 @@ export const getBookToUpdate = (state) => getUpdatedBookValues(state).bookToUpda
 export const getBookValuesToUpdate = (state) => getUpdatedBookValues(state).valuesToUpdate;
 export const getBookValuesUpdatingStatus = (state) => getUpdatedBookValues(state).loadingDataStatus;
 
-export const getBookCommentsData = (state) => getBookComment(state).data;
+export const getBookCommentData = (state) => getBookComment(state).data;
 export const getBookCommentUpdatingStatus = (state) => getBookComment(state).updatingDataStatus;
 export const getBookCommentLoadingStatus = (state) => getBookComment(state).loadingDataStatus;
 

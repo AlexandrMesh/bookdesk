@@ -1023,4 +1023,6 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 
 15.01.2024
 Вынести в константы 436 : 336
-Логик уудаления комментария из SlideMenu продумать
++ Логика уудаления комментария из SlideMenu продумать
+Плохо переключаются статусы книг в модалке
+Сделать endpoint на удаление комментария

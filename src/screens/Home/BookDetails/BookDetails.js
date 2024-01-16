@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Pressable, ScrollView, SafeAreaView, Text, Image } from 'react-native';
@@ -9,7 +9,9 @@ import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { SECONDARY } from '~constants/themes';
 import { IMG_URL } from '~config/api';
+import { getValidationFailure, validationTypes } from '~utils/validation';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import Input from '~UI/TextInput';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import LikeIcon from '~assets/like.svg';
@@ -43,10 +45,17 @@ const BookDetails = ({
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
   const isFocused = useIsFocused();
+  const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
+  const [editedComment, setEditedComment] = useState('');
+  const [editedCommentError, setEditedCommentError] = useState('');
+
+  const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
+  const hideEditCommentForm = () => setIsCommentEditFormVisible(true);
 
   const { params } = useRoute();
 
-  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount } = bookDetailsData || {};
+  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
+    bookDetailsData || {};
 
   const statusColor = getStatusColor(bookStatus);
 
@@ -69,6 +78,33 @@ const BookDetails = ({
     setBookToUpdate(params?.bookId, bookStatus);
     setBookValuesToUpdate(added);
     showDateUpdater();
+  };
+
+  const handleChangeComment = (value) => {
+    setEditedComment(value);
+    setEditedCommentError(null);
+  };
+
+  const validateComment = () => {
+    const params = {
+      minLength: 20,
+      maxLength: 1000,
+    };
+    const error = getValidationFailure(
+      editedComment.trim(),
+      [validationTypes.containsSpecialCharacters, validationTypes.isTooShort, validationTypes.isTooLong],
+      params,
+    );
+    setEditedCommentError(error ? t(`errors:${error}`, params) : null);
+    return !error;
+  };
+
+  const handleEditComment = () => {
+    const isCommentValid = validateComment();
+
+    if (isCommentValid) {
+      console.log('edit comment');
+    }
   };
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
@@ -146,11 +182,72 @@ const BookDetails = ({
               </Pressable>
             )}
           </View>
+          {comment && (
+            <View style={[styles.bordered, styles.marginTop]}>
+              <View style={styles.blockHeader}>
+                <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
+                <Text style={[styles.item, styles.mediumColor]}>{new Date(commentAdded).toLocaleDateString(language)}</Text>
+              </View>
+              {isCommentEditFormVisible ? (
+                <Input
+                  placeholder={t('books:enterComment')}
+                  wrapperClassName={styles.commentWrapperClassName}
+                  className={styles.commentInput}
+                  onChangeText={handleChangeComment}
+                  value={editedComment}
+                  error={editedCommentError}
+                  shouldDisplayClearButton={!!editedComment}
+                  onClear={() => setEditedComment('')}
+                  multiline
+                  numberOfLines={5}
+                />
+              ) : (
+                <Text style={[styles.comment, styles.lightColor]}>{comment}</Text>
+              )}
+              <View style={styles.borderedBlockFooter}>
+                {isCommentEditFormVisible ? (
+                  <>
+                    <Button
+                      style={styles.commentButton}
+                      titleStyle={styles.commentButtonTitle}
+                      onPress={handleEditComment}
+                      title={t('common:save')}
+                    />
+                    <Button
+                      theme={SECONDARY}
+                      style={styles.commentButton}
+                      titleStyle={styles.commentButtonTitle}
+                      onPress={hideEditCommentForm}
+                      title={t('common:cancel')}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      style={styles.commentButton}
+                      titleStyle={styles.commentButtonTitle}
+                      onPress={displayEditCommentForm}
+                      title={t('common:edit')}
+                    />
+                    <Button
+                      theme={SECONDARY}
+                      style={styles.commentButton}
+                      titleStyle={styles.commentButtonTitle}
+                      onPress={() => undefined}
+                      title={t('common:remove')}
+                    />
+                  </>
+                )}
+              </View>
+            </View>
+          )}
           {annotation && (
-            <Text style={[styles.item, styles.mediumColor, styles.marginTop]}>
-              {t('annotation')}
+            <View style={[styles.item, styles.mediumColor, styles.marginTop]}>
+              <View>
+                <Text style={[styles.item, styles.mediumColor]}>{t('annotation')}</Text>
+              </View>
               <Text style={[styles.annotation, styles.lightColor]}>{annotation}</Text>
-            </Text>
+            </View>
           )}
         </View>
       </ScrollView>

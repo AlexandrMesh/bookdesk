@@ -40,8 +40,37 @@ export default StyleSheet.create({
   annotation: {
     fontSize: 18,
   },
+  comment: {
+    fontSize: 18,
+    marginTop: 10,
+  },
   mediumColor: {
     color: colors.neutral_medium,
+  },
+  bordered: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: colors.neutral_light,
+  },
+  borderedBlockFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  commentButton: {
+    width: 100,
+    height: 30,
+    marginRight: 10,
+  },
+  commentButtonTitle: {
+    fontSize: 14,
+  },
+  blockHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   marginTop: {
     marginTop: 15,

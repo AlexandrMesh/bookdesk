@@ -69,6 +69,7 @@ import {
   UPDATING_BOOK_COMMENT_FAILED,
   START_LOADING_BOOK_COMMENT,
   LOADING_BOOK_COMMENT_FAILED,
+  CLEAR_BOOK_COMMENT,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -124,6 +125,12 @@ const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
   pagination: getDefaultPaginationState(),
 });
 
+const getDefaultBookCommentState = () => ({
+  data: {},
+  loadingDataStatus: IDLE,
+  updatingDataStatus: IDLE,
+});
+
 const initialState = {
   updatingBookStatus: IDLE,
   boardType: ALL,
@@ -142,11 +149,7 @@ const initialState = {
   },
   bookVotes: [],
   updatingVotesForBooks: [],
-  bookComment: {
-    data: {},
-    loadingDataStatus: IDLE,
-    updatingDataStatus: IDLE,
-  },
+  bookComment: getDefaultBookCommentState(),
   bookDetails: getDefaultBookDetailsState(),
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),
@@ -200,6 +203,11 @@ export default createReducer(initialState, (state, action) => ({
       updatingDataStatus: SUCCEEDED,
       loadingDataStatus: SUCCEEDED,
     },
+  }),
+
+  [CLEAR_BOOK_COMMENT]: () => ({
+    ...state,
+    bookComment: getDefaultBookCommentState(),
   }),
 
   [UPDATING_BOOK_COMMENT_FAILED]: () => ({

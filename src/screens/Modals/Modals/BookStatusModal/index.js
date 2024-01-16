@@ -6,8 +6,9 @@ import {
   getBoardType,
   getSelectedBook,
   getBookCommentLoadingStatus,
+  getBookCommentData,
 } from '~redux/selectors/books';
-import { getBookComment, updateUserBook, updateUserComment, hideModal } from '~redux/actions/booksActions';
+import { getBookComment, updateUserBook, updateUserComment, hideModal, clearBookComment } from '~redux/actions/booksActions';
 import { PENDING } from '~constants/loadingStatuses';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import BookStatusModal from './BookStatusModal';
@@ -18,12 +19,14 @@ const mapStateToProps = (state) => ({
   boardType: getBoardType(state),
   book: getSelectedBook(state),
   bookCommentLoadingStatus: getBookCommentLoadingStatus(state),
+  bookComment: getBookCommentData(state)?.comment || '',
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getBookComment: (params) => dispatch(getBookComment(params)),
   updateUserBook: (params) => dispatch(updateUserBook(params)),
   updateUserComment: (params) => dispatch(updateUserComment(params)),
+  clearBookComment: () => dispatch(clearBookComment),
   hideModal: () => dispatch(hideModal),
 });
 
