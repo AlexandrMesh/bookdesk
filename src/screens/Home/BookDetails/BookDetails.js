@@ -214,7 +214,7 @@ const BookDetails = ({
               </Pressable>
             )}
           </View>
-          {comment || isCommentEditFormVisible ? (
+          {bookStatus && (comment || isCommentEditFormVisible) ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
@@ -283,7 +283,8 @@ const BookDetails = ({
                 )}
               </View>
             </View>
-          ) : (
+          ) : null}
+          {bookStatus && !isCommentEditFormVisible && !comment ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
@@ -297,7 +298,7 @@ const BookDetails = ({
                 />
               </View>
             </View>
-          )}
+          ) : null}
           {annotation && (
             <View style={[styles.item, styles.mediumColor, styles.marginTop]}>
               <View>

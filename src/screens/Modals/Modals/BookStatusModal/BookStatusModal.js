@@ -41,6 +41,7 @@ const BookStatusModal = ({
   bookComment,
   deleteUserComment,
   clearBookComment,
+  updateUserBookCommentInBookDetails,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
@@ -123,6 +124,12 @@ const BookStatusModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
+  useEffect(() => {
+    if (bookComment) {
+      setSavedComment(bookComment);
+    }
+  }, [bookComment]);
+
   const handleUpdate = async () => {
     if (!isLoading) {
       try {
@@ -132,12 +139,13 @@ const BookStatusModal = ({
           newBookStatus,
           boardType,
         });
-        if (!savedComment && book?.bookStatus !== ALL) {
+        if (!savedComment || newBookStatus === ALL) {
           await deleteUserComment(book.bookId);
         }
         if (savedComment) {
           const added = new Date().getTime();
           await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
+          updateUserBookCommentInBookDetails(comment.trim(), added);
         }
         setShouldRecalculateDimensions(false);
         setShouldAutoClose(true);
@@ -355,6 +363,7 @@ BookStatusModal.propTypes = {
   }),
   bookComment: string,
   getBookComment: func.isRequired,
+  updateUserBookCommentInBookDetails: func.isRequired,
   clearBookComment: func.isRequired,
   updateUserComment: func.isRequired,
   updateUserBook: func.isRequired,

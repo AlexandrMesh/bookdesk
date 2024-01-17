@@ -9,7 +9,15 @@ import {
   getBookCommentData,
   getBookCommentDeletingStatus,
 } from '~redux/selectors/books';
-import { getBookComment, updateUserBook, updateUserComment, hideModal, clearBookComment, deleteUserComment } from '~redux/actions/booksActions';
+import {
+  getBookComment,
+  updateUserBook,
+  updateUserComment,
+  hideModal,
+  clearBookComment,
+  deleteUserComment,
+  updateUserBookCommentInBookDetails,
+} from '~redux/actions/booksActions';
 import { PENDING } from '~constants/loadingStatuses';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import BookStatusModal from './BookStatusModal';
@@ -31,6 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
   clearBookComment: () => dispatch(clearBookComment),
   hideModal: () => dispatch(hideModal),
   deleteUserComment: (bookId) => dispatch(deleteUserComment(bookId)),
+  updateUserBookCommentInBookDetails: (comment, commentAdded) => dispatch(updateUserBookCommentInBookDetails(comment, commentAdded)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookStatusModal);
