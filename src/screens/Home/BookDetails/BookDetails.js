@@ -49,7 +49,7 @@ const BookDetails = ({
 }) => {
   const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
     bookDetailsData || {};
-  const { t, i18n } = useTranslation(['books', 'categories']);
+  const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const { language } = i18n;
   const isFocused = useIsFocused();
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
