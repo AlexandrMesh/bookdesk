@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.4.0
+
+###### 2024-01-17
+- [New] Added ability to add book comments
+
 ## 2.3.0
 
 ###### 2024-01-10
