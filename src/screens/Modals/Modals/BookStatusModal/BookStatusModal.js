@@ -11,6 +11,7 @@ import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { SECONDARY } from '~constants/themes';
+import { COMMON_SLIDE_MENU_HEIGHT, BIG_SLIDE_MENU_HEIGHT } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import Input from '~UI/TextInput';
 import BookStatusItem from './BookStatusItem';
@@ -38,6 +39,7 @@ const BookStatusModal = ({
   boardType,
   isLoading,
   bookComment,
+  deleteUserComment,
   clearBookComment,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
@@ -56,7 +58,7 @@ const BookStatusModal = ({
   const handleAction = (status) => {
     setNewBookStatus(status);
     setShouldRecalculateDimensions(true);
-    setMenuHeight(status !== ALL ? 436 : 336);
+    setMenuHeight(status !== ALL ? BIG_SLIDE_MENU_HEIGHT : COMMON_SLIDE_MENU_HEIGHT);
   };
 
   const showDatePicker = () => {
@@ -92,7 +94,7 @@ const BookStatusModal = ({
   useEffect(() => {
     if (isVisible) {
       const bookStatus = book?.bookStatus || ALL;
-      setMenuHeight(bookStatus !== ALL ? 436 : 336);
+      setMenuHeight(bookStatus !== ALL ? BIG_SLIDE_MENU_HEIGHT : COMMON_SLIDE_MENU_HEIGHT);
       setNewBookStatus(bookStatus);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,20 +125,27 @@ const BookStatusModal = ({
 
   const handleUpdate = async () => {
     if (!isLoading) {
-      await updateUserBook({
-        book,
-        added,
-        newBookStatus,
-        boardType,
-      });
-      if (comment) {
-        const added = new Date().getTime();
-        await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
-      }
-      setShouldRecalculateDimensions(false);
-      setShouldAutoClose(true);
-      if (boardType !== ALL) {
-        LayoutAnimation.configureNext(layoutAnimConfig);
+      try {
+        await updateUserBook({
+          book,
+          added,
+          newBookStatus,
+          boardType,
+        });
+        if (!savedComment && book?.bookStatus !== ALL) {
+          await deleteUserComment(book.bookId);
+        }
+        if (savedComment) {
+          const added = new Date().getTime();
+          await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
+        }
+        setShouldRecalculateDimensions(false);
+        setShouldAutoClose(true);
+        if (boardType !== ALL) {
+          LayoutAnimation.configureNext(layoutAnimConfig);
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
   };
@@ -349,6 +358,7 @@ BookStatusModal.propTypes = {
   clearBookComment: func.isRequired,
   updateUserComment: func.isRequired,
   updateUserBook: func.isRequired,
+  deleteUserComment: func.isRequired,
   hideModal: func.isRequired,
   boardType: string,
   isLoading: bool,

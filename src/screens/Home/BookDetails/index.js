@@ -5,6 +5,8 @@ import {
   deriveBookVotes,
   deriveUpdatingVoteForBook,
   getBookValuesUpdatingStatus,
+  getBookCommentUpdatingStatus,
+  getBookCommentDeletingStatus,
 } from '~redux/selectors/books';
 import {
   loadBookDetails,
@@ -14,6 +16,9 @@ import {
   clearBookDetails,
   setBookToUpdate,
   setBookValuesToUpdate,
+  updateUserComment,
+  updateUserBookCommentInBookDetails,
+  deleteUserComment,
 } from '~redux/actions/booksActions';
 import { DATE_UPDATER } from '~constants/modalTypes';
 import BookDetails from './BookDetails';
@@ -24,6 +29,8 @@ const mapStateToProps = (state, ownProps) => ({
   loadingDataStatus: getLoadingBookDetailsStatus(state),
   bookDetailsData: deriveBookDetails(state),
   bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
+  bookCommentUpdatingStatus: getBookCommentUpdatingStatus(state),
+  bookCommentDeletingStatus: getBookCommentDeletingStatus(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -35,6 +42,9 @@ const mapDispatchToProps = (dispatch) => ({
   setBookToUpdate: (bookId, bookStatus) => dispatch(setBookToUpdate(bookId, bookStatus)),
   setBookValuesToUpdate: (added) => dispatch(setBookValuesToUpdate(added)),
   showDateUpdater: () => dispatch(showModal(DATE_UPDATER)),
+  updateUserComment: (params) => dispatch(updateUserComment(params)),
+  updateUserBookCommentInBookDetails: (comment, commentAdded) => dispatch(updateUserBookCommentInBookDetails(comment, commentAdded)),
+  deleteUserComment: (bookId) => dispatch(deleteUserComment(bookId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookDetails);

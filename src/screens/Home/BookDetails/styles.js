@@ -26,6 +26,10 @@ export default StyleSheet.create({
     fontSize: 21,
     textAlign: 'center',
   },
+  subTitle: {
+    fontSize: 16,
+    color: colors.neutral_light,
+  },
   lightColor: {
     color: colors.neutral_light,
   },
@@ -58,6 +62,14 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 15,
+  },
+  commentWrapperClassName: {
+    marginTop: 10,
+    height: 240,
+  },
+  commentInput: {
+    height: 210,
+    textAlignVertical: 'top',
   },
   commentButton: {
     width: 100,

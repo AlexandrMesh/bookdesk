@@ -70,7 +70,7 @@ export default StyleSheet.create({
     color: colors.neutral_medium,
   },
   subTitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: colors.neutral_light,
     marginBottom: 10,
   },

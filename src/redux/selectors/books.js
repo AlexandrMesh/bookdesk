@@ -45,6 +45,7 @@ export const getBookValuesUpdatingStatus = (state) => getUpdatedBookValues(state
 export const getBookCommentData = (state) => getBookComment(state).data;
 export const getBookCommentUpdatingStatus = (state) => getBookComment(state).updatingDataStatus;
 export const getBookCommentLoadingStatus = (state) => getBookComment(state).loadingDataStatus;
+export const getBookCommentDeletingStatus = (state) => getBookComment(state).deletingDataStatus;
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);

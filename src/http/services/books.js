@@ -11,6 +11,7 @@ const DataService = () => ({
   getBookDetails: (params) => http.get(`${config.API_URL}/book`, { params }),
   getBooksCountByYear: (params) => http.get(`${config.API_URL}/booksCountByYear`, { params }),
   updateUserBookAddedValue: (params) => http.post(`${config.API_URL}/updateUserBookAddedValue`, params),
+  deleteUserComment: (params) => http.post(`${config.API_URL}/deleteUserComment`, params),
 });
 
 export default DataService;

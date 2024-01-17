@@ -70,6 +70,10 @@ import {
   START_LOADING_BOOK_COMMENT,
   LOADING_BOOK_COMMENT_FAILED,
   CLEAR_BOOK_COMMENT,
+  UPDATE_USER_BOOK_COMMENT_IN_BOOK_DETAILS,
+  START_DELETING_BOOK_COMMENT,
+  BOOK_COMMENT_DELETED,
+  DELETING_BOOK_COMMENT_FAILED,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -129,6 +133,7 @@ const getDefaultBookCommentState = () => ({
   data: {},
   loadingDataStatus: IDLE,
   updatingDataStatus: IDLE,
+  deletingDataStatus: IDLE,
 });
 
 const initialState = {
@@ -185,6 +190,31 @@ export default createReducer(initialState, (state, action) => ({
   [HIDE_MODAL]: () => ({
     ...state,
     activeModal: null,
+  }),
+
+  [START_DELETING_BOOK_COMMENT]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      deletingDataStatus: PENDING,
+    },
+  }),
+
+  [BOOK_COMMENT_DELETED]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      data: {},
+      deletingDataStatus: SUCCEEDED,
+    },
+  }),
+
+  [DELETING_BOOK_COMMENT_FAILED]: () => ({
+    ...state,
+    bookComment: {
+      ...state.bookComment,
+      deletingDataStatus: FAILED,
+    },
   }),
 
   [START_UPDATING_BOOK_COMMENT]: () => ({
@@ -257,6 +287,18 @@ export default createReducer(initialState, (state, action) => ({
         ...state.bookDetails.data,
         bookStatus: action.bookStatus,
         added: action.added,
+      },
+    },
+  }),
+
+  [UPDATE_USER_BOOK_COMMENT_IN_BOOK_DETAILS]: () => ({
+    ...state,
+    bookDetails: {
+      ...state.bookDetails,
+      data: {
+        ...state.bookDetails.data,
+        comment: action.comment,
+        commentAdded: action.commentAdded,
       },
     },
   }),

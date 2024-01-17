@@ -69,6 +69,7 @@ export const SET_SORT_DIRECTION = `${PREFIX}/SET_SORT_DIRECTION`;
 export const UPDATE_BOOK = `${PREFIX}/UPDATE_BOOK`;
 export const UPDATE_BOOK_DETAILS = `${PREFIX}/UPDATE_BOOK_DETAILS`;
 export const ADD_BOOK = `${PREFIX}/ADD_BOOK`;
+export const UPDATE_USER_BOOK_COMMENT_IN_BOOK_DETAILS = `${PREFIX}/UPDATE_USER_BOOK_COMMENT_IN_BOOK_DETAILS`;
 
 export const UPDATE_BOOK_IN_SEARCH_RESULTS = `${PREFIX}/UPDATE_BOOK_IN_SEARCH_RESULTS`;
 export const CLEAR_SEARCH_RESULTS = `${PREFIX}/CLEAR_SEARCH_RESULTS`;
@@ -117,6 +118,10 @@ export const LOADING_BOOK_COMMENT_FAILED = `${PREFIX}/LOADING_BOOK_COMMENT_FAILE
 
 export const CLEAR_BOOK_COMMENT = `${PREFIX}/CLEAR_BOOK_COMMENT`;
 
+export const START_DELETING_BOOK_COMMENT = `${PREFIX}/START_DELETING_BOOK_COMMENT`;
+export const DELETING_BOOK_COMMENT_FAILED = `${PREFIX}/DELETING_BOOK_COMMENT_FAILED`;
+export const BOOK_COMMENT_DELETED = `${PREFIX}/BOOK_COMMENT_DELETED`;
+
 export const clearBookComment = {
   type: CLEAR_BOOK_COMMENT,
 };
@@ -141,6 +146,18 @@ export const commentUpdated = (comment) => ({
   type: BOOK_COMMENT_UPDATED,
   comment,
 });
+
+export const startDeletingBookComment = {
+  type: START_DELETING_BOOK_COMMENT,
+};
+
+export const deletingBookCommentFailed = {
+  type: DELETING_BOOK_COMMENT_FAILED,
+};
+
+export const bookCommentDeleted = {
+  type: BOOK_COMMENT_DELETED,
+};
 
 export const setBookToUpdate = (bookId, bookStatus) => ({
   type: SET_BOOK_TO_UPDATE,
@@ -396,6 +413,12 @@ export const updateBookDetails = (bookStatus, added) => ({
   type: UPDATE_BOOK_DETAILS,
   bookStatus,
   added,
+});
+
+export const updateUserBookCommentInBookDetails = (comment, commentAdded) => ({
+  type: UPDATE_USER_BOOK_COMMENT_IN_BOOK_DETAILS,
+  comment,
+  commentAdded,
 });
 
 export const updateBookInSearchResults = (bookId, boardType, bookStatus, added) => ({
@@ -724,10 +747,22 @@ export const updateUserComment =
     try {
       const { data } = await DataService().updateUserComment({ bookId, added, comment });
       dispatch(commentUpdated(data));
+      return data;
     } catch (e) {
       dispatch(updatingBookCommentFailed);
+      return false;
     }
   };
+
+export const deleteUserComment = (bookId) => async (dispatch) => {
+  dispatch(startDeletingBookComment);
+  try {
+    await DataService().deleteUserComment({ bookId });
+    dispatch(bookCommentDeleted);
+  } catch (e) {
+    dispatch(deletingBookCommentFailed);
+  }
+};
 
 export const getBookComment = (bookId) => async (dispatch) => {
   dispatch(startLoadingBookComment);

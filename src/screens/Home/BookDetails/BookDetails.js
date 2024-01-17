@@ -41,21 +41,25 @@ const BookDetails = ({
   setBookValuesToUpdate,
   showDateUpdater,
   bookValuesUpdatingStatus,
+  updateUserComment,
+  updateUserBookCommentInBookDetails,
+  bookCommentUpdatingStatus,
+  deleteUserComment,
+  bookCommentDeletingStatus,
 }) => {
+  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
+    bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
   const isFocused = useIsFocused();
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
-  const [editedComment, setEditedComment] = useState('');
+  const [editedComment, setEditedComment] = useState(comment || '');
   const [editedCommentError, setEditedCommentError] = useState('');
 
   const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
-  const hideEditCommentForm = () => setIsCommentEditFormVisible(true);
+  const hideEditCommentForm = () => setIsCommentEditFormVisible(false);
 
   const { params } = useRoute();
-
-  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
-    bookDetailsData || {};
 
   const statusColor = getStatusColor(bookStatus);
 
@@ -66,6 +70,9 @@ const BookDetails = ({
   useEffect(() => {
     if (!isFocused) {
       clearBookDetails();
+      hideEditCommentForm();
+      setEditedComment('');
+      setEditedCommentError('');
     }
   }, [isFocused, clearBookDetails]);
 
@@ -85,6 +92,12 @@ const BookDetails = ({
     setEditedCommentError(null);
   };
 
+  const handleDisplayEditCommentForm = () => {
+    setEditedCommentError(null);
+    setEditedComment(comment || '');
+    displayEditCommentForm();
+  };
+
   const validateComment = () => {
     const params = {
       minLength: 20,
@@ -99,13 +112,32 @@ const BookDetails = ({
     return !error;
   };
 
-  const handleEditComment = () => {
+  const handleSaveComment = async () => {
     const isCommentValid = validateComment();
 
     if (isCommentValid) {
-      console.log('edit comment');
+      try {
+        const commentAdded = new Date().getTime();
+        const { comment, added } = await updateUserComment({ bookId: params?.bookId, comment: editedComment.trim(), added: commentAdded });
+        updateUserBookCommentInBookDetails(comment, added);
+        hideEditCommentForm();
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
+
+  const handleDeleteComment = async () => {
+    try {
+      await deleteUserComment(params?.bookId);
+      updateUserBookCommentInBookDetails(null, null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
+  const isDeletingComment = bookCommentDeletingStatus === PENDING;
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
     <View style={styles.spinnerWrapper}>
@@ -113,7 +145,7 @@ const BookDetails = ({
     </View>
   ) : (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps='handled'>
         <View style={styles.header}>
           <Image
             style={styles.cover}
@@ -182,11 +214,15 @@ const BookDetails = ({
               </Pressable>
             )}
           </View>
-          {comment && (
+          {comment || isCommentEditFormVisible ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
-                <Text style={[styles.item, styles.mediumColor]}>{new Date(commentAdded).toLocaleDateString(language)}</Text>
+                {isCommentEditFormVisible ? (
+                  <Text style={styles.subTitle}>{t('common:charactersCount', { count: editedComment.trim().length, maxCount: 1000 })}</Text>
+                ) : (
+                  <Text style={[styles.item, styles.mediumColor]}>{new Date(commentAdded).toLocaleDateString(language)}</Text>
+                )}
               </View>
               {isCommentEditFormVisible ? (
                 <Input
@@ -196,7 +232,8 @@ const BookDetails = ({
                   onChangeText={handleChangeComment}
                   value={editedComment}
                   error={editedCommentError}
-                  shouldDisplayClearButton={!!editedComment}
+                  shouldDisplayClearButton={!!editedComment && !isUpdatingComment}
+                  disabled={isUpdatingComment}
                   onClear={() => setEditedComment('')}
                   multiline
                   numberOfLines={5}
@@ -210,12 +247,15 @@ const BookDetails = ({
                     <Button
                       style={styles.commentButton}
                       titleStyle={styles.commentButtonTitle}
-                      onPress={handleEditComment}
+                      onPress={handleSaveComment}
+                      disabled={isUpdatingComment}
+                      icon={isUpdatingComment && <Spinner size={Size.SMALL} />}
                       title={t('common:save')}
                     />
                     <Button
                       theme={SECONDARY}
                       style={styles.commentButton}
+                      disabled={isUpdatingComment}
                       titleStyle={styles.commentButtonTitle}
                       onPress={hideEditCommentForm}
                       title={t('common:cancel')}
@@ -226,18 +266,35 @@ const BookDetails = ({
                     <Button
                       style={styles.commentButton}
                       titleStyle={styles.commentButtonTitle}
-                      onPress={displayEditCommentForm}
+                      onPress={handleDisplayEditCommentForm}
+                      disabled={isDeletingComment}
                       title={t('common:edit')}
                     />
                     <Button
                       theme={SECONDARY}
                       style={styles.commentButton}
+                      disabled={isDeletingComment}
+                      icon={isDeletingComment && <Spinner size={Size.SMALL} />}
                       titleStyle={styles.commentButtonTitle}
-                      onPress={() => undefined}
+                      onPress={handleDeleteComment}
                       title={t('common:remove')}
                     />
                   </>
                 )}
+              </View>
+            </View>
+          ) : (
+            <View style={[styles.bordered, styles.marginTop]}>
+              <View style={styles.blockHeader}>
+                <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
+              </View>
+              <View style={styles.borderedBlockFooter}>
+                <Button
+                  style={styles.commentButton}
+                  titleStyle={styles.commentButtonTitle}
+                  onPress={handleDisplayEditCommentForm}
+                  title={t('common:add')}
+                />
               </View>
             </View>
           )}
@@ -258,6 +315,11 @@ const BookDetails = ({
 BookDetails.propTypes = {
   loadingDataStatus: loadingDataStatusShape,
   bookValuesUpdatingStatus: loadingDataStatusShape,
+  bookCommentUpdatingStatus: loadingDataStatusShape,
+  bookCommentDeletingStatus: loadingDataStatusShape,
+  updateUserComment: func.isRequired,
+  deleteUserComment: func.isRequired,
+  updateUserBookCommentInBookDetails: func.isRequired,
   loadBookDetails: func.isRequired,
   updateBookVotes: func.isRequired,
   setBookToUpdate: func.isRequired,
