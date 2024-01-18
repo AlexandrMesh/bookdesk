@@ -103,6 +103,7 @@ const BookStatusModal = ({
 
   useEffect(() => {
     if (isVisible) {
+      clearBookComment();
       const loadData = async () => {
         try {
           setAdded(book?.added || new Date().getTime());
@@ -116,7 +117,6 @@ const BookStatusModal = ({
       };
       loadData();
     } else {
-      clearBookComment();
       setComment('');
       setSavedComment('');
       hideCommentForm();

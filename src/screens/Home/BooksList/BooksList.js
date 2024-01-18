@@ -37,7 +37,7 @@ const BookList = ({
       {data.length > 0 && (
         <FlashList
           horizontal={horizontal}
-          estimatedItemSize={data.length}
+          estimatedItemSize={210}
           data={data}
           extraData={extraData}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}

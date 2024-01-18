@@ -217,7 +217,7 @@ const BookDetails = ({
           {bookStatus && (comment || isCommentEditFormVisible) ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
-                <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
+                <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
                 {isCommentEditFormVisible ? (
                   <Text style={styles.subTitle}>{t('common:charactersCount', { count: editedComment.trim().length, maxCount: 1000 })}</Text>
                 ) : (
@@ -287,7 +287,7 @@ const BookDetails = ({
           {bookStatus && !isCommentEditFormVisible && !comment ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
-                <Text style={[styles.item, styles.mediumColor]}>{t('comment')}</Text>
+                <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
               </View>
               <View style={styles.borderedBlockFooter}>
                 <Button
