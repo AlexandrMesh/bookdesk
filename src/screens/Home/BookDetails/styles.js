@@ -33,6 +33,23 @@ export default StyleSheet.create({
   lightColor: {
     color: colors.neutral_light,
   },
+  ratingWrapper: {
+    height: 32,
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  ratingLabel: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  loadingSpinnerWrapper: {
+    width: 20,
+    height: 20,
+    marginLeft: 5,
+    position: 'relative',
+  },
   cover: {
     width: 260,
     height: 395,
@@ -82,6 +99,7 @@ export default StyleSheet.create({
   blockHeader: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   marginTop: {
@@ -110,7 +128,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ratingWrapper: {
+  voteWrapper: {
     height: 30,
     marginLeft: 20,
     display: 'flex',

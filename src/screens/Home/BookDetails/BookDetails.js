@@ -14,6 +14,8 @@ import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import Input from '~UI/TextInput';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
+import StarIcon from '~assets/star.svg';
+import FilledStarIcon from '~assets/star-filled.svg';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
@@ -42,19 +44,35 @@ const BookDetails = ({
   showDateUpdater,
   bookValuesUpdatingStatus,
   updateUserComment,
+  updateUserBookRating,
   updateUserBookCommentInBookDetails,
   bookCommentUpdatingStatus,
   deleteUserComment,
   bookCommentDeletingStatus,
 }) => {
-  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
-    bookDetailsData || {};
+  const {
+    title,
+    coverPath,
+    authorsList,
+    pages,
+    categoryPath,
+    categoryValue,
+    bookStatus,
+    added,
+    annotation,
+    votesCount,
+    comment,
+    rating,
+    commentAdded,
+  } = bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const { language } = i18n;
   const isFocused = useIsFocused();
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
   const [editedComment, setEditedComment] = useState(comment || '');
   const [editedCommentError, setEditedCommentError] = useState('');
+  const [internalBookRating, setInternalBookRating] = useState(rating);
+  const [updatingRating, setUpdatingRating] = useState(false);
 
   const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
   const hideEditCommentForm = () => setIsCommentEditFormVisible(false);
@@ -63,6 +81,33 @@ const BookDetails = ({
 
   const statusColor = getStatusColor(bookStatus);
 
+  const handleUpdateRating = async (value) => {
+    try {
+      setUpdatingRating(true);
+      setInternalBookRating(value);
+      const ratingAdded = new Date().getTime();
+      await updateUserBookRating({ bookId: params?.bookId, rating: value, added: ratingAdded });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdatingRating(false);
+    }
+  };
+
+  const ratingItems = [
+    { id: '1', isSelected: internalBookRating >= 1, action: () => handleUpdateRating(1) },
+    { id: '2', isSelected: internalBookRating >= 2, action: () => handleUpdateRating(2) },
+    { id: '3', isSelected: internalBookRating >= 3, action: () => handleUpdateRating(3) },
+    { id: '4', isSelected: internalBookRating >= 4, action: () => handleUpdateRating(4) },
+    { id: '5', isSelected: internalBookRating >= 5, action: () => handleUpdateRating(5) },
+  ];
+
+  const clearBookRating = () => setInternalBookRating(0);
+
+  useEffect(() => {
+    setInternalBookRating(rating);
+  }, [rating]);
+
   useEffect(() => {
     loadBookDetails({ bookId: params?.bookId });
   }, [loadBookDetails, params]);
@@ -70,6 +115,7 @@ const BookDetails = ({
   useEffect(() => {
     if (!isFocused) {
       clearBookDetails();
+      clearBookRating();
       hideEditCommentForm();
       setEditedComment('');
       setEditedCommentError('');
@@ -201,10 +247,7 @@ const BookDetails = ({
                 <Spinner size={Size.SMALL} />
               </View>
             ) : (
-              <Pressable
-                onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })}
-                style={styles.ratingWrapper}
-              >
+              <Pressable onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.voteWrapper}>
                 {bookWithVote ? (
                   <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
                 ) : (
@@ -214,6 +257,40 @@ const BookDetails = ({
               </Pressable>
             )}
           </View>
+
+          {bookStatus ? (
+            <View style={[styles.bordered, styles.marginTop]}>
+              <View style={styles.blockHeader}>
+                <View style={styles.ratingLabel}>
+                  <View>
+                    <Text style={[styles.item, styles.mediumColor]}>{t('rating')}</Text>
+                  </View>
+                  {updatingRating && (
+                    <View style={styles.loadingSpinnerWrapper}>
+                      <Spinner size={Size.SMALL} />
+                    </View>
+                  )}
+                </View>
+                <View style={styles.ratingWrapper}>
+                  {ratingItems.map(({ id, isSelected, action }) => {
+                    return (
+                      <Pressable
+                        key={id}
+                        onPress={() => {
+                          if (!updatingRating) {
+                            action();
+                          }
+                        }}
+                      >
+                        {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+            </View>
+          ) : null}
+
           {bookStatus && (comment || isCommentEditFormVisible) ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
@@ -319,6 +396,7 @@ BookDetails.propTypes = {
   bookCommentUpdatingStatus: loadingDataStatusShape,
   bookCommentDeletingStatus: loadingDataStatusShape,
   updateUserComment: func.isRequired,
+  updateUserBookRating: func.isRequired,
   deleteUserComment: func.isRequired,
   updateUserBookCommentInBookDetails: func.isRequired,
   loadBookDetails: func.isRequired,

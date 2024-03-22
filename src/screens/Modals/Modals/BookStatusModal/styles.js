@@ -38,6 +38,12 @@ export default StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: colors.neutral_light,
   },
+  ratingWrapper: {
+    height: 32,
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
   commentWrapperClassName: {
     height: 240,
   },
@@ -60,7 +66,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.neutral_light,
   },
-  loadingCommentSpinnerWrapper: {
+  loadingSpinnerWrapper: {
     marginLeft: 20,
     position: 'relative',
   },

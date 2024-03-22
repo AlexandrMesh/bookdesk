@@ -74,6 +74,9 @@ import {
   START_DELETING_BOOK_COMMENT,
   BOOK_COMMENT_DELETED,
   DELETING_BOOK_COMMENT_FAILED,
+  START_LOADING_USER_BOOK_RATING,
+  LOADING_USER_BOOK_RATING_FAILED,
+  USER_BOOK_RATING_UPDATED,
 } from '~redux/actions/booksActions';
 
 const getDefaultCategoriesState = () => ({
@@ -136,6 +139,11 @@ const getDefaultBookCommentState = () => ({
   deletingDataStatus: IDLE,
 });
 
+const getDefaultBookRatingState = () => ({
+  data: {},
+  loadingDataStatus: IDLE,
+});
+
 const initialState = {
   updatingBookStatus: IDLE,
   boardType: ALL,
@@ -155,6 +163,7 @@ const initialState = {
   bookVotes: [],
   updatingVotesForBooks: [],
   bookComment: getDefaultBookCommentState(),
+  bookRating: getDefaultBookRatingState(),
   bookDetails: getDefaultBookDetailsState(),
   board: {
     all: getDefaultBoardState({ sortType: 'votesCount', sortDirection: -1 }),
@@ -235,6 +244,15 @@ export default createReducer(initialState, (state, action) => ({
     },
   }),
 
+  [USER_BOOK_RATING_UPDATED]: () => ({
+    ...state,
+    bookRating: {
+      ...state.bookRating,
+      data: action.rating,
+      loadingDataStatus: SUCCEEDED,
+    },
+  }),
+
   [CLEAR_BOOK_COMMENT]: () => ({
     ...state,
     bookComment: getDefaultBookCommentState(),
@@ -260,6 +278,22 @@ export default createReducer(initialState, (state, action) => ({
     ...state,
     bookComment: {
       ...state.bookComment,
+      loadingDataStatus: FAILED,
+    },
+  }),
+
+  [START_LOADING_USER_BOOK_RATING]: () => ({
+    ...state,
+    bookRating: {
+      ...state.bookRating,
+      loadingDataStatus: PENDING,
+    },
+  }),
+
+  [LOADING_USER_BOOK_RATING_FAILED]: () => ({
+    ...state,
+    bookRating: {
+      ...state.bookRating,
       loadingDataStatus: FAILED,
     },
   }),

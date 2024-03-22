@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.5.0
+
+###### 2024-03-22
+- [New] Rating system for user books
+
 ## 2.4.1
 
 ###### 2024-01-18

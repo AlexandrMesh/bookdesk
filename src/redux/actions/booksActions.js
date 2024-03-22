@@ -122,6 +122,13 @@ export const START_DELETING_BOOK_COMMENT = `${PREFIX}/START_DELETING_BOOK_COMMEN
 export const DELETING_BOOK_COMMENT_FAILED = `${PREFIX}/DELETING_BOOK_COMMENT_FAILED`;
 export const BOOK_COMMENT_DELETED = `${PREFIX}/BOOK_COMMENT_DELETED`;
 
+export const START_LOADING_USER_BOOK_RATING = `${PREFIX}/START_LOADING_USER_BOOK_RATING`;
+export const LOADING_USER_BOOK_RATING_FAILED = `${PREFIX}/LOADING_USER_BOOK_RATING_FAILED`;
+export const USER_BOOK_RATING_UPDATED = `${PREFIX}/USER_BOOK_RATING_UPDATED`;
+
+export const START_UPDATING_USER_BOOK_RATING = `${PREFIX}/START_UPDATING_USER_BOOK_RATING`;
+export const UPDATING_USER_BOOK_RATING_FAILED = `${PREFIX}/UPDATING_USER_BOOK_RATING_FAILED`;
+
 export const clearBookComment = {
   type: CLEAR_BOOK_COMMENT,
 };
@@ -132,6 +139,22 @@ export const startLoadingBookComment = {
 
 export const loadingBookCommentFailed = {
   type: LOADING_BOOK_COMMENT_FAILED,
+};
+
+export const startLoadingUserBookRating = {
+  type: START_LOADING_USER_BOOK_RATING,
+};
+
+export const loadingUserBookRatingFailed = {
+  type: LOADING_USER_BOOK_RATING_FAILED,
+};
+
+export const startUpdatingUserBookRating = {
+  type: START_UPDATING_USER_BOOK_RATING,
+};
+
+export const updatingUserBookRatingFailed = {
+  type: UPDATING_USER_BOOK_RATING_FAILED,
 };
 
 export const startUpdatingBookComment = {
@@ -145,6 +168,11 @@ export const updatingBookCommentFailed = {
 export const commentUpdated = (comment) => ({
   type: BOOK_COMMENT_UPDATED,
   comment,
+});
+
+export const userBookRatingUpdated = (rating) => ({
+  type: USER_BOOK_RATING_UPDATED,
+  rating,
 });
 
 export const startDeletingBookComment = {
@@ -775,6 +803,32 @@ export const getBookComment = (bookId) => async (dispatch) => {
     return {};
   }
 };
+
+export const getUserBookRating = (bookId) => async (dispatch) => {
+  dispatch(startLoadingUserBookRating);
+  try {
+    const { data } = await DataService().getUserBookRating({ bookId });
+    dispatch(userBookRatingUpdated(data));
+    return data;
+  } catch (e) {
+    dispatch(loadingUserBookRatingFailed);
+    return {};
+  }
+};
+
+export const updateUserBookRating =
+  ({ bookId, rating, added }) =>
+  async (dispatch) => {
+    dispatch(startUpdatingUserBookRating);
+    try {
+      const { data } = await DataService().updateUserBookRating({ bookId, added, rating });
+      dispatch(userBookRatingUpdated(data));
+      return data;
+    } catch (e) {
+      dispatch(updatingUserBookRatingFailed);
+      return false;
+    }
+  };
 
 export const updateBookVotes =
   ({ bookId, shouldAdd, bookStatus }) =>

@@ -14,6 +14,8 @@ import { SECONDARY } from '~constants/themes';
 import { COMMON_SLIDE_MENU_HEIGHT, BIG_SLIDE_MENU_HEIGHT } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import Input from '~UI/TextInput';
+import StarIcon from '~assets/star.svg';
+import FilledStarIcon from '~assets/star-filled.svg';
 import BookStatusItem from './BookStatusItem';
 import styles from './styles';
 
@@ -34,14 +36,16 @@ const BookStatusModal = ({
   updateUserBook,
   bookCommentLoadingStatus,
   getBookComment,
+  getUserBookRating,
   updateUserComment,
   hideModal,
   boardType,
-  isLoading,
   bookComment,
   deleteUserComment,
   clearBookComment,
   updateUserBookCommentInBookDetails,
+  userBookRatingLoadingStatus,
+  updateUserBookRating,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
@@ -54,12 +58,21 @@ const BookStatusModal = ({
   const [comment, setComment] = useState('');
   const [savedComment, setSavedComment] = useState('');
   const [commentError, setCommentError] = useState(null);
+  const [internalBookRating, setInternalBookRating] = useState(0);
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { language } = i18n;
+
+  const clearBookRating = () => setInternalBookRating(0);
 
   const handleAction = (status) => {
     setNewBookStatus(status);
     setShouldRecalculateDimensions(true);
     setMenuHeight(status !== ALL ? BIG_SLIDE_MENU_HEIGHT : COMMON_SLIDE_MENU_HEIGHT);
+  };
+
+  const handleChangeRating = (value) => {
+    setInternalBookRating(value);
   };
 
   const showDatePicker = () => {
@@ -87,6 +100,14 @@ const BookStatusModal = ({
     { title: t('completed'), isSelected: newBookStatus === COMPLETED, action: () => handleAction(COMPLETED) },
   ];
 
+  const ratingItems = [
+    { id: '1', isSelected: internalBookRating >= 1, action: () => handleChangeRating(1) },
+    { id: '2', isSelected: internalBookRating >= 2, action: () => handleChangeRating(2) },
+    { id: '3', isSelected: internalBookRating >= 3, action: () => handleChangeRating(3) },
+    { id: '4', isSelected: internalBookRating >= 4, action: () => handleChangeRating(4) },
+    { id: '5', isSelected: internalBookRating >= 5, action: () => handleChangeRating(5) },
+  ];
+
   const handleConfirmChangeDate = (date) => {
     setAdded(date.getTime());
     hideDatePicker();
@@ -103,16 +124,22 @@ const BookStatusModal = ({
 
   useEffect(() => {
     if (isVisible) {
+      clearBookRating();
       clearBookComment();
       const loadData = async () => {
         try {
+          setIsInitialLoading(true);
           setAdded(book?.added || new Date().getTime());
           if (book?.bookStatus && book?.bookStatus !== ALL) {
-            const data = await getBookComment(book?.bookId);
-            setComment(data?.comment || '');
+            const bookId = book?.bookId;
+            const result = await Promise.all([getBookComment(bookId), getUserBookRating(bookId)]);
+            setComment(result[0]?.comment || '');
+            setInternalBookRating(result[1]?.rating || 0);
           }
         } catch (error) {
           console.error(error);
+        } finally {
+          setIsInitialLoading(false);
         }
       };
       loadData();
@@ -133,6 +160,7 @@ const BookStatusModal = ({
   const handleUpdate = async () => {
     if (!isLoading) {
       try {
+        setIsLoading(true);
         await updateUserBook({
           book,
           added,
@@ -142,11 +170,16 @@ const BookStatusModal = ({
         if (!savedComment || newBookStatus === ALL) {
           await deleteUserComment(book.bookId);
         }
+        if (internalBookRating !== 0) {
+          const added = new Date().getTime();
+          await updateUserBookRating({ bookId: book.bookId, rating: internalBookRating, added });
+        }
         if (savedComment) {
           const added = new Date().getTime();
           await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
           updateUserBookCommentInBookDetails(comment.trim(), added);
         }
+        setIsLoading(false);
         setShouldRecalculateDimensions(false);
         setShouldAutoClose(true);
         if (boardType !== ALL) {
@@ -154,6 +187,7 @@ const BookStatusModal = ({
         }
       } catch (error) {
         console.error(error);
+        setIsLoading(false);
       }
     }
   };
@@ -281,6 +315,33 @@ const BookStatusModal = ({
               </Pressable>
             </View>
             <View style={styles.customItem}>
+              <View>
+                <Text style={styles.menuItemTitle}>{t('books:rating')}</Text>
+              </View>
+              <View style={styles.ratingWrapper}>
+                {userBookRatingLoadingStatus === PENDING ? (
+                  <View style={styles.loadingSpinnerWrapper}>
+                    <Spinner />
+                  </View>
+                ) : (
+                  ratingItems.map(({ id, isSelected, action }) => {
+                    return (
+                      <Pressable
+                        key={id}
+                        onPress={() => {
+                          if (!isLoading) {
+                            action();
+                          }
+                        }}
+                      >
+                        {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
+                      </Pressable>
+                    );
+                  })
+                )}
+              </View>
+            </View>
+            <View style={styles.customItem}>
               <View style={styles.menuItemTitleWrapper}>
                 <View style={styles.menuItemTitleWrapperLeft}>
                   <Text style={styles.menuItemTitle}>{t('books:comment')}</Text>
@@ -290,7 +351,7 @@ const BookStatusModal = ({
                     </Text>
                   ) : null}
                   {bookCommentLoadingStatus === PENDING ? (
-                    <View style={styles.loadingCommentSpinnerWrapper}>
+                    <View style={styles.loadingSpinnerWrapper}>
                       <Spinner />
                     </View>
                   ) : (
@@ -315,9 +376,9 @@ const BookStatusModal = ({
         <View style={styles.buttonWrapper}>
           <Button
             style={styles.submitButton}
-            icon={isLoading && <Spinner size={Size.SMALL} />}
+            icon={isLoading && !isInitialLoading && <Spinner size={Size.SMALL} />}
             title={t('common:save')}
-            disabled={isLoading}
+            disabled={isLoading || isInitialLoading}
             onPress={handleUpdate}
           />
         </View>
@@ -356,6 +417,7 @@ const BookStatusModal = ({
 
 BookStatusModal.propTypes = {
   bookCommentLoadingStatus: loadingDataStatusShape,
+  userBookRatingLoadingStatus: loadingDataStatusShape,
   isVisible: bool,
   book: shape({
     bookId: string,
@@ -363,6 +425,8 @@ BookStatusModal.propTypes = {
   }),
   bookComment: string,
   getBookComment: func.isRequired,
+  updateUserBookRating: func.isRequired,
+  getUserBookRating: func.isRequired,
   updateUserBookCommentInBookDetails: func.isRequired,
   clearBookComment: func.isRequired,
   updateUserComment: func.isRequired,
@@ -370,7 +434,6 @@ BookStatusModal.propTypes = {
   deleteUserComment: func.isRequired,
   hideModal: func.isRequired,
   boardType: string,
-  isLoading: bool,
 };
 
 export default BookStatusModal;

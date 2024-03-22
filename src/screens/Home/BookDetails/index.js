@@ -17,6 +17,7 @@ import {
   setBookToUpdate,
   setBookValuesToUpdate,
   updateUserComment,
+  updateUserBookRating,
   updateUserBookCommentInBookDetails,
   deleteUserComment,
 } from '~redux/actions/booksActions';
@@ -43,6 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
   setBookValuesToUpdate: (added) => dispatch(setBookValuesToUpdate(added)),
   showDateUpdater: () => dispatch(showModal(DATE_UPDATER)),
   updateUserComment: (params) => dispatch(updateUserComment(params)),
+  updateUserBookRating: (params) => dispatch(updateUserBookRating(params)),
   updateUserBookCommentInBookDetails: (comment, commentAdded) => dispatch(updateUserBookCommentInBookDetails(comment, commentAdded)),
   deleteUserComment: (bookId) => dispatch(deleteUserComment(bookId)),
 });
