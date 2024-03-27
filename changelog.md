@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.5.1
+
+###### 2024-03-27
+- [Fix] Changed to current date after switching book status
+- [Fix] Small fixes in the translations
+
 ## 2.5.0
 
 ###### 2024-03-22

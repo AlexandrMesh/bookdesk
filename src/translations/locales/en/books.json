@@ -18,6 +18,6 @@
   "dateAdded": "Date added",
   "comment": "Comment",
   "myComment": "My comment",
-  "enterComment": "Enter your comment for the book",
-  "rating": "Rating"
+  "enterComment": "Enter your comment for the book (only you see)",
+  "rating": "My rating"
 }

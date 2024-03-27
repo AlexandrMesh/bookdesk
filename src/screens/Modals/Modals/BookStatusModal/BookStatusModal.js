@@ -66,6 +66,7 @@ const BookStatusModal = ({
   const clearBookRating = () => setInternalBookRating(0);
 
   const handleAction = (status) => {
+    setAdded(new Date().getTime());
     setNewBookStatus(status);
     setShouldRecalculateDimensions(true);
     setMenuHeight(status !== ALL ? BIG_SLIDE_MENU_HEIGHT : COMMON_SLIDE_MENU_HEIGHT);
