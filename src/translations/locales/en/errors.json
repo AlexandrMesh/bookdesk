@@ -15,7 +15,7 @@
   "wrongEmailOrPassword": "Invalid email or password",
   "serverNotAvailable": "Server is not available",
   "mustContainOnlyLetters": "Only letters can be used",
-  "mustContainOnlyNumbers": "Only numbers can be used",
+  "mustContainOnlyNumbers": "Only integers can be used",
   "containsSpecialCharacters": "Unacceptable symbols @^&/#+$~%;~`*<>=%[]{}_|",
   "bookExists": "This book is already in our database"
 }

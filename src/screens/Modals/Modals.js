@@ -4,6 +4,7 @@ import FilteringModal from '~screens/Modals/Modals/FilteringModal';
 import LanguageSettings from '~screens/Modals/Modals/LanguageSettings';
 import CustomBookCategoryModal from '~screens/Modals/Modals/CustomBookCategoryModal';
 import CustomBookStatusModal from '~screens/Modals/Modals/BookStatusModal/CustomBookStatusModal';
+import EditGoalModal from '~screens/Modals/Modals/EditGoalModal';
 
 const Modals = () => {
   return (
@@ -13,6 +14,7 @@ const Modals = () => {
       <LanguageSettings />
       <CustomBookCategoryModal />
       <CustomBookStatusModal />
+      <EditGoalModal />
     </>
   );
 };

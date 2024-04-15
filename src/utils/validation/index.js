@@ -11,6 +11,12 @@ const isTooLong = (value, { maxLength = 64 }) => value.length >= maxLength;
 // if the input val is too short
 const isTooShort = (value, { minLength = 6 }) => value.length < minLength;
 
+// if the input val is more than
+const isMoreThan = (value, { moreComparedValue = 10 }) => Number(value) > moreComparedValue;
+
+// if the input val is less than
+const isLessThan = (value, { lessComparedValue = 1 }) => Number(value) < lessComparedValue;
+
 // should be contain only letters
 const mustContainOnlyLetters = (value) => !/^[а-яёa-z ]+$/i.test(value);
 
@@ -29,6 +35,8 @@ const validationFuncs = {
   isTooLong,
   isNotValidEmailPattern,
   isTooShort,
+  isMoreThan,
+  isLessThan,
   mustContainOnlyLetters,
   containsSpecialCharacters,
   mustContainOnlyNumbers,

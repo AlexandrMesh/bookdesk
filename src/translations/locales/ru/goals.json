@@ -1,0 +1,8 @@
+{
+  "goals": "Цели",
+  "addGoal": "Добавить цель",
+  "enterPagesCount": "Введите кол-во страниц",
+  "add": "Внести",
+  "goalForToday": "Цель на сегодня {{date}}",
+  "changeGoal": "Изменить цель"
+}

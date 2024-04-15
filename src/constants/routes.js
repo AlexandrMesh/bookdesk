@@ -1,9 +1,11 @@
 export const SEARCH_ROUTE = 'Search';
+export const GOALS_ROUTE = 'Goals';
 export const HOME_ROUTE = 'Home';
 export const PROFILE_ROUTE = 'Profile';
 export const ABOUT_ROUTE = 'About';
 export const HOME_NAVIGATOR_ROUTE = 'HomeNavigator';
 export const SEARCH_NAVIGATOR_ROUTE = 'SearchNavigator';
+export const GOALS_NAVIGATOR_ROUTE = 'GoalsNavigator';
 export const PROFILE_NAVIGATOR_ROUTE = 'ProfileNavigator';
 export const SIGN_IN_ROUTE = 'SignIn';
 export const SIGN_UP_ROUTE = 'SignUp';
@@ -14,3 +16,5 @@ export const COMPLETED_BOOKS_ROUTE = 'CompletedBooks';
 export const BOOK_DETAILS_ROUTE = 'BookDetails';
 export const ADD_CUSTOM_BOOK_ROUTE = 'AddCustomBook';
 export const ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE = 'AddCustomBookNavigator';
+export const ADD_GOAL = 'AddGoal';
+export const GOAL_DETAILS = 'GoalDetails';

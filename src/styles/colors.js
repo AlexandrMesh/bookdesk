@@ -11,6 +11,8 @@ export default {
   planned: '#d68f32',
   completed: '#1bb572',
 
+  gold: '#d4af37',
+
   disabled: '#686e74',
   error: '#f24c67',
   success: '#1bb572',

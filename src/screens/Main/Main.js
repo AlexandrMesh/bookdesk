@@ -8,14 +8,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { BOTTOM_BAR_ICON, BOTTOM_BAR_ADD_ICON } from '~constants/dimensions';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import { getT } from '~translations/i18n';
+import i18n, { getT } from '~translations/i18n';
 import {
   SEARCH_ROUTE,
+  GOALS_ROUTE,
+  GOAL_DETAILS,
+  ADD_GOAL,
   HOME_ROUTE,
   BOOK_DETAILS_ROUTE,
   PROFILE_ROUTE,
   ABOUT_ROUTE,
   HOME_NAVIGATOR_ROUTE,
+  GOALS_NAVIGATOR_ROUTE,
   SEARCH_NAVIGATOR_ROUTE,
   PROFILE_NAVIGATOR_ROUTE,
   SIGN_IN_ROUTE,
@@ -25,6 +29,7 @@ import {
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import SearchIcon from '~assets/search.svg';
+import GoalIcon from '~assets/goal2.svg';
 import ProfileIcon from '~assets/profile.svg';
 import AddCustomBookIcon from '~assets/add.svg';
 import colors from '~styles/colors';
@@ -37,6 +42,9 @@ import SignUp from '~screens/Auth/SignUp';
 import Search from '~screens/Search';
 import Profile from '~screens/Profile';
 import Modals from '~screens/Modals/Modals';
+import Goals from '~screens/Goals/Goals';
+import AddGoal from '~screens/Goals/AddGoal/AddGoal';
+import GoalDetails from '~screens/Goals/GoalDetails';
 import About from '~screens/Profile/About';
 import DateUpdater from '~screens/Home/DateUpdater';
 import CloseComponent from './CloseComponent';
@@ -48,6 +56,35 @@ const Stack = createStackNavigator();
 const SearchNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const GoalsNavigator = () => (
+  <Stack.Navigator
+    screenOptions={{
+      animationEnabled: false,
+      headerStyle: {
+        backgroundColor: colors.primary_dark,
+        shadowColor: 'transparent',
+        borderBottomWidth: 1,
+        borderColor: colors.neutral_medium,
+      },
+      headerTintColor: colors.neutral_light,
+    }}
+  >
+    <Stack.Screen
+      name={GOALS_ROUTE}
+      component={Goals}
+      options={{
+        title: getT('goals')('goals'),
+      }}
+    />
+    <Stack.Screen name={ADD_GOAL} component={AddGoal} options={{ title: getT('goals')('addGoal') }} />
+    <Stack.Screen
+      name={GOAL_DETAILS}
+      component={GoalDetails}
+      options={{ title: getT('goals')('goalForToday', { date: new Date().toLocaleDateString(i18n.language) }) }}
+    />
   </Stack.Navigator>
 );
 
@@ -108,6 +145,9 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
               stroke={focused ? colors.neutral_light : colors.neutral_medium}
             />
           ),
+          GoalsNavigator: (
+            <GoalIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
+          ),
           ProfileNavigator: (
             <ProfileIcon
               width={BOTTOM_BAR_ICON.width}
@@ -124,6 +164,7 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
     <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
     <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
     <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
+    <Tab.Screen name={GOALS_NAVIGATOR_ROUTE} component={GoalsNavigator} />
     <Tab.Screen
       name={PROFILE_NAVIGATOR_ROUTE}
       component={ProfileNavigator}

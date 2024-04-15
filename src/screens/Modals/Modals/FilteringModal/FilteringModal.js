@@ -88,7 +88,7 @@ const FilteringModal = ({
         {renderCategoryItem({ value, path, isExpanded })}
         {isExpanded && data.length > 0 && (
           <FlatList
-            eyboardShouldPersistTaps='handled'
+            keyboardShouldPersistTaps='handled'
             data={data}
             renderItem={({ item }) => renderCategoryItem({ value: item.title, path: item.path })}
             keyExtractor={(item) => item.path}
