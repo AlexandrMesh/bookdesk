@@ -10,6 +10,14 @@ export default StyleSheet.create({
     display: 'flex',
     backgroundColor: colors.primary_dark,
   },
+  content: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttons: {
     width: '100%',
     display: 'flex',

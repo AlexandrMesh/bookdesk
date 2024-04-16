@@ -48,6 +48,7 @@ import GoalDetails from '~screens/Goals/GoalDetails';
 import About from '~screens/Profile/About';
 import DateUpdater from '~screens/Home/DateUpdater';
 import CloseComponent from './CloseComponent';
+import EditComponent from './EditComponent';
 import UnderConstruction from './UnderConstruction';
 
 const Tab = createBottomTabNavigator();
@@ -59,8 +60,9 @@ const SearchNavigator = () => (
   </Stack.Navigator>
 );
 
-const GoalsNavigator = () => (
+const GoalsNavigator = ({ hasGoal }) => (
   <Stack.Navigator
+    initialRouteName={hasGoal ? GOAL_DETAILS : GOALS_ROUTE}
     screenOptions={{
       animationEnabled: false,
       headerStyle: {
@@ -83,7 +85,11 @@ const GoalsNavigator = () => (
     <Stack.Screen
       name={GOAL_DETAILS}
       component={GoalDetails}
-      options={{ title: getT('goals')('goalForToday', { date: new Date().toLocaleDateString(i18n.language) }) }}
+      options={{
+        title: getT('goals')('goalForToday', { date: new Date().toLocaleDateString(i18n.language) }),
+        headerLeft: null,
+        headerRight: EditComponent,
+      }}
     />
   </Stack.Navigator>
 );
@@ -121,7 +127,7 @@ const ProfileNavigator = () => (
   </Stack.Navigator>
 );
 
-const MainNavigator = ({ isTheLatestAppVersion }) => (
+const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => (
   <Tab.Navigator
     initialRouteName={HOME_NAVIGATOR_ROUTE}
     backBehavior='history'
@@ -164,7 +170,7 @@ const MainNavigator = ({ isTheLatestAppVersion }) => (
     <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
     <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
     <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
-    <Tab.Screen name={GOALS_NAVIGATOR_ROUTE} component={GoalsNavigator} />
+    <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
     <Tab.Screen
       name={PROFILE_NAVIGATOR_ROUTE}
       component={ProfileNavigator}
@@ -203,6 +209,7 @@ const Main = ({
   checkUnderConstruction,
   loadingUnderConstructionStatus,
   underConstruction,
+  hasGoal,
 }) => {
   const checkAuthentication = useCallback(async () => {
     try {
@@ -240,7 +247,7 @@ const Main = ({
     <SafeAreaProvider>
       <NavigationContainer>
         {isSignedIn ? (
-          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} />
+          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} hasGoal={hasGoal} />
         ) : (
           <Stack.Navigator screenOptions={{ animationEnabled: false }}>
             <Stack.Screen name={SIGN_IN_ROUTE} component={SignIn} options={{ headerShown: false }} />

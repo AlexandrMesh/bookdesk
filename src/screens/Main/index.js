@@ -8,6 +8,7 @@ import Main from './Main';
 const mapStateToProps = (state) => ({
   checkingStatus: getCheckingStatus(state),
   loadingUnderConstructionStatus: getLoadingUnderConstructionStatus(state),
+  hasGoal: false,
   isSignedIn: getIsSignedIn(state),
   isTheLatestAppVersion: deriveIsTheLatestAppVersion(state),
   underConstruction: getUnderConstruction(state),

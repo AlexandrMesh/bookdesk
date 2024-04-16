@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
-import { ADD_GOAL, GOAL_DETAILS } from '~constants/routes';
+import { ADD_GOAL } from '~constants/routes';
 import styles from './styles';
 
 const Goals = () => {
@@ -18,7 +18,7 @@ const Goals = () => {
             Хотите развить в себе привычку читать каждый день? Добавьте себе цель, а приложение поможет Вам следить за достижением результатов.
           </Text>
           <View style={styles.buttons}>
-            <Button style={styles.button} onPress={() => navigation.navigate(GOAL_DETAILS)} title={t('addGoal')} />
+            <Button style={styles.button} onPress={() => navigation.navigate(ADD_GOAL)} title={t('addGoal')} />
           </View>
         </View>
       </View>

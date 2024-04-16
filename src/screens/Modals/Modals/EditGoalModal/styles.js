@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
@@ -9,6 +10,10 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 15,
+  },
+  text: {
+    marginBottom: 10,
+    fontSize: 17,
+    color: colors.neutral_light,
   },
 });

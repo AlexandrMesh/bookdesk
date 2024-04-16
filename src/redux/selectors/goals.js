@@ -6,8 +6,10 @@ import i18n from '~translations/i18n';
 
 const getGoals = (state) => state.goals;
 
-export const getGoalsData = (state) => getGoals(state).data;
-export const getGoalNumberOfPages = (state) => getGoals(state).goalNumberOfPages;
+export const getGoal = (state) => getGoals(state).goal;
+
+export const getGoalsData = (state) => getGoal(state).data;
+export const getGoalNumberOfPages = (state) => getGoal(state).numberOfPages;
 
 export const deriveNumberOfPagesDoneToday = createSelector([getGoalsData], (pages) =>
   sum(pages.filter(({ added_at }) => new Date(added_at).toDateString() === new Date().toDateString()).map(({ pages }) => Number(pages))),

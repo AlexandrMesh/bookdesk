@@ -55,9 +55,6 @@ const Goals = ({ addGoalItem, goalsData, sectionedPagesDone, goalNumberOfPages, 
     setPages(null);
   };
 
-  console.log(goalNumberOfPages, 'goalNumberOfPages');
-  console.log(numberOfPagesDoneToday, 'numberOfPagesDoneToday');
-
   const renderReadingHistoryItem = (item) => (
     <Pressable
       style={[styles.readingHistory, expandedItems.includes(item.title) && styles.readingHistoryActive]}
@@ -159,7 +156,7 @@ const Goals = ({ addGoalItem, goalsData, sectionedPagesDone, goalNumberOfPages, 
 
         {goalsData.length > 0 && (
           <View style={styles.sectionedList}>
-            <Text style={styles.title}>Достижения</Text>
+            <Text style={styles.title}>Журнал достижений</Text>
             <SectionList
               initialNumToRender={10}
               sections={sectionedPagesDone}
