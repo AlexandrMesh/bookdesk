@@ -11,7 +11,7 @@ import { Spinner } from '~UI/Spinner';
 import { addGoal } from '~redux/actions/goalsActions';
 import styles from './styles';
 
-const Goals = () => {
+const AddGoal = () => {
   const { t } = useTranslation(['goals', 'errors']);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -71,7 +71,7 @@ const Goals = () => {
         </View>
       ) : (
         <View>
-          <Text style={styles.text}>Сколько страниц хотите читать каждый день?</Text>
+          <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
           <Input
             wrapperClassName={styles.inputWrapper}
             placeholder={t('enterPagesCount')}
@@ -91,4 +91,4 @@ const Goals = () => {
   );
 };
 
-export default Goals;
+export default AddGoal;

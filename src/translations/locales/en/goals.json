@@ -1,0 +1,16 @@
+{
+  "goals": "Goals",
+  "addGoal": "Add Goal",
+  "enterPagesCount": "Enter pages count",
+  "pagesCount": "Pages count",
+  "add": "Add",
+  "goalForToday": "Goal for today {{date}}",
+  "changeGoal": "Change Goal",
+  "goalsDescription": "Want to develop a regular reading habit? Add a goal and the app will help you track your progress.",
+  "howManyPagesDoYouWantReadDescription": "How many pages do you want to read every day?",
+  "pagesDone": "Have read (pages)",
+  "goalInPages": "Goal (pages)",
+  "goalAchieved": "Goal achieved!",
+  "achievementsJournal": "Achievements Journal",
+  "pageCountInputDescription": "Enter the number of pages read. Can be added in parts."
+}

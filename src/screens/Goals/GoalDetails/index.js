@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { addGoalItem } from '~redux/actions/goalsActions';
+import { addGoalItem, getGoalItems } from '~redux/actions/goalsActions';
 import {
   getGoalsData,
   deriveSectionedPagesDone,
@@ -7,12 +7,10 @@ import {
   deriveNumberOfPagesDoneToday,
   deriveTodayProgress,
 } from '~redux/selectors/goals';
-import { showModal } from '~redux/actions/booksActions';
-import { EDIT_GOAL } from '~constants/modalTypes';
 import GoalDetails from './GoalDetails';
 
 const mapStateToProps = (state) => ({
-  goalsData: getGoalsData(state),
+  goalsDataLength: getGoalsData(state)?.length,
   sectionedPagesDone: deriveSectionedPagesDone(state),
   goalNumberOfPages: getGoalNumberOfPages(state),
   numberOfPagesDoneToday: deriveNumberOfPagesDoneToday(state),
@@ -20,8 +18,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addGoalItem: (item) => dispatch(addGoalItem(item)),
-  showEditGoalModal: () => dispatch(showModal(EDIT_GOAL)),
+  getGoalItems: () => dispatch(getGoalItems()),
+  addGoalItem: (pages) => dispatch(addGoalItem(pages)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalDetails);

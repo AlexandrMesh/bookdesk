@@ -15,6 +15,7 @@ import commonEn from './locales/en/common.json';
 import authEn from './locales/en/auth.json';
 import booksEn from './locales/en/books.json';
 import searchEn from './locales/en/search.json';
+import goalsEn from './locales/en/goals.json';
 import errorsEn from './locales/en/errors.json';
 import profileEn from './locales/en/profile.json';
 import appEn from './locales/en/app.json';
@@ -54,6 +55,7 @@ i18n.use(LanguageDetector).init({
       common: commonEn,
       auth: authEn,
       books: booksEn,
+      goals: goalsEn,
       search: searchEn,
       errors: errorsEn,
       profile: profileEn,

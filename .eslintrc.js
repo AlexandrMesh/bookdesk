@@ -29,6 +29,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/prop-types': ['error', { ignore: ['navigation'] }],
     'linebreak-style': 0,
+    'react-native/no-inline-styles': 0,
     'max-len': ['error', { code: 150 }],
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],

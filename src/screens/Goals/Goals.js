@@ -14,9 +14,7 @@ const Goals = () => {
     <View style={styles.container}>
       <View style={styles.content}>
         <View>
-          <Text style={styles.text}>
-            Хотите развить в себе привычку читать каждый день? Добавьте себе цель, а приложение поможет Вам следить за достижением результатов.
-          </Text>
+          <Text style={styles.text}>{t('goalsDescription')}</Text>
           <View style={styles.buttons}>
             <Button style={styles.button} onPress={() => navigation.navigate(ADD_GOAL)} title={t('addGoal')} />
           </View>

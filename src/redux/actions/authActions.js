@@ -2,6 +2,7 @@ import { NativeModules } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
+import { setGoal } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
 import { getT } from '~translations/i18n';
 
@@ -116,7 +117,10 @@ export const checkAuth = (token) => async (dispatch) => {
       const { data } = result[1];
       if (data.profile) {
         const { _id, email, registered, updated } = data.profile;
-        const { version, googlePlayUrl } = data;
+        const { version, googlePlayUrl, numberOfPagesForGoal } = data;
+        if (numberOfPagesForGoal) {
+          dispatch(setGoal(numberOfPagesForGoal));
+        }
         dispatch(setProfile({ _id, email, registered, updated }));
         dispatch(setBookVotes(data.userVotes));
         dispatch(signedIn);
@@ -160,6 +164,9 @@ export const signIn =
         });
         if (data) {
           dispatch(signedIn);
+          if (data.numberOfPagesForGoal) {
+            dispatch(setGoal(data.numberOfPagesForGoal));
+          }
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
           dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
@@ -178,6 +185,9 @@ export const signIn =
         const { data } = await AuthService().signIn({ email, password });
         if (data) {
           dispatch(signedIn);
+          if (data.numberOfPagesForGoal) {
+            dispatch(setGoal(data.numberOfPagesForGoal));
+          }
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
           dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));

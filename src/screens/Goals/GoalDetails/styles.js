@@ -83,6 +83,7 @@ export default StyleSheet.create({
   },
   progressBarLabel: {
     fontSize: 18,
+    fontWeight: 600,
     color: colors.neutral_light,
   },
   actionWrapper: {
@@ -90,6 +91,11 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  pagesCountDescription: {
+    marginTop: 10,
+    fontSize: 16,
+    color: colors.neutral_light,
   },
   inputWrapper: {
     height: 90,
@@ -100,7 +106,7 @@ export default StyleSheet.create({
     height: 40,
   },
   button: {
-    paddingHorizontal: 10,
+    width: 140,
   },
   stickyHeader: {
     marginVertical: 10,

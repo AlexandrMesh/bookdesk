@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { func, bool, string } from 'prop-types';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { BOTTOM_BAR_ICON, BOTTOM_BAR_ADD_ICON } from '~constants/dimensions';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import i18n, { getT } from '~translations/i18n';
+import i18n from '~translations/i18n';
 import {
   SEARCH_ROUTE,
   GOALS_ROUTE,
@@ -60,39 +61,47 @@ const SearchNavigator = () => (
   </Stack.Navigator>
 );
 
-const GoalsNavigator = ({ hasGoal }) => (
-  <Stack.Navigator
-    initialRouteName={hasGoal ? GOAL_DETAILS : GOALS_ROUTE}
-    screenOptions={{
-      animationEnabled: false,
-      headerStyle: {
-        backgroundColor: colors.primary_dark,
-        shadowColor: 'transparent',
-        borderBottomWidth: 1,
-        borderColor: colors.neutral_medium,
-      },
-      headerTintColor: colors.neutral_light,
-    }}
-  >
-    <Stack.Screen
-      name={GOALS_ROUTE}
-      component={Goals}
-      options={{
-        title: getT('goals')('goals'),
+const GoalsNavigator = ({ hasGoal }) => {
+  const { t } = useTranslation('goals');
+
+  return (
+    <Stack.Navigator
+      initialRouteName={hasGoal ? GOAL_DETAILS : GOALS_ROUTE}
+      screenOptions={{
+        animationEnabled: false,
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
       }}
-    />
-    <Stack.Screen name={ADD_GOAL} component={AddGoal} options={{ title: getT('goals')('addGoal') }} />
-    <Stack.Screen
-      name={GOAL_DETAILS}
-      component={GoalDetails}
-      options={{
-        title: getT('goals')('goalForToday', { date: new Date().toLocaleDateString(i18n.language) }),
-        headerLeft: null,
-        headerRight: EditComponent,
-      }}
-    />
-  </Stack.Navigator>
-);
+    >
+      <Stack.Screen
+        name={GOALS_ROUTE}
+        component={Goals}
+        options={{
+          title: t('goals'),
+        }}
+      />
+      <Stack.Screen name={ADD_GOAL} component={AddGoal} options={{ title: t('addGoal') }} />
+      <Stack.Screen
+        name={GOAL_DETAILS}
+        component={GoalDetails}
+        options={{
+          title: t('goalForToday', { date: new Date().toLocaleString(i18n.language, { day: 'numeric', month: 'long' }) }),
+          headerLeft: null,
+          headerRight: EditComponent,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+GoalsNavigator.propTypes = {
+  hasGoal: bool,
+};
 
 const HomeNavigator = () => (
   <Stack.Navigator>
@@ -106,100 +115,117 @@ const AddCustomBookNavigator = () => (
   </Stack.Navigator>
 );
 
-const ProfileNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name={PROFILE_ROUTE} component={Profile} options={{ headerShown: false }} />
-    <Stack.Screen
-      name={ABOUT_ROUTE}
-      component={About}
-      options={{
-        title: getT('profile')('about'),
-        animationEnabled: false,
-        headerStyle: {
-          backgroundColor: colors.primary_dark,
-          shadowColor: 'transparent',
-          borderBottomWidth: 1,
-          borderColor: colors.neutral_medium,
-        },
-        headerTintColor: colors.neutral_light,
-      }}
-    />
-  </Stack.Navigator>
-);
+const ProfileNavigator = () => {
+  const { t } = useTranslation('profile');
 
-const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => (
-  <Tab.Navigator
-    initialRouteName={HOME_NAVIGATOR_ROUTE}
-    backBehavior='history'
-    screenOptions={({ route }) => ({
-      tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_medium },
-      tabBarShowLabel: false,
-      headerShown: false,
-      tabBarIcon: ({ focused }) => {
-        const icon = {
-          HomeNavigator: (
-            <HomeIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
-          ),
-          SearchNavigator: (
-            <SearchIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
-          ),
-          AddCustomBookNavigator: (
-            <AddCustomBookIcon
-              width={BOTTOM_BAR_ADD_ICON.width}
-              height={BOTTOM_BAR_ADD_ICON.height}
-              strokeWidth={1.5}
-              stroke={focused ? colors.neutral_light : colors.neutral_medium}
-            />
-          ),
-          GoalsNavigator: (
-            <GoalIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
-          ),
-          ProfileNavigator: (
-            <ProfileIcon
-              width={BOTTOM_BAR_ICON.width}
-              height={BOTTOM_BAR_ICON.height}
-              fill={focused ? colors.neutral_light : colors.neutral_medium}
-            />
-          ),
-        };
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name={PROFILE_ROUTE} component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen
+        name={ABOUT_ROUTE}
+        component={About}
+        options={{
+          title: t('about'),
+          animationEnabled: false,
+          headerStyle: {
+            backgroundColor: colors.primary_dark,
+            shadowColor: 'transparent',
+            borderBottomWidth: 1,
+            borderColor: colors.neutral_medium,
+          },
+          headerTintColor: colors.neutral_light,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
-        return icon[route.name];
-      },
-    })}
-  >
-    <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
-    <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
-    <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
-    <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
-    <Tab.Screen
-      name={PROFILE_NAVIGATOR_ROUTE}
-      component={ProfileNavigator}
-      options={{
-        tabBarBadge: !isTheLatestAppVersion ? getT('common')('alert') : null,
-        tabBarBadgeStyle: { backgroundColor: colors.success, color: colors.primary_dark },
-      }}
-    />
-    <Tab.Screen
-      name={BOOK_DETAILS_ROUTE}
-      component={BookDetails}
-      options={{
-        headerShown: true,
-        headerRight: CloseComponent,
-        title: getT('books')('bookDetails'),
-        tabBarButton: () => null,
-        tabBarVisible: false,
-        presentation: 'modal',
-        headerStyle: {
-          backgroundColor: colors.primary_dark,
-          shadowColor: 'transparent',
-          borderBottomWidth: 1,
-          borderColor: colors.neutral_medium,
+const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => {
+  const { t } = useTranslation(['common', 'books']);
+
+  return (
+    <Tab.Navigator
+      initialRouteName={HOME_NAVIGATOR_ROUTE}
+      backBehavior='history'
+      screenOptions={({ route }) => ({
+        tabBarStyle: { backgroundColor: colors.primary_dark, elevation: 0, borderColor: colors.neutral_medium },
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarIcon: ({ focused }) => {
+          const icon = {
+            HomeNavigator: (
+              <HomeIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
+            ),
+            SearchNavigator: (
+              <SearchIcon
+                width={BOTTOM_BAR_ICON.width}
+                height={BOTTOM_BAR_ICON.height}
+                fill={focused ? colors.neutral_light : colors.neutral_medium}
+              />
+            ),
+            AddCustomBookNavigator: (
+              <AddCustomBookIcon
+                width={BOTTOM_BAR_ADD_ICON.width}
+                height={BOTTOM_BAR_ADD_ICON.height}
+                strokeWidth={1.5}
+                stroke={focused ? colors.neutral_light : colors.neutral_medium}
+              />
+            ),
+            GoalsNavigator: (
+              <GoalIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
+            ),
+            ProfileNavigator: (
+              <ProfileIcon
+                width={BOTTOM_BAR_ICON.width}
+                height={BOTTOM_BAR_ICON.height}
+                fill={focused ? colors.neutral_light : colors.neutral_medium}
+              />
+            ),
+          };
+
+          return icon[route.name];
         },
-        headerTintColor: colors.neutral_light,
-      }}
-    />
-  </Tab.Navigator>
-);
+      })}
+    >
+      <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
+      <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
+      <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
+      <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
+      <Tab.Screen
+        name={PROFILE_NAVIGATOR_ROUTE}
+        component={ProfileNavigator}
+        options={{
+          tabBarBadge: !isTheLatestAppVersion ? t('common:alert') : null,
+          tabBarBadgeStyle: { backgroundColor: colors.success, color: colors.primary_dark },
+        }}
+      />
+      <Tab.Screen
+        name={BOOK_DETAILS_ROUTE}
+        component={BookDetails}
+        options={{
+          headerShown: true,
+          headerRight: CloseComponent,
+          title: t('books:bookDetails'),
+          tabBarButton: () => null,
+          tabBarVisible: false,
+          presentation: 'modal',
+          headerStyle: {
+            backgroundColor: colors.primary_dark,
+            shadowColor: 'transparent',
+            borderBottomWidth: 1,
+            borderColor: colors.neutral_medium,
+          },
+          headerTintColor: colors.neutral_light,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+MainNavigator.propTypes = {
+  isTheLatestAppVersion: bool,
+  hasGoal: bool,
+};
 
 const Main = ({
   checkAuth,
@@ -261,15 +287,12 @@ const Main = ({
   );
 };
 
-MainNavigator.propTypes = {
-  isTheLatestAppVersion: bool,
-};
-
 Main.propTypes = {
   checkAuth: func.isRequired,
   underConstruction: string,
   checkUnderConstruction: func.isRequired,
   isSignedIn: bool.isRequired,
+  hasGoal: bool.isRequired,
   checkingStatus: loadingDataStatusShape,
   loadingUnderConstructionStatus: loadingDataStatusShape,
   isTheLatestAppVersion: bool,
