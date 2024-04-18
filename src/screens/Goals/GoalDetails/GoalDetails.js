@@ -154,7 +154,7 @@ const GoalDetails = ({
             <View style={styles.info}>
               <View style={styles.blockLeft}>
                 <View>
-                  <Text style={styles.infoText}>{t('pagesDone')}</Text>
+                  <Text style={styles.infoText}>{t('goals:pagesDone')}</Text>
                 </View>
                 <View style={styles.goalWrapper}>
                   {todayProgress >= 100 && <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />}
@@ -164,7 +164,7 @@ const GoalDetails = ({
 
               <View style={styles.blockRight}>
                 <View>
-                  <Text style={styles.infoText}>{t('goalInPages')}</Text>
+                  <Text style={styles.infoText}>{t('goals:goalInPages')}</Text>
                 </View>
                 <View style={styles.goalWrapper}>
                   <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
@@ -182,17 +182,17 @@ const GoalDetails = ({
               />
               <View style={styles.progressBarLabelWrapper}>
                 <Text style={{ ...styles.progressBarLabel, color: getProgressBarLabelColor() }}>
-                  {todayProgress >= 100 ? t('goalAchieved') : `${todayProgress} %`}
+                  {todayProgress >= 100 ? t('goals:goalAchieved') : `${todayProgress} %`}
                 </Text>
               </View>
             </View>
 
-            <Text style={styles.pagesCountDescription}>{t('addedPageCountDescription')}</Text>
+            <Text style={styles.pagesCountDescription}>{t('goals:addedPageCountDescription')}</Text>
             <View style={styles.actionWrapper}>
               <Input
                 wrapperClassName={styles.inputWrapper}
                 errorWrapperClassName={styles.inputError}
-                placeholder={t('pagesCount')}
+                placeholder={t('goals:pagesCount')}
                 disabled={isLoading}
                 error={errorForPage}
                 onChangeText={handleChangePages}
@@ -208,7 +208,7 @@ const GoalDetails = ({
                   icon={isLoading && <Spinner size={Size.SMALL} />}
                   style={styles.button}
                   onPress={submitForm}
-                  title={t('add')}
+                  title={t('goals:add')}
                 />
               </View>
             </View>
@@ -216,7 +216,7 @@ const GoalDetails = ({
 
           {goalsDataLength > 0 && (
             <View style={styles.sectionedList}>
-              <Text style={styles.title}>{t('achievementsJournal')}</Text>
+              <Text style={styles.title}>{t('goals:achievementsJournal')}</Text>
               <SectionList
                 initialNumToRender={10}
                 sections={sectionedPagesDone}
