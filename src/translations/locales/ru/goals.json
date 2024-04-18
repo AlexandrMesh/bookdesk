@@ -12,5 +12,5 @@
   "goalInPages": "Цель (страниц)",
   "goalAchieved": "Цель достигнута!",
   "achievementsJournal": "Журнал достижений",
-  "pageCountInputDescription": "Внесите количество прочитанных страниц. Можно вносить частями."
+  "addedPageCountDescription": "Внесите количество прочитанных страниц. Можно вносить частями."
 }

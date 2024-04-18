@@ -187,7 +187,7 @@ const GoalDetails = ({
               </View>
             </View>
 
-            <Text style={styles.pagesCountDescription}>{t('pageCountInputDescription')}</Text>
+            <Text style={styles.pagesCountDescription}>{t('addedPageCountDescription')}</Text>
             <View style={styles.actionWrapper}>
               <Input
                 wrapperClassName={styles.inputWrapper}

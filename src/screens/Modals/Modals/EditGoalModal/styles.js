@@ -10,7 +10,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    maxWidth: 400,
+    maxWidth: 800,
   },
   submitButtonWrapper: {
     display: 'flex',
