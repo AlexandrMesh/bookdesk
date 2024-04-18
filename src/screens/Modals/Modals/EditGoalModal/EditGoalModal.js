@@ -91,18 +91,20 @@ const LanguageSettings = ({ isVisible, hideModal, goalNumberOfPages, updateGoal 
         <Spinner />
       ) : (
         <View style={styles.wrapper}>
-          <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
-          <Input
-            placeholder={t('enterPagesCount')}
-            error={errorForPage}
-            onChangeText={handleChangePages}
-            shouldDisplayClearButton={!!pages}
-            onClear={handleClearPages}
-            inputMode='numeric'
-            value={pages}
-          />
-          <View style={styles.submitButtonWrapper}>
-            <Button title={t('common:save')} onPress={submitForm} />
+          <View style={styles.content}>
+            <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
+            <Input
+              placeholder={t('enterPagesCount')}
+              error={errorForPage}
+              onChangeText={handleChangePages}
+              shouldDisplayClearButton={!!pages}
+              onClear={handleClearPages}
+              inputMode='numeric'
+              value={pages}
+            />
+            <View style={styles.submitButtonWrapper}>
+              <Button title={t('common:save')} onPress={submitForm} />
+            </View>
           </View>
         </View>
       )}

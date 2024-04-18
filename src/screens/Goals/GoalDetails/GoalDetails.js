@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { arrayOf, shape, string, func, number } from 'prop-types';
 import { View, Text, SectionList, FlatList, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import i18n from '~translations/i18n';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
@@ -168,7 +167,6 @@ const GoalDetails = ({
                   <Text style={styles.infoText}>{t('goalInPages')}</Text>
                 </View>
                 <View style={styles.goalWrapper}>
-                  <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />
                   <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
                 </View>
               </View>

@@ -3,8 +3,14 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
-    maxWidth: 400,
     padding: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    maxWidth: 400,
   },
   submitButtonWrapper: {
     display: 'flex',
