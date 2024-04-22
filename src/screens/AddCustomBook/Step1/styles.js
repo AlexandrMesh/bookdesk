@@ -26,6 +26,7 @@ export default StyleSheet.create({
     height: 40,
   },
   addButton: {
+    marginLeft: 10,
     flex: 1,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,

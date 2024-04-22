@@ -55,11 +55,26 @@ import UnderConstruction from './UnderConstruction';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const SearchNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ headerShown: false }} />
-  </Stack.Navigator>
-);
+const SearchNavigator = () => {
+  const { t } = useTranslation('search');
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        animationEnabled: false,
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
+      }}
+    >
+      <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ title: t('search') }} />
+    </Stack.Navigator>
+  );
+};
 
 const GoalsNavigator = ({ hasGoal }) => {
   const { t } = useTranslation('goals');
@@ -109,38 +124,57 @@ const HomeNavigator = () => (
   </Stack.Navigator>
 );
 
-const AddCustomBookNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name={ADD_CUSTOM_BOOK_ROUTE} component={AddCustomBook} options={{ headerShown: false }} />
-  </Stack.Navigator>
-);
-
-const ProfileNavigator = () => {
-  const { t } = useTranslation('profile');
+const AddCustomBookNavigator = ({ customBookName }) => {
+  const { t } = useTranslation('customBook');
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen name={PROFILE_ROUTE} component={Profile} options={{ headerShown: false }} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
+      }}
+    >
       <Stack.Screen
-        name={ABOUT_ROUTE}
-        component={About}
-        options={{
-          title: t('about'),
-          animationEnabled: false,
-          headerStyle: {
-            backgroundColor: colors.primary_dark,
-            shadowColor: 'transparent',
-            borderBottomWidth: 1,
-            borderColor: colors.neutral_medium,
-          },
-          headerTintColor: colors.neutral_light,
-        }}
+        name={ADD_CUSTOM_BOOK_ROUTE}
+        component={AddCustomBook}
+        options={{ title: customBookName ? `${t('addBook')} - ${customBookName}` : t('addBook') }}
       />
     </Stack.Navigator>
   );
 };
 
-const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => {
+AddCustomBookNavigator.propTypes = {
+  customBookName: string,
+};
+
+const ProfileNavigator = () => {
+  const { t } = useTranslation('profile');
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        animationEnabled: false,
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        headerTintColor: colors.neutral_light,
+      }}
+    >
+      <Stack.Screen name={PROFILE_ROUTE} component={Profile} options={{ title: t('profile') }} />
+      <Stack.Screen name={ABOUT_ROUTE} component={About} options={{ title: t('about') }} />
+    </Stack.Navigator>
+  );
+};
+
+const MainNavigator = ({ isTheLatestAppVersion, hasGoal, customBookName }) => {
   const { t } = useTranslation(['common', 'books']);
 
   return (
@@ -189,7 +223,7 @@ const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => {
     >
       <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
       <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
-      <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE} component={AddCustomBookNavigator} />
+      <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE}>{() => <AddCustomBookNavigator customBookName={customBookName} />}</Tab.Screen>
       <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
       <Tab.Screen
         name={PROFILE_NAVIGATOR_ROUTE}
@@ -225,6 +259,7 @@ const MainNavigator = ({ isTheLatestAppVersion, hasGoal }) => {
 MainNavigator.propTypes = {
   isTheLatestAppVersion: bool,
   hasGoal: bool,
+  customBookName: string,
 };
 
 const Main = ({
@@ -236,6 +271,7 @@ const Main = ({
   loadingUnderConstructionStatus,
   underConstruction,
   hasGoal,
+  customBookName,
 }) => {
   const checkAuthentication = useCallback(async () => {
     try {
@@ -273,7 +309,7 @@ const Main = ({
     <SafeAreaProvider>
       <NavigationContainer>
         {isSignedIn ? (
-          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} hasGoal={hasGoal} />
+          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} hasGoal={hasGoal} customBookName={customBookName} />
         ) : (
           <Stack.Navigator screenOptions={{ animationEnabled: false }}>
             <Stack.Screen name={SIGN_IN_ROUTE} component={SignIn} options={{ headerShown: false }} />
@@ -296,6 +332,7 @@ Main.propTypes = {
   checkingStatus: loadingDataStatusShape,
   loadingUnderConstructionStatus: loadingDataStatusShape,
   isTheLatestAppVersion: bool,
+  customBookName: string,
 };
 
 export default Main;

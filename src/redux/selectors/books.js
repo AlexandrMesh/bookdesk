@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
-import { getT } from '~translations/i18n';
+import i18n, { getT } from '~translations/i18n';
 // eslint-disable-next-line import/no-cycle
 import { getExpandedCategories } from '~redux/selectors/customBook';
 
@@ -101,13 +101,13 @@ export const deriveSectionedBookListData = (status) =>
   createSelector([deriveBookListData(status), deriveBooksCountByYear(status)], (books, booksCountByYear) =>
     map(
       groupBy(
-        books.map((item) => ({ ...item, year: new Date(item?.added)?.getFullYear() })),
-        'year',
+        books.map((item) => ({ ...item, monthAndYear: new Date(item?.added)?.toLocaleString(i18n.language, { month: 'long', year: 'numeric' }) })),
+        'monthAndYear',
       ),
       (value, key) => {
         return {
           title: key,
-          count: booksCountByYear.find(({ year }) => key === year)?.count,
+          count: booksCountByYear.find(({ monthAndYear }) => key === monthAndYear)?.count,
           data: value.sort((a, b) => Number(b.added) - Number(a.added)),
         };
       },

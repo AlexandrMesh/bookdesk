@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, string, number, func, bool } from 'prop-types';
+import { string, number, func, bool } from 'prop-types';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -24,7 +24,6 @@ const getBoardRoute = (bookStatus) =>
   }[bookStatus] || ALL_BOOKS_ROUTE);
 
 const AddCustomBook = ({
-  bookName,
   availableStep,
   currentStep,
   setCurrentStep,
@@ -73,12 +72,7 @@ const AddCustomBook = ({
       {savingCustomBookStatus === PENDING ? (
         <Spinner />
       ) : (
-        <>
-          <View style={styles.header}>
-            <Text style={styles.title}>{bookName.value ? `${t('addBook')} (${bookName.value})` : t('addBook')}</Text>
-          </View>
-          <Stepper steps={steps} lastAvailableStep={availableStep} currentStep={currentStep} onStepPress={setCurrentStep} />
-        </>
+        <Stepper steps={steps} lastAvailableStep={availableStep} currentStep={currentStep} onStepPress={setCurrentStep} />
       )}
     </View>
   );
@@ -86,10 +80,6 @@ const AddCustomBook = ({
 
 AddCustomBook.propTypes = {
   savingCustomBookStatus: loadingDataStatusShape,
-  bookName: shape({
-    value: string,
-    error: string,
-  }),
   addedCustomBook: bool,
   availableStep: number,
   currentStep: number,

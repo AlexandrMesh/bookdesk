@@ -30,6 +30,7 @@ const Step1 = ({
   const [bookNameErrorTemp, setBookNameErrorTemp] = useState(bookName.error);
 
   const handleAddBook = async () => {
+    setBookName('', null);
     const params = { minLength: 3, maxLength: 64 };
     const error = getValidationFailure(
       bookNameTemp,

@@ -9,15 +9,6 @@ export default StyleSheet.create({
     display: 'flex',
     backgroundColor: colors.primary_dark,
   },
-  header: {
-    paddingHorizontal: 10,
-  },
-  title: {
-    color: colors.neutral_light,
-    textAlign: 'center',
-    fontSize: 20,
-    marginBottom: 10,
-  },
   successContainer: {
     backgroundColor: colors.primary_dark,
     flex: 1,

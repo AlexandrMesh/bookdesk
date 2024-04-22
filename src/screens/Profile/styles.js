@@ -6,7 +6,7 @@ export default StyleSheet.create({
     height: '100%',
     width: '100%',
     display: 'flex',
-    padding: 25,
+    padding: 15,
     backgroundColor: colors.primary_dark,
   },
   profile: {
