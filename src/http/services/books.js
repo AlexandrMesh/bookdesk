@@ -13,6 +13,7 @@ const DataService = () => ({
   getBookDetails: (params) => http.get(`${config.API_URL}/book`, { params }),
   getBooksCountByYear: (params) => http.get(`${config.API_URL}/booksCountByYearV2`, { params }),
   updateUserBookAddedValue: (params) => http.post(`${config.API_URL}/updateUserBookAddedValue`, params),
+  deleteUserBookRating: (params) => http.post(`${config.API_URL}/deleteUserBookRating`, params),
   deleteUserComment: (params) => http.post(`${config.API_URL}/deleteUserComment`, params),
 });
 

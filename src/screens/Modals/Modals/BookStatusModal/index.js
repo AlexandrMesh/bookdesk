@@ -16,6 +16,7 @@ import {
   hideModal,
   clearBookComment,
   deleteUserComment,
+  deleteUserBookRating,
   updateUserBookCommentInBookDetails,
 } from '~redux/actions/booksActions';
 import { BOOK_STATUS } from '~constants/modalTypes';
@@ -39,6 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
   clearBookComment: () => dispatch(clearBookComment),
   hideModal: () => dispatch(hideModal),
   deleteUserComment: (bookId) => dispatch(deleteUserComment(bookId)),
+  deleteUserBookRating: (bookId) => dispatch(deleteUserBookRating(bookId)),
   updateUserBookCommentInBookDetails: (comment, commentAdded) => dispatch(updateUserBookCommentInBookDetails(comment, commentAdded)),
 });
 

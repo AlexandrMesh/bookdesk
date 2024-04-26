@@ -46,6 +46,7 @@ const BookStatusModal = ({
   updateUserBookCommentInBookDetails,
   userBookRatingLoadingStatus,
   updateUserBookRating,
+  deleteUserBookRating,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
@@ -58,6 +59,7 @@ const BookStatusModal = ({
   const [comment, setComment] = useState('');
   const [savedComment, setSavedComment] = useState('');
   const [commentError, setCommentError] = useState(null);
+  const [bookRating, setBookRating] = useState(0);
   const [internalBookRating, setInternalBookRating] = useState(0);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -135,7 +137,9 @@ const BookStatusModal = ({
             const bookId = book?.bookId;
             const result = await Promise.all([getBookComment(bookId), getUserBookRating(bookId)]);
             setComment(result[0]?.comment || '');
-            setInternalBookRating(result[1]?.rating || 0);
+            const rating = result[1]?.rating || 0;
+            setBookRating(rating);
+            setInternalBookRating(rating);
           }
         } catch (error) {
           console.error(error);
@@ -162,20 +166,27 @@ const BookStatusModal = ({
     if (!isLoading) {
       try {
         setIsLoading(true);
-        await updateUserBook({
-          book,
-          added,
-          newBookStatus,
-          boardType,
-        });
-        if (!savedComment || newBookStatus === ALL) {
+
+        if (!(book?.bookStatus === undefined && newBookStatus === ALL) && (book?.bookStatus !== newBookStatus || book?.added !== added)) {
+          await updateUserBook({
+            book,
+            added,
+            newBookStatus,
+            boardType,
+          });
+        }
+
+        if ((bookComment && !savedComment) || (savedComment && newBookStatus === ALL)) {
           await deleteUserComment(book.bookId);
         }
-        if (internalBookRating !== 0) {
+        if (bookRating !== internalBookRating && internalBookRating !== 0) {
           const added = new Date().getTime();
           await updateUserBookRating({ bookId: book.bookId, rating: internalBookRating, added });
         }
-        if (savedComment) {
+        if (bookRating && newBookStatus === ALL) {
+          await deleteUserBookRating(book.bookId);
+        }
+        if (savedComment && savedComment !== bookComment) {
           const added = new Date().getTime();
           await updateUserComment({ bookId: book.bookId, comment: comment.trim(), added });
           updateUserBookCommentInBookDetails(comment.trim(), added);
@@ -434,6 +445,7 @@ BookStatusModal.propTypes = {
   updateUserBook: func.isRequired,
   deleteUserComment: func.isRequired,
   hideModal: func.isRequired,
+  deleteUserBookRating: func.isRequired,
   boardType: string,
 };
 

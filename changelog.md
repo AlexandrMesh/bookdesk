@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.6.2
+
+###### 2024-04-26
+- [Fix] Performance improvements
+
 ## 2.6.1
 
 ###### 2024-04-22

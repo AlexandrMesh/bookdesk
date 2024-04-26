@@ -792,6 +792,14 @@ export const deleteUserComment = (bookId) => async (dispatch) => {
   }
 };
 
+export const deleteUserBookRating = (bookId) => async () => {
+  try {
+    await DataService().deleteUserBookRating({ bookId });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const getBookComment = (bookId) => async (dispatch) => {
   dispatch(startLoadingBookComment);
   try {
