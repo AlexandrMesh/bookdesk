@@ -162,12 +162,29 @@ const BookStatusModal = ({
     }
   }, [bookComment]);
 
+  const disabledSaveButton =
+    !(
+      !(book?.bookStatus === undefined && newBookStatus === ALL) &&
+      (book?.bookStatus !== newBookStatus ||
+        new Date(book?.added)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }) !==
+          new Date(added)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }))
+    ) &&
+    !((bookComment && !savedComment) || (savedComment && newBookStatus === ALL)) &&
+    !(bookRating !== internalBookRating && internalBookRating !== 0) &&
+    !(bookRating && newBookStatus === ALL) &&
+    !(savedComment && savedComment !== bookComment);
+
   const handleUpdate = async () => {
     if (!isLoading) {
       try {
         setIsLoading(true);
 
-        if (!(book?.bookStatus === undefined && newBookStatus === ALL) && (book?.bookStatus !== newBookStatus || book?.added !== added)) {
+        if (
+          !(book?.bookStatus === undefined && newBookStatus === ALL) &&
+          (book?.bookStatus !== newBookStatus ||
+            new Date(book?.added)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }) !==
+              new Date(added)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }))
+        ) {
           await updateUserBook({
             book,
             added,
@@ -390,7 +407,7 @@ const BookStatusModal = ({
             style={styles.submitButton}
             icon={isLoading && !isInitialLoading && <Spinner size={Size.SMALL} />}
             title={t('common:save')}
-            disabled={isLoading || isInitialLoading}
+            disabled={disabledSaveButton || isLoading || isInitialLoading}
             onPress={handleUpdate}
           />
         </View>
