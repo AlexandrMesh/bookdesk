@@ -21,6 +21,15 @@ export const setGoalItems = (items) => ({
   items,
 });
 
+export const deleteUserGoalItem = (id) => async (dispatch) => {
+  try {
+    const { data } = await GoalsService().deleteUserGoalItem({ id });
+    dispatch(setGoalItems(data));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const addGoal = (numberOfPages) => async (dispatch) => {
   const params = { numberOfPages };
   try {

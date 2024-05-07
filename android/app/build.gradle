@@ -78,8 +78,8 @@ android {
         applicationId "com.bookdesk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "2.6.2"
+        versionCode 25
+        versionName "2.7.0"
     }
     signingConfigs {
         release {

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { addGoalItem, getGoalItems } from '~redux/actions/goalsActions';
+import { addGoalItem, getGoalItems, deleteUserGoalItem } from '~redux/actions/goalsActions';
 import {
   getGoalsData,
   deriveSectionedPagesDone,
@@ -20,6 +20,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getGoalItems: () => dispatch(getGoalItems()),
   addGoalItem: (pages) => dispatch(addGoalItem(pages)),
+  deleteUserGoalItem: (id) => dispatch(deleteUserGoalItem(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalDetails);

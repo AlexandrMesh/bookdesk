@@ -30,7 +30,7 @@ import {
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import SearchIcon from '~assets/search.svg';
-import GoalIcon from '~assets/goal2.svg';
+import GoalIcon from '~assets/goal.svg';
 import ProfileIcon from '~assets/profile.svg';
 import AddCustomBookIcon from '~assets/add.svg';
 import colors from '~styles/colors';

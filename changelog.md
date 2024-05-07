@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.7.0
+
+###### 2024-04-26
+- [New] Delete goal item feature
+
 ## 2.6.2
 
 ###### 2024-04-26

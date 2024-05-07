@@ -159,6 +159,14 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  removeIcon: {
+    width: 20,
+    heiqht: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 15,
+  },
   starIcon: {
     marginRight: 5,
   },

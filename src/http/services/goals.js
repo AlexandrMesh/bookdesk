@@ -6,6 +6,7 @@ const GoalsService = () => ({
   addGoalItem: (params) => http.post(`${config.API_URL}/addUserGoalItem`, params),
   addGoal: (params) => http.post(`${config.API_URL}/addUserGoal`, params),
   updateGoal: (params) => http.post(`${config.API_URL}/updateUserGoal`, params),
+  deleteUserGoalItem: (params) => http.post(`${config.API_URL}/deleteUserGoalItem`, params),
 });
 
 export default GoalsService;

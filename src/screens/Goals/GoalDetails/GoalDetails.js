@@ -9,6 +9,7 @@ import { Spinner, Size } from '~UI/Spinner';
 import colors from '~styles/colors';
 import ArrowDown from '~assets/arrow-down.svg';
 import MedalIcon from '~assets/medal-star.svg';
+import RemoveIcon from '~assets/remove.svg';
 import styles from './styles';
 
 const GoalDetails = ({
@@ -19,6 +20,7 @@ const GoalDetails = ({
   numberOfPagesDoneToday,
   todayProgress,
   getGoalItems,
+  deleteUserGoalItem,
 }) => {
   const { i18n, t } = useTranslation(['goals', 'errors', 'common']);
   const [pages, setPages] = useState(null);
@@ -26,6 +28,7 @@ const GoalDetails = ({
   const [expandedItems, setExpandedItems] = useState([]);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingGoalItemsId, setLoadingGoalItemsId] = useState(null);
 
   const { language } = i18n;
 
@@ -79,6 +82,17 @@ const GoalDetails = ({
     setPages(null);
   };
 
+  const handleDeleteGoalItem = async (id) => {
+    setLoadingGoalItemsId(id);
+    try {
+      await deleteUserGoalItem(id);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingGoalItemsId(null);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -127,6 +141,9 @@ const GoalDetails = ({
           </View>
           <View style={styles.countColumn}>
             <Text style={styles.countItem}>{t('common:count', { count: item.pages })}</Text>
+            <Pressable style={styles.removeIcon} onPress={() => !loadingGoalItemsId && handleDeleteGoalItem(item._id)}>
+              {loadingGoalItemsId === item._id ? <Spinner size={Size.SMALL} /> : <RemoveIcon fill={colors.neutral_medium} width={20} height={20} />}
+            </Pressable>
           </View>
         </View>
       )}
@@ -193,7 +210,7 @@ const GoalDetails = ({
                 wrapperClassName={styles.inputWrapper}
                 errorWrapperClassName={styles.inputError}
                 placeholder={t('goals:pagesCount')}
-                disabled={isLoading}
+                disabled={isLoading || !!loadingGoalItemsId}
                 error={errorForPage}
                 onChangeText={handleChangePages}
                 shouldDisplayClearButton={!!pages && !isLoading}
@@ -203,7 +220,7 @@ const GoalDetails = ({
               />
               <View>
                 <Button
-                  disabled={isLoading}
+                  disabled={isLoading || !!loadingGoalItemsId}
                   iconPosition='right'
                   icon={isLoading && <Spinner size={Size.SMALL} />}
                   style={styles.button}
@@ -266,6 +283,7 @@ GoalDetails.propTypes = {
   numberOfPagesDoneToday: number,
   todayProgress: number,
   getGoalItems: func.isRequired,
+  deleteUserGoalItem: func.isRequired,
 };
 
 export default GoalDetails;
