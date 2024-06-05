@@ -1,12 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const URL = {
   development: 'http://192.168.100.99:3000',
-  production: 'http://91.240.254.163:3000',
 };
 
-export const IMG_URL = (path) => `http://91.240.254.163/images/covers/${path}`;
-
-const config = {
-  API_URL: __DEV__ ? URL.development : URL.production,
+export const getImgUrl = async () => {
+  const imgUrl = await AsyncStorage.getItem('imgUrl');
+  return `${imgUrl}/images/covers`;
 };
 
-export default config;
+export const getApiUrl = async () => {
+  const apiUrl = await AsyncStorage.getItem('apiUrl');
+  return __DEV__ ? URL.development : apiUrl;
+};

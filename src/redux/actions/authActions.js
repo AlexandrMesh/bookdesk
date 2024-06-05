@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import axios from 'axios';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
@@ -106,11 +107,31 @@ export const setProfile = (profile) => ({
   profile,
 });
 
+export const getConfig = async () => {
+  try {
+    const { data } = await axios({
+      method: 'get',
+      url: 'https://omegaprokat.ru/bookdesk/config.json',
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
+    await AsyncStorage.setItem('apiUrl', data?.apiUrl);
+    await AsyncStorage.setItem('imgUrl', data?.imgUrl);
+  } catch (err) {
+    console.error(err);
+  }
+  return false;
+};
+
 export const checkAuth = (token) => async (dispatch) => {
+  dispatch(startAuthChecking);
+  await dispatch(getConfig);
   if (!token) {
     dispatch(authCheckingFailed);
   } else {
-    dispatch(startAuthChecking);
     try {
       const result = await Promise.all([GoogleSignin.isSignedIn(), AuthService().checkAuth(token)]);
       const isGoogleSignedIn = result[0];

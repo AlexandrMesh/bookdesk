@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.8.0
+
+###### 2024-06-04
+- [New] New mechanism for switching API url
+
 ## 2.7.0
 
 ###### 2024-04-26

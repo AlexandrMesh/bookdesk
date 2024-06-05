@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, Pressable } from 'react-native';
 import { bool, string, func, number, arrayOf, shape } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { FlashList } from '@shopify/flash-list';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import { IMG_URL } from '~config/api';
+import { getImgUrl } from '~config/api';
 import { Spinner } from '~UI/Spinner';
 import { DEFAULT_COVER } from '~constants/customBooks';
 import RadioButton from '~UI/RadioButton';
@@ -27,6 +27,7 @@ const Step2 = ({
   onPressNext,
 }) => {
   const { t } = useTranslation(['customBook, common']);
+  const [imgUrl, setImgUrl] = useState('');
 
   const handlePressOnWithoutCover = () => {
     setShouldAddCover(false);
@@ -42,6 +43,13 @@ const Step2 = ({
     }
   }, [bookName.value, shouldAddCover, loadSuggestedCovers, suggestedCoversExist]);
 
+  useEffect(() => {
+    async function getData() {
+      const response = await getImgUrl();
+      setImgUrl(response);
+    }
+    getData();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -70,12 +78,14 @@ const Step2 = ({
                 <View>
                   <View style={[styles.defaultCover, styles.selectedCover]}>
                     <RadioButton style={styles.selectedCoverRadioButton} isSelected />
-                    <Image
-                      style={styles.cover}
-                      source={{
-                        uri: IMG_URL(`${DEFAULT_COVER}.webp`),
-                      }}
-                    />
+                    {imgUrl && (
+                      <Image
+                        style={styles.cover}
+                        source={{
+                          uri: `${imgUrl}/${DEFAULT_COVER}.webp`,
+                        }}
+                      />
+                    )}
                   </View>
                 </View>
               </View>

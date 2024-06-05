@@ -8,7 +8,7 @@ import { Spinner, Size } from '~UI/Spinner';
 import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { SECONDARY } from '~constants/themes';
-import { IMG_URL } from '~config/api';
+import { getImgUrl } from '~config/api';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import Input from '~UI/TextInput';
@@ -66,6 +66,7 @@ const BookDetails = ({
     commentAdded,
   } = bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
+  const [imgUrl, setImgUrl] = useState('');
   const { language } = i18n;
   const isFocused = useIsFocused();
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
@@ -185,6 +186,14 @@ const BookDetails = ({
   const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
   const isDeletingComment = bookCommentDeletingStatus === PENDING;
 
+  useEffect(() => {
+    async function getData() {
+      const response = await getImgUrl();
+      setImgUrl(response);
+    }
+    getData();
+  }, []);
+
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
     <View style={styles.spinnerWrapper}>
       <Spinner />
@@ -193,12 +202,14 @@ const BookDetails = ({
     <SafeAreaView style={styles.container}>
       <ScrollView keyboardShouldPersistTaps='handled'>
         <View style={styles.header}>
-          <Image
-            style={styles.cover}
-            source={{
-              uri: IMG_URL(`${coverPath}.webp`),
-            }}
-          />
+          {imgUrl && (
+            <Image
+              style={styles.cover}
+              source={{
+                uri: `${imgUrl}/${coverPath}.webp`,
+              }}
+            />
+          )}
           <Text style={[styles.title, styles.lightColor]}>{title}</Text>
           {authorsList?.length > 0 &&
             authorsList.map((author) => (

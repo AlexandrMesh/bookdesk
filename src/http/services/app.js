@@ -1,9 +1,9 @@
 import http from '../http';
-import config from '../../config/api';
+import { getApiUrl } from '../../config/api';
 
-const AppService = () => ({
-  getAppInfo: (params) => http.get(`${config.API_URL}/appInfo`, params),
-  getUnderConstruction: (params) => http.get(`${config.API_URL}/underConstruction`, params),
+const AppService = async () => ({
+  getAppInfo: async (params) => http.get(`${await getApiUrl()}/appInfo`, params),
+  getUnderConstruction: async (params) => http.get(`${await getApiUrl()()}/underConstruction`, params),
 });
 
 export default AppService;

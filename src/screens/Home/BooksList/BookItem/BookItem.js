@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { any, shape, func, string, number, bool, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Image, Pressable } from 'react-native';
@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
-import { IMG_URL } from '~config/api';
+import { getImgUrl } from '~config/api';
 import { SECONDARY } from '~constants/themes';
 import { BOOK_DETAILS_ROUTE } from '~constants/routes';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
@@ -43,6 +43,7 @@ const BookItem = ({
   const { t, i18n } = useTranslation(['books', 'categories']);
   const { language } = i18n;
   const navigation = useNavigation();
+  const [imgUrl, setImgUrl] = useState('');
 
   const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
 
@@ -61,16 +62,26 @@ const BookItem = ({
 
   const navigateToBookDetails = () => navigation.navigate(BOOK_DETAILS_ROUTE, { bookId });
 
+  useEffect(() => {
+    async function getData() {
+      const response = await getImgUrl();
+      setImgUrl(response);
+    }
+    getData();
+  }, []);
+
   return (
     <View style={[styles.bookItem, itemStyle]}>
       <View style={styles.leftSide}>
         <Pressable onPress={navigateToBookDetails}>
-          <Image
-            style={styles.cover}
-            source={{
-              uri: IMG_URL(`${coverPath}.webp`),
-            }}
-          />
+          {imgUrl && (
+            <Image
+              style={styles.cover}
+              source={{
+                uri: `${imgUrl}/${coverPath}.webp`,
+              }}
+            />
+          )}
         </Pressable>
       </View>
       <View style={styles.rightSide}>

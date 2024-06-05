@@ -1,12 +1,12 @@
 import http from '../http';
-import config from '../../config/api';
+import { getApiUrl } from '../../config/api';
 
 const GoalsService = () => ({
-  getGoalItems: (params) => http.get(`${config.API_URL}/userGoalItems`, { params }),
-  addGoalItem: (params) => http.post(`${config.API_URL}/addUserGoalItem`, params),
-  addGoal: (params) => http.post(`${config.API_URL}/addUserGoal`, params),
-  updateGoal: (params) => http.post(`${config.API_URL}/updateUserGoal`, params),
-  deleteUserGoalItem: (params) => http.post(`${config.API_URL}/deleteUserGoalItem`, params),
+  getGoalItems: async (params) => http.get(`${await getApiUrl()}/userGoalItems`, { params }),
+  addGoalItem: async (params) => http.post(`${await getApiUrl()}/addUserGoalItem`, params),
+  addGoal: async (params) => http.post(`${await getApiUrl()}/addUserGoal`, params),
+  updateGoal: async (params) => http.post(`${await getApiUrl()}/updateUserGoal`, params),
+  deleteUserGoalItem: async (params) => http.post(`${await getApiUrl()}/deleteUserGoalItem`, params),
 });
 
 export default GoalsService;

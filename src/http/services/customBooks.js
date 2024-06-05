@@ -1,9 +1,9 @@
 import http from '../http';
-import config from '../../config/api';
+import { getApiUrl } from '../../config/api';
 
 const CustomBooksService = () => ({
-  getSuggestCoversList: (params) => http.get(`${config.API_URL}/coversList`, { params }),
-  addCustomBook: (params) => http.post(`${config.API_URL}/addCustomBook`, params),
+  getSuggestCoversList: async (params) => http.get(`${await getApiUrl()}/coversList`, { params }),
+  addCustomBook: async (params) => http.post(`${await getApiUrl()}/addCustomBook`, params),
 });
 
 export default CustomBooksService;
