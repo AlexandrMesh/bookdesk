@@ -4,7 +4,7 @@ import { getApiUrl } from '../../config/api';
 const DataService = () => ({
   getBookList: async (params) => http.get(`${await getApiUrl()}/books`, { params }),
   getBookComment: async (params) => http.get(`${await getApiUrl()}/userBookComment`, { params }),
-  getUserBookRating: async (params) => http.get(`$await getApiUrl()}/userBookRating`, { params }),
+  getUserBookRating: async (params) => http.get(`${await getApiUrl()}/userBookRating`, { params }),
   updateUserBook: async (params) => http.post(`${await getApiUrl()}/updateUserBook`, params),
   updateUserComment: async (params) => http.post(`${await getApiUrl()}/updateUserComment`, params),
   updateUserBookRating: async (params) => http.post(`${await getApiUrl()}/updateUserBookRating`, params),
