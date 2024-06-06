@@ -120,15 +120,23 @@ export const getConfig = async () => {
     });
     await AsyncStorage.setItem('apiUrl', data?.apiUrl);
     await AsyncStorage.setItem('imgUrl', data?.imgUrl);
+    await AsyncStorage.setItem('minimumSupportedAppVersion', data?.minimumSupportedAppVersion);
+    await AsyncStorage.setItem('googlePlayUrl', data?.googlePlayUrl);
+
+    return {
+      apiUrl: data?.apiUrl,
+      imgUrl: data?.imgUrl,
+      minimumSupportedAppVersion: data?.minimumSupportedAppVersion,
+      googlePlayUrl: data?.googlePlayUrl,
+    };
   } catch (err) {
     console.error(err);
+    return false;
   }
-  return false;
 };
 
 export const checkAuth = (token) => async (dispatch) => {
   dispatch(startAuthChecking);
-  await dispatch(getConfig);
   if (!token) {
     dispatch(authCheckingFailed);
   } else {

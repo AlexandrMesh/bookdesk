@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { checkAuth } from '~redux/actions/authActions';
+import { checkAuth, getConfig } from '~redux/actions/authActions';
 import { checkUnderConstruction } from '~redux/actions/appActions';
 import { getCheckingStatus, getIsSignedIn, deriveIsTheLatestAppVersion } from '~redux/selectors/auth';
 import { getGoalNumberOfPages } from '~redux/selectors/goals';
@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkAuth: (token) => dispatch(checkAuth(token)),
+  getConfig: () => dispatch(getConfig),
   checkUnderConstruction: () => dispatch(checkUnderConstruction()),
 });
 

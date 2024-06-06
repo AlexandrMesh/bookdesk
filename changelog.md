@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.9.0
+
+###### 2024-06-06
+- [New] New view and mechanism to force application update
+
 ## 2.8.0
 
 ###### 2024-06-04

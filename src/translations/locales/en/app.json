@@ -8,5 +8,6 @@
   "appTitle": "Reading Diary",
   "appLanguage": "App language: ",
   "ru": "Russian",
-  "en": "English"
+  "en": "English",
+  "notSupportedVersion": "To use our application, update to the latest version"
 }

@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { func, bool, string } from 'prop-types';
+import DeviceInfo from 'react-native-device-info';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -51,6 +52,7 @@ import DateUpdater from '~screens/Home/DateUpdater';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
 import UnderConstruction from './UnderConstruction';
+import UpdateAppComponent from './UpdateAppComponent';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -272,15 +274,21 @@ const Main = ({
   underConstruction,
   hasGoal,
   customBookName,
+  getConfig,
 }) => {
+  const [shouldDisplayUpdateView, setShouldDisplayUpdateView] = useState(false);
   const checkAuthentication = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('token');
+      const data = await getConfig();
       await checkAuth(token);
+      if (data?.minimumSupportedAppVersion && DeviceInfo.getVersion() < data?.minimumSupportedAppVersion) {
+        setShouldDisplayUpdateView(true);
+      }
     } catch (e) {
       console.error(e);
     }
-  }, [checkAuth]);
+  }, [checkAuth, getConfig]);
 
   const checkData = useCallback(async () => {
     try {
@@ -299,6 +307,10 @@ const Main = ({
 
   if (underConstruction) {
     return <UnderConstruction />;
+  }
+
+  if (shouldDisplayUpdateView) {
+    return <UpdateAppComponent />;
   }
 
   if (checkingStatus === IDLE || checkingStatus === PENDING || loadingUnderConstructionStatus === PENDING) {
@@ -325,6 +337,7 @@ const Main = ({
 
 Main.propTypes = {
   checkAuth: func.isRequired,
+  getConfig: func.isRequired,
   underConstruction: string,
   checkUnderConstruction: func.isRequired,
   isSignedIn: bool.isRequired,
