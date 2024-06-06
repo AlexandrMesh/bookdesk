@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { func, bool, string } from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
+import { lt } from 'semver';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -282,7 +283,7 @@ const Main = ({
       const token = await AsyncStorage.getItem('token');
       const data = await getConfig();
       await checkAuth(token);
-      if (data?.minimumSupportedAppVersion && DeviceInfo.getVersion() < data?.minimumSupportedAppVersion) {
+      if (data?.minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), data?.minimumSupportedAppVersion)) {
         setShouldDisplayUpdateView(true);
       }
     } catch (e) {
