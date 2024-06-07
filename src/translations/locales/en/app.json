@@ -9,5 +9,5 @@
   "appLanguage": "App language: ",
   "ru": "Russian",
   "en": "English",
-  "notSupportedVersion": "To use our application, update to the latest version"
+  "needsToBeUpdated": "Application needs to be updated"
 }

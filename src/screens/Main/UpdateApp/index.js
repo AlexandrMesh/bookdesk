@@ -5,7 +5,7 @@ import { ScrollView, Text, Linking } from 'react-native';
 import Button from '~UI/Button';
 import styles from './styles';
 
-const UpdateAppComponent = () => {
+const UpdateApp = () => {
   const { t } = useTranslation(['app', 'common']);
   const [googlePlayUrl, setGooglePlayUrl] = useState('');
 
@@ -20,10 +20,10 @@ const UpdateAppComponent = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.label}>{t('app:notSupportedVersion')}</Text>
+      <Text style={styles.label}>{t('app:needsToBeUpdated')}</Text>
       <Button disabled={!googlePlayUrl} style={styles.button} onPress={() => Linking.openURL(googlePlayUrl)} title={t('common:update')} />
     </ScrollView>
   );
 };
 
-export default UpdateAppComponent;
+export default UpdateApp;

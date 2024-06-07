@@ -5,7 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
 import { setGoal } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
-import { getT } from '~translations/i18n';
+import i18n, { getT } from '~translations/i18n';
+import { RU } from '~constants/languages';
 
 const PREFIX = 'AUTH';
 
@@ -120,14 +121,16 @@ export const getConfig = async () => {
     });
     await AsyncStorage.setItem('apiUrl', data?.apiUrl);
     await AsyncStorage.setItem('imgUrl', data?.imgUrl);
-    await AsyncStorage.setItem('minimumSupportedAppVersion', data?.minimumSupportedAppVersion);
     await AsyncStorage.setItem('googlePlayUrl', data?.googlePlayUrl);
+    await AsyncStorage.setItem('underConstruction', data?.googlePlayUrl);
+    await AsyncStorage.setItem('underConstructionMessage', i18n.language === RU ? data.underConstructionMessage : data.underConstructionMessageEn);
 
     return {
       apiUrl: data?.apiUrl,
       imgUrl: data?.imgUrl,
       minimumSupportedAppVersion: data?.minimumSupportedAppVersion,
       googlePlayUrl: data?.googlePlayUrl,
+      underConstruction: data?.underConstruction,
     };
   } catch (err) {
     console.error(err);

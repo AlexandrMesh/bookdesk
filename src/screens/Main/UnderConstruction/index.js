@@ -1,9 +1,25 @@
-import { connect } from 'react-redux';
-import { getUnderConstruction } from '~redux/selectors/app';
-import UnderConstruction from './UnderConstruction';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from './styles';
 
-const mapStateToProps = (state) => ({
-  underConstruction: getUnderConstruction(state),
-});
+const UnderConstruction = () => {
+  const [underConstructionMessage, setUnderConstructionMessage] = useState('');
 
-export default connect(mapStateToProps)(UnderConstruction);
+  const getUnderConstructionMessage = async () => {
+    const underConstructionMessage = await AsyncStorage.getItem('underConstructionMessage');
+    setUnderConstructionMessage(underConstructionMessage);
+  };
+
+  useEffect(() => {
+    getUnderConstructionMessage();
+  }, []);
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.label}>{underConstructionMessage}</Text>
+    </ScrollView>
+  );
+};
+
+export default UnderConstruction;

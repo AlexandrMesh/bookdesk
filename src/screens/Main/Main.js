@@ -53,7 +53,7 @@ import DateUpdater from '~screens/Home/DateUpdater';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
 import UnderConstruction from './UnderConstruction';
-import UpdateAppComponent from './UpdateAppComponent';
+import UpdateApp from './UpdateApp';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -265,56 +265,47 @@ MainNavigator.propTypes = {
   customBookName: string,
 };
 
-const Main = ({
-  checkAuth,
-  checkingStatus,
-  isSignedIn,
-  isTheLatestAppVersion,
-  checkUnderConstruction,
-  loadingUnderConstructionStatus,
-  underConstruction,
-  hasGoal,
-  customBookName,
-  getConfig,
-}) => {
+const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion, hasGoal, customBookName, getConfig }) => {
   const [shouldDisplayUpdateView, setShouldDisplayUpdateView] = useState(false);
+  const [shouldDisplayUnderConstructionView, setShouldDisplayUnderConstructionView] = useState(false);
+
   const checkAuthentication = useCallback(async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const data = await getConfig();
       await checkAuth(token);
-      if (data?.minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), data?.minimumSupportedAppVersion)) {
-        setShouldDisplayUpdateView(true);
-      }
     } catch (e) {
       console.error(e);
     }
-  }, [checkAuth, getConfig]);
+  }, [checkAuth]);
 
   const checkData = useCallback(async () => {
     try {
-      const result = await checkUnderConstruction();
-      if (!result) {
+      const { minimumSupportedAppVersion, underConstruction } = await getConfig();
+      if (minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), minimumSupportedAppVersion)) {
+        setShouldDisplayUpdateView(true);
+      } else if (underConstruction) {
+        setShouldDisplayUnderConstructionView(true);
+      } else {
         await checkAuthentication();
       }
     } catch (e) {
       console.error(e);
     }
-  }, [checkUnderConstruction, checkAuthentication]);
+  }, [checkAuthentication, getConfig]);
 
   useEffect(() => {
     checkData();
   }, [checkData]);
 
-  if (underConstruction) {
+  if (shouldDisplayUnderConstructionView) {
     return <UnderConstruction />;
   }
 
   if (shouldDisplayUpdateView) {
-    return <UpdateAppComponent />;
+    return <UpdateApp />;
   }
 
-  if (checkingStatus === IDLE || checkingStatus === PENDING || loadingUnderConstructionStatus === PENDING) {
+  if (checkingStatus === IDLE || checkingStatus === PENDING) {
     return <Splash />;
   }
 
@@ -339,12 +330,9 @@ const Main = ({
 Main.propTypes = {
   checkAuth: func.isRequired,
   getConfig: func.isRequired,
-  underConstruction: string,
-  checkUnderConstruction: func.isRequired,
   isSignedIn: bool.isRequired,
   hasGoal: bool.isRequired,
   checkingStatus: loadingDataStatusShape,
-  loadingUnderConstructionStatus: loadingDataStatusShape,
   isTheLatestAppVersion: bool,
   customBookName: string,
 };
