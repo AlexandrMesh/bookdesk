@@ -1097,7 +1097,7 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 + Добавить возможность удаления items в goals items
 
 29.04.2024
-Уменьшить кол-во минимальных символов в комментарие к книге
++ Уменьшить кол-во минимальных символов в комментарие к книге
 
 30.05.2024
 + Подумать модель переезда на новый сервер
@@ -1108,6 +1108,7 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 
 06.06.2024
 + Заменить apps таблицу на получение конфигов из json файла. Нет необходимости так как нам не надо грузить эту информацию сразу.
++ Убрать underConstruction из redux и вынести в config
 + Проверить работоспособность underConstruction
 Разобраться почему долго открывается SlideMenu например для статуса книг
 Настроить автобэкапы базы данных

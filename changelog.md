@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.10.1
+
+###### 2024-06-08
+- [Fix] Improved performance of opening the slide menu with book status
+
 ## 2.10.0
 
 ###### 2024-06-07

@@ -237,7 +237,7 @@ const BookStatusModal = ({
 
   const validateComment = () => {
     const params = {
-      minLength: 20,
+      minLength: 5,
       maxLength: 1000,
     };
     const error = getValidationFailure(
@@ -415,7 +415,7 @@ const BookStatusModal = ({
     );
   };
 
-  return (
+  return isVisible ? (
     <SlideMenu
       menuHeight={menuHeight}
       isVisible={isVisible}
@@ -441,7 +441,7 @@ const BookStatusModal = ({
         />
       ) : null}
     </SlideMenu>
-  );
+  ) : null;
 };
 
 BookStatusModal.propTypes = {

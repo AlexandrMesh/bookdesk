@@ -147,7 +147,7 @@ const BookDetails = ({
 
   const validateComment = () => {
     const params = {
-      minLength: 20,
+      minLength: 5,
       maxLength: 1000,
     };
     const error = getValidationFailure(
