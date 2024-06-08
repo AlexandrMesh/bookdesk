@@ -14,8 +14,8 @@ import { SECONDARY } from '~constants/themes';
 import { COMMON_SLIDE_MENU_HEIGHT, BIG_SLIDE_MENU_HEIGHT } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import Input from '~UI/TextInput';
-import StarIcon from '~assets/star.svg';
 import FilledStarIcon from '~assets/star-filled.svg';
+import StarIcon from '~assets/star.svg';
 import BookStatusItem from './BookStatusItem';
 import styles from './styles';
 
