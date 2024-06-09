@@ -103,14 +103,7 @@ const Step1 = ({
             {bookNameTemp === bookName.value && !bookNameErrorTemp && (
               <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>
             )}
-            <BooksList
-              searchText={bookName.value}
-              enablePullRefresh={false}
-              boardType={ALL}
-              data={suggestedBooks}
-              loadingDataStatus={loadingDataStatus}
-              extraData={suggestedBooks}
-            />
+            <BooksList searchText={bookName.value} data={suggestedBooks} loadingDataStatus={loadingDataStatus} extraData={suggestedBooks} />
           </>
         )}
       </View>

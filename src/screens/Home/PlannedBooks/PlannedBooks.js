@@ -27,7 +27,7 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shouldRe
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (loadingDataStatus === IDLE || shouldReloadData) {
+  if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
     return <Spinner />;
   }
   if (sectionedBookListData.length > 0) {
@@ -38,10 +38,10 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shouldRe
       </>
     );
   }
-  if (sectionedBookListData.length === 0) {
+  if (isFocused && sectionedBookListData.length === 0) {
     return <EmptyBoard />;
   }
-  return undefined;
+  return <EmptyBoard shouldNotDisplayContent />;
 };
 
 PlannedBooks.propTypes = {

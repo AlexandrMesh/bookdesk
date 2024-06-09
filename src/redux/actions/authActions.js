@@ -108,22 +108,26 @@ export const setProfile = (profile) => ({
   profile,
 });
 
-export const getConfig = async () => {
+export const getConfig = (url) => async (dispatch) => {
   try {
     const { data } = await axios({
       method: 'get',
-      url: 'https://omegaprokat.ru/bookdesk/config.json',
+      url,
       headers: {
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',
         Expires: '0',
       },
+      timeout: 5000,
     });
-    await AsyncStorage.setItem('apiUrl', data?.apiUrl);
-    await AsyncStorage.setItem('imgUrl', data?.imgUrl);
-    await AsyncStorage.setItem('googlePlayUrl', data?.googlePlayUrl);
-    await AsyncStorage.setItem('underConstruction', data?.googlePlayUrl);
-    await AsyncStorage.setItem('underConstructionMessage', i18n.language === RU ? data.underConstructionMessage : data.underConstructionMessageEn);
+    const { apiUrl, imgUrl, googlePlayUrl, appVersion, underConstruction, underConstructionMessage, underConstructionMessageEn } = data || {};
+    await AsyncStorage.setItem('apiUrl', apiUrl);
+    await AsyncStorage.setItem('imgUrl', imgUrl);
+    await AsyncStorage.setItem('googlePlayUrl', googlePlayUrl);
+    await AsyncStorage.setItem('appVersion', appVersion);
+    await AsyncStorage.setItem('underConstruction', underConstruction);
+    await AsyncStorage.setItem('underConstructionMessage', i18n.language === RU ? underConstructionMessage : underConstructionMessageEn);
+    dispatch(setUpdateAppInfo(data?.appVersion, data?.googlePlayUrl));
 
     return {
       apiUrl: data?.apiUrl,
@@ -132,9 +136,9 @@ export const getConfig = async () => {
       googlePlayUrl: data?.googlePlayUrl,
       underConstruction: data?.underConstruction,
     };
-  } catch (err) {
-    console.error(err);
-    return false;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };
 
@@ -149,7 +153,7 @@ export const checkAuth = (token) => async (dispatch) => {
       const { data } = result[1];
       if (data.profile) {
         const { _id, email, registered, updated } = data.profile;
-        const { version, googlePlayUrl, numberOfPagesForGoal } = data;
+        const { numberOfPagesForGoal } = data;
         if (numberOfPagesForGoal) {
           dispatch(setGoal(numberOfPagesForGoal));
         }
@@ -157,7 +161,6 @@ export const checkAuth = (token) => async (dispatch) => {
         dispatch(setBookVotes(data.userVotes));
         dispatch(signedIn);
         dispatch(authChecked);
-        dispatch(setUpdateAppInfo(version, googlePlayUrl));
         return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));
       }
     } catch (error) {
@@ -201,7 +204,6 @@ export const signIn =
           }
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
-          dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
           dispatch(setIsGoogleAccount(true));
           try {
             await AsyncStorage.setItem('token', data.token);
@@ -222,7 +224,6 @@ export const signIn =
           }
           dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
-          dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {
@@ -246,7 +247,6 @@ export const signUp =
         dispatch(signedUp);
         dispatch(signedIn);
         dispatch(setProfile(data.profile));
-        dispatch(setUpdateAppInfo(data.version, data.googlePlayUrl));
         try {
           await AsyncStorage.setItem('token', data.token);
         } catch (error) {

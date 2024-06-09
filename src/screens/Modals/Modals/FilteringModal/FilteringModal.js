@@ -119,7 +119,7 @@ const FilteringModal = ({
     }
   }, [shouldAutoClose]);
 
-  return (
+  return isVisible ? (
     <SlideMenu
       isVisible={isVisible}
       shouldAutoClose={shouldAutoClose}
@@ -157,7 +157,7 @@ const FilteringModal = ({
         <Button style={styles.submitButton} title={t('toFilter')} onPress={handleFilter} />
       </View>
     </SlideMenu>
-  );
+  ) : null;
 };
 
 FilteringModal.propTypes = {

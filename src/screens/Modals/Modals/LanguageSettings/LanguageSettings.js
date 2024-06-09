@@ -48,7 +48,7 @@ const LanguageSettings = ({ isVisible, hideModal, triggerReloadData }) => {
     { title: t(EN), isSelected: tempLanguageValue === EN, action: () => setTempLanguageValue(EN) },
   ];
 
-  return (
+  return isVisible ? (
     <SlideMenu isVisible={isVisible} title={t('appLanguage')} shouldAutoClose={shouldAutoClose} onClose={hideModal} onReset={() => undefined}>
       {isLoading ? (
         <Spinner />
@@ -66,7 +66,7 @@ const LanguageSettings = ({ isVisible, hideModal, triggerReloadData }) => {
         </>
       )}
     </SlideMenu>
-  );
+  ) : null;
 };
 
 LanguageSettings.propTypes = {

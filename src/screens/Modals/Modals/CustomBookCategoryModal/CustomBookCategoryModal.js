@@ -109,7 +109,7 @@ const CustomBookCategoryModal = ({
     }
   }, [shouldAutoClose]);
 
-  return (
+  return isVisible ? (
     <SlideMenu isVisible={isVisible} shouldAutoClose={shouldAutoClose} title={t('categoriesTitle')} onClose={onClose} menuHeight={500}>
       <Input
         placeholder={t('searchCategory')}
@@ -139,7 +139,7 @@ const CustomBookCategoryModal = ({
         <Button style={styles.submitButton} title={t('save')} onPress={handleSave} />
       </View>
     </SlideMenu>
-  );
+  ) : null;
 };
 
 CustomBookCategoryModal.propTypes = {

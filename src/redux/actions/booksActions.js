@@ -243,10 +243,9 @@ export const resetCategories = (boardType) => ({
   boardType,
 });
 
-export const triggerReloadBookList = (boardType, isPullRefresh) => ({
+export const triggerReloadBookList = (boardType) => ({
   type: TRIGGER_RELOAD_BOOK_LIST,
   boardType,
-  isPullRefresh,
 });
 
 export const triggerReloadCategories = {

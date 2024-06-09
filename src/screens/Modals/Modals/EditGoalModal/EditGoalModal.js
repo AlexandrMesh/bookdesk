@@ -78,7 +78,7 @@ const LanguageSettings = ({ isVisible, hideModal, goalNumberOfPages, updateGoal 
     }
   }, [isVisible, setPages, goalNumberOfPages]);
 
-  return (
+  return isVisible ? (
     <SlideMenu
       isVisible={isVisible}
       menuHeight={270}
@@ -109,7 +109,7 @@ const LanguageSettings = ({ isVisible, hideModal, goalNumberOfPages, updateGoal 
         </View>
       )}
     </SlideMenu>
-  );
+  ) : null;
 };
 
 LanguageSettings.propTypes = {

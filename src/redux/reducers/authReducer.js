@@ -156,6 +156,5 @@ export default createReducer(initialState, (state, action) => ({
     profile: {},
     signUp: getDefaultSignUpState(),
     signIn: getDefaultSignInState(),
-    updateAppInfo: getDefaultUpdateAppInfo(),
   }),
 }));

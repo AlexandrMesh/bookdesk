@@ -127,8 +127,6 @@ export const deriveLoadingBookListStatus = (status) => createSelector([getBoard]
 
 export const deriveShouldReloadBookList = (status) => createSelector([getBoard], (board) => board[status].shouldReloadData);
 
-export const deriveShouldReloadWithPullRefresh = (status) => createSelector([getBoard], (board) => board[status].shouldReloadWithPullRefresh);
-
 export const deriveBookListPagination = (status) => createSelector([getBoard], (board) => board[status].pagination);
 
 export const deriveBookListTotalItems = (status) => createSelector([deriveBookListPagination(status)], (pagination) => pagination.totalItems);

@@ -2,7 +2,7 @@ import union from 'lodash/union';
 import uniqBy from 'lodash/uniqBy';
 import createReducer from '~utils/createReducer';
 import updateIn from '~utils/updateIn';
-import { IDLE, PENDING, REFRESHING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
+import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import {
   SET_SEARCH_QUERY,
@@ -97,7 +97,6 @@ const getDefaultSearchState = () => ({
   loadingDataStatus: IDLE,
   shouldClearSearchQuery: false,
   shouldReloadData: false,
-  shouldReloadWithPullRefresh: false,
   pagination: getDefaultPaginationState(),
   sortParams: {
     type: 'votesCount',
@@ -122,7 +121,6 @@ const getDefaultBoardState = ({ sortType = '', sortDirection = null }) => ({
   booksCountByYear: [],
   loadingDataStatus: IDLE,
   shouldReloadData: false,
-  shouldReloadWithPullRefresh: false,
   editableFilterParams: getDefaultFilterParamsState(),
   filterParams: getDefaultFilterParamsState(),
   sortParams: {
@@ -504,8 +502,6 @@ export default createReducer(initialState, (state, action) => ({
       [action.boardType]: {
         ...state.board[action.boardType],
         shouldReloadData: true,
-        shouldReloadWithPullRefresh: action.isPullRefresh,
-        loadingDataStatus: action.isPullRefresh ? REFRESHING : state.board[action.boardType].loadingDataStatus,
       },
     },
   }),
@@ -516,10 +512,9 @@ export default createReducer(initialState, (state, action) => ({
       ...state.board,
       [action.boardType]: {
         ...state.board[action.boardType],
-        data: action.shouldLoadMoreResults ? uniqBy([...state.board[action.boardType].data, ...action.data], 'bookId') : action.data,
         loadingDataStatus: SUCCEEDED,
+        data: action.shouldLoadMoreResults ? uniqBy([...state.board[action.boardType].data, ...action.data], 'bookId') : action.data,
         shouldReloadData: false,
-        shouldReloadWithPullRefresh: false,
         pagination: {
           pageIndex: action.shouldLoadMoreResults ? state.board[action.boardType].pagination.pageIndex : -1,
           totalItems: action.totalItems,
@@ -548,7 +543,6 @@ export default createReducer(initialState, (state, action) => ({
         ...state.board[action.boardType],
         loadingDataStatus: FAILED,
         shouldReloadData: false,
-        shouldReloadWithPullRefresh: false,
       },
     },
   }),
@@ -847,7 +841,6 @@ export default createReducer(initialState, (state, action) => ({
       ...state.search,
       loadingDataStatus: FAILED,
       shouldReloadData: false,
-      shouldReloadWithPullRefresh: false,
     },
   }),
 

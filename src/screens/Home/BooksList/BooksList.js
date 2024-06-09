@@ -4,7 +4,7 @@ import { bool, any, arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
-import { PENDING, REFRESHING } from '~constants/loadingStatuses';
+import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BookItem from './BookItem';
 import styles from './styles';
@@ -13,18 +13,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({
-  data,
-  loadMoreBooks,
-  showModal,
-  selectBook,
-  loadingDataStatus,
-  triggerReloadBookList,
-  boardType,
-  horizontal,
-  enablePullRefresh,
-  extraData,
-}) => {
+const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus, horizontal, extraData }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -42,8 +31,6 @@ const BookList = ({
           extraData={extraData}
           renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
           keyExtractor={(item) => item.bookId}
-          onRefresh={() => enablePullRefresh && triggerReloadBookList(boardType, true)}
-          refreshing={enablePullRefresh && loadingDataStatus === REFRESHING}
           onEndReachedThreshold={0.5}
           onEndReached={() => {
             if (loadingDataStatus !== PENDING) {
@@ -59,12 +46,10 @@ const BookList = ({
 
 BookList.defaultProps = {
   loadMoreBooks: () => undefined,
-  enablePullRefresh: true,
 };
 
 BookList.propTypes = {
   horizontal: bool,
-  enablePullRefresh: bool,
   data: arrayOf(
     shape({
       _id: string,
@@ -82,8 +67,6 @@ BookList.propTypes = {
   loadMoreBooks: func,
   extraData: any,
   showModal: func.isRequired,
-  triggerReloadBookList: func.isRequired,
-  boardType: string,
   selectBook: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
 };

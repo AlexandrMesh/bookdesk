@@ -16,7 +16,6 @@ const AllBooks = ({
   bookList,
   filterParams,
   shouldReloadData,
-  shouldReloadWithPullRefresh,
   totalItems,
   loadCategories,
   setBoardType,
@@ -44,7 +43,7 @@ const AllBooks = ({
     }
   }, [loadCategories, loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (!shouldReloadWithPullRefresh && (loadingDataStatus === IDLE || shouldReloadData)) {
+  if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
     return <Spinner />;
   }
 
@@ -52,11 +51,11 @@ const AllBooks = ({
     return (
       <>
         <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={showFilters} />
-        <BooksList boardType={ALL} data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
+        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
       </>
     );
   }
-  if (bookList.length === 0) {
+  if (isFocused && bookList.length === 0) {
     return <EmptyResults />;
   }
   return undefined;
@@ -67,7 +66,6 @@ AllBooks.propTypes = {
   loadBookList: func.isRequired,
   loadMoreBooks: func.isRequired,
   shouldReloadData: bool.isRequired,
-  shouldReloadWithPullRefresh: bool,
   totalItems: number.isRequired,
   loadCategories: func.isRequired,
   setBoardType: func.isRequired,

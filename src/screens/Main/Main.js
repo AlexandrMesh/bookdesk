@@ -50,6 +50,7 @@ import AddGoal from '~screens/Goals/AddGoal/AddGoal';
 import GoalDetails from '~screens/Goals/GoalDetails';
 import About from '~screens/Profile/About';
 import DateUpdater from '~screens/Home/DateUpdater';
+import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
 import UnderConstruction from './UnderConstruction';
@@ -278,24 +279,28 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion, ha
     }
   }, [checkAuth]);
 
-  const checkData = useCallback(async () => {
-    try {
-      const { minimumSupportedAppVersion, underConstruction } = await getConfig();
-      if (minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), minimumSupportedAppVersion)) {
-        setShouldDisplayUpdateView(true);
-      } else if (underConstruction) {
-        setShouldDisplayUnderConstructionView(true);
-      } else {
-        await checkAuthentication();
+  const getConfiguration = useCallback(
+    async (url) => {
+      try {
+        const { minimumSupportedAppVersion, underConstruction } = await getConfig(url);
+        if (minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), minimumSupportedAppVersion)) {
+          setShouldDisplayUpdateView(true);
+        } else if (underConstruction) {
+          setShouldDisplayUnderConstructionView(true);
+        } else {
+          await checkAuthentication();
+        }
+      } catch (error) {
+        // If we have troubles with connection to MAIN_CONFIG_URL we will try to connect to RESERVE_CONFIG_URL
+        getConfiguration(RESERVE_CONFIG_URL);
       }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [checkAuthentication, getConfig]);
+    },
+    [getConfig, checkAuthentication],
+  );
 
   useEffect(() => {
-    checkData();
-  }, [checkData]);
+    getConfiguration(MAIN_CONFIG_URL);
+  }, [getConfiguration]);
 
   if (shouldDisplayUnderConstructionView) {
     return <UnderConstruction />;

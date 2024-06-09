@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   checkAuth: (token) => dispatch(checkAuth(token)),
-  getConfig: () => dispatch(getConfig),
+  getConfig: (url) => dispatch(getConfig(url)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
