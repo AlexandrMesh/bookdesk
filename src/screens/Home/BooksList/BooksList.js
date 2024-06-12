@@ -7,6 +7,7 @@ import { Spinner } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BookItem from './BookItem';
+import ItemPlaceholder from './ItemPlaceholder';
 import styles from './styles';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -23,23 +24,30 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
 
   return (
     <View style={styles.container}>
-      {data.length > 0 && (
-        <FlashList
-          horizontal={horizontal}
-          estimatedItemSize={210}
-          data={data}
-          extraData={extraData}
-          renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
-          keyExtractor={(item) => item.bookId}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (loadingDataStatus !== PENDING) {
-              loadMoreBooks();
-            }
-          }}
-          ListFooterComponent={getSpinner}
-        />
-      )}
+      <FlashList
+        horizontal={horizontal}
+        estimatedItemSize={210}
+        data={data}
+        extraData={extraData}
+        renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
+        keyExtractor={(item) => item.bookId}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          <>
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+          </>
+        }
+        onEndReached={() => {
+          if (loadingDataStatus !== PENDING) {
+            loadMoreBooks();
+          }
+        }}
+        ListFooterComponent={getSpinner}
+      />
     </View>
   );
 };

@@ -462,6 +462,7 @@ export default createReducer(initialState, (state, action) => ({
           ...state.add.steps[1],
           suggestedBooks: {
             ...state.add.steps[1].suggestedBooks,
+            data: [],
             loadingDataStatus: PENDING,
           },
         },

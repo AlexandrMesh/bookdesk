@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
-import { Pressable, View, Text, Platform, UIManager, LayoutAnimation } from 'react-native';
+import { Pressable, View, Text, Platform, UIManager, LayoutAnimation, Animated } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-native-date-picker';
@@ -13,6 +13,7 @@ import { getValidationFailure, validationTypes } from '~utils/validation';
 import { SECONDARY } from '~constants/themes';
 import { COMMON_SLIDE_MENU_HEIGHT, BIG_SLIDE_MENU_HEIGHT } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
+import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import Input from '~UI/TextInput';
 import FilledStarIcon from '~assets/star-filled.svg';
 import StarIcon from '~assets/star.svg';
@@ -64,6 +65,9 @@ const BookStatusModal = ({
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { language } = i18n;
+
+  const animatedStyleForRating = useGetAnimatedPlaceholderStyle(userBookRatingLoadingStatus === PENDING);
+  const animatedStyleForComment = useGetAnimatedPlaceholderStyle(bookCommentLoadingStatus === PENDING);
 
   const clearBookRating = () => setInternalBookRating(0);
 
@@ -343,34 +347,28 @@ const BookStatusModal = ({
                 <Text style={styles.menuItemTitle}>{new Date(added).toLocaleDateString(language)}</Text>
               </Pressable>
             </View>
-            <View style={styles.customItem}>
+            <Animated.View style={[styles.customItem, userBookRatingLoadingStatus === PENDING ? { opacity: animatedStyleForRating } : {}]}>
               <View>
                 <Text style={styles.menuItemTitle}>{t('books:rating')}</Text>
               </View>
               <View style={styles.ratingWrapper}>
-                {userBookRatingLoadingStatus === PENDING ? (
-                  <View style={styles.loadingSpinnerWrapper}>
-                    <Spinner />
-                  </View>
-                ) : (
-                  ratingItems.map(({ id, isSelected, action }) => {
-                    return (
-                      <Pressable
-                        key={id}
-                        onPress={() => {
-                          if (!isLoading) {
-                            action();
-                          }
-                        }}
-                      >
-                        {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
-                      </Pressable>
-                    );
-                  })
-                )}
+                {ratingItems.map(({ id, isSelected, action }) => {
+                  return (
+                    <Pressable
+                      key={id}
+                      onPress={() => {
+                        if (!isLoading && userBookRatingLoadingStatus !== PENDING) {
+                          action();
+                        }
+                      }}
+                    >
+                      {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
+                    </Pressable>
+                  );
+                })}
               </View>
-            </View>
-            <View style={styles.customItem}>
+            </Animated.View>
+            <Animated.View style={[styles.customItem, bookCommentLoadingStatus === PENDING ? { opacity: animatedStyleForComment } : {}]}>
               <View style={styles.menuItemTitleWrapper}>
                 <View style={styles.menuItemTitleWrapperLeft}>
                   <Text style={styles.menuItemTitle}>{t('books:comment')}</Text>
@@ -379,15 +377,9 @@ const BookStatusModal = ({
                       :{' '}
                     </Text>
                   ) : null}
-                  {bookCommentLoadingStatus === PENDING ? (
-                    <View style={styles.loadingSpinnerWrapper}>
-                      <Spinner />
-                    </View>
-                  ) : (
-                    <Text style={styles.menuItemSubTitle} numberOfLines={1}>
-                      {comment.trim()}
-                    </Text>
-                  )}
+                  <Text style={styles.menuItemSubTitle} numberOfLines={1}>
+                    {comment.trim()}
+                  </Text>
                 </View>
               </View>
               <View style={styles.commentButtonWrapper}>
@@ -399,7 +391,7 @@ const BookStatusModal = ({
                   title={t(comment ? 'common:edit' : 'common:add')}
                 />
               </View>
-            </View>
+            </Animated.View>
           </>
         ) : null}
         <View style={styles.buttonWrapper}>

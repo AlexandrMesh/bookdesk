@@ -5,9 +5,8 @@ import { useIsFocused } from '@react-navigation/native';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
-import { Spinner } from '~UI/Spinner';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
-import { IDLE } from '~constants/loadingStatuses';
+import { SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import BooksList from '~screens/Home/BooksList';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
@@ -47,31 +46,23 @@ const SearchResults = ({
       </View>
     );
   }
-  if (loadingDataStatus === IDLE || shouldReloadData) {
-    return (
-      <View style={styles.wrapper}>
-        <Spinner />
-      </View>
-    );
-  }
-  if (searchResult.length > 0) {
-    return (
-      <>
-        <TotalCount count={totalItems} />
-        <BooksList
-          searchText={searchQuery}
-          boardType={ALL}
-          loadMoreBooks={loadMoreSearchResults}
-          data={searchResult}
-          loadingDataStatus={loadingDataStatus}
-        />
-      </>
-    );
-  }
-  if (searchResult.length === 0) {
+
+  if (searchResult.length === 0 && loadingDataStatus === SUCCEEDED && !shouldReloadData) {
     return <EmptyResults />;
   }
-  return undefined;
+
+  return (
+    <>
+      <TotalCount count={totalItems} />
+      <BooksList
+        searchText={searchQuery}
+        boardType={ALL}
+        loadMoreBooks={loadMoreSearchResults}
+        data={searchResult}
+        loadingDataStatus={loadingDataStatus}
+      />
+    </>
+  );
 };
 
 SearchResults.propTypes = {

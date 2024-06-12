@@ -28,5 +28,6 @@
   "selectDate": "Select date",
   "confirm": "Confirm",
   "count": "{{count}} pcs",
-  "charactersCount": "Characters: {{count}}/{{maxCount}}"
+  "charactersCount": "Characters: {{count}}/{{maxCount}}",
+  "moreDetails": "More details"
 }

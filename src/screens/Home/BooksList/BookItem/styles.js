@@ -17,6 +17,9 @@ export default StyleSheet.create({
   },
   leftSide: {
     width: 126,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rightSide: {
     display: 'flex',
@@ -40,7 +43,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ratingWrapper: {
+  votesWrapper: {
     height: 30,
     marginLeft: 10,
     display: 'flex',
@@ -96,5 +99,19 @@ export default StyleSheet.create({
   },
   completed: {
     borderColor: colors.completed,
+  },
+  more: {
+    marginTop: 10,
+    height: 30,
+  },
+  moreTitle: {
+    fontSize: 16,
+  },
+  ratingWrapper: {
+    marginTop: 10,
+    height: 24,
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
   },
 });

@@ -28,5 +28,6 @@
   "selectDate": "Выберите дату",
   "confirm": "Подтвердить",
   "count": "{{count}} шт.",
-  "charactersCount": "Символов: {{count}}/{{maxCount}}"
+  "charactersCount": "Символов: {{count}}/{{maxCount}}",
+  "moreDetails": "Подробнее"
 }

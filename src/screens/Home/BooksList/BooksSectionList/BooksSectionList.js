@@ -7,6 +7,7 @@ import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { PAGE_SIZE } from '~constants/bookList';
 import BookItem from '../BookItem';
+import ItemPlaceholder from '../ItemPlaceholder';
 import styles from '../styles';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -25,30 +26,37 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
 
   return (
     <View style={styles.container}>
-      {data.length > 0 && (
-        <SectionList
-          initialNumToRender={PAGE_SIZE}
-          sections={data}
-          onEndReached={() => {
-            if (loadingDataStatus !== PENDING) {
-              loadMoreBooks();
-            }
-          }}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={getSpinner}
-          renderItem={({ item }) => <BookItem itemStyle={styles.bookItem} bookItem={item} showModal={showModal} selectBook={selectBook} />}
-          renderSectionHeader={({ section }) => (
-            <View style={styles.stickyHeader}>
-              <View style={styles.headerTitle}>
-                <Text style={styles.headerTitleText}>{section.title}</Text>
-              </View>
-              <View style={[styles.taskCount, styles.headerTitle]}>
-                <Text style={styles.headerTitleText}>{t('count', { count: section.count })}</Text>
-              </View>
+      <SectionList
+        initialNumToRender={PAGE_SIZE}
+        sections={data}
+        onEndReached={() => {
+          if (loadingDataStatus !== PENDING) {
+            loadMoreBooks();
+          }
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={getSpinner}
+        ListEmptyComponent={
+          <>
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+            <ItemPlaceholder />
+          </>
+        }
+        renderItem={({ item }) => <BookItem itemStyle={styles.bookItem} bookItem={item} showModal={showModal} selectBook={selectBook} />}
+        renderSectionHeader={({ section }) => (
+          <View style={styles.stickyHeader}>
+            <View style={styles.headerTitle}>
+              <Text style={styles.headerTitleText}>{section.title}</Text>
             </View>
-          )}
-        />
-      )}
+            <View style={[styles.taskCount, styles.headerTitle]}>
+              <Text style={styles.headerTitleText}>{t('count', { count: section.count })}</Text>
+            </View>
+          </View>
+        )}
+      />
     </View>
   );
 };

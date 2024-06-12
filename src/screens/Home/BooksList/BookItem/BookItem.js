@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { any, shape, func, string, number, bool, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image, Pressable, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
-import { Spinner, Size } from '~UI/Spinner';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { getImgUrl } from '~config/api';
 import { SECONDARY } from '~constants/themes';
@@ -13,6 +12,7 @@ import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
@@ -40,12 +40,11 @@ const BookItem = ({
   bookIdToUpdateAddedDate,
   itemStyle,
 }) => {
-  const { t, i18n } = useTranslation(['books', 'categories']);
+  const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
+  const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const { language } = i18n;
   const navigation = useNavigation();
   const [imgUrl, setImgUrl] = useState('');
-
-  const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
 
   const statusColor = getStatusColor(bookStatus);
 
@@ -70,24 +69,24 @@ const BookItem = ({
     getData();
   }, []);
 
+  const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
+  const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING);
+
   return (
     <View style={[styles.bookItem, itemStyle]}>
       <View style={styles.leftSide}>
-        <Pressable onPress={navigateToBookDetails}>
-          {imgUrl && (
-            <Image
-              style={styles.cover}
-              source={{
-                uri: `${imgUrl}/${coverPath}.webp`,
-              }}
-            />
-          )}
-        </Pressable>
+        {imgUrl && (
+          <Image
+            style={styles.cover}
+            source={{
+              uri: `${imgUrl}/${coverPath}.webp`,
+            }}
+          />
+        )}
+        <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
       </View>
       <View style={styles.rightSide}>
-        <Pressable onPress={navigateToBookDetails} style={styles.titleWrapper}>
-          <Text style={[styles.title, styles.lightColor]}>{title}</Text>
-        </Pressable>
+        <Text style={[styles.title, styles.lightColor]}>{title}</Text>
         {authorsList.length > 0 &&
           authorsList.map(
             (author, index) =>
@@ -109,18 +108,18 @@ const BookItem = ({
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-
-              <View style={styles.addedContainer}>
-                {bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? (
-                  <Spinner size={Size.SMALL} />
-                ) : (
-                  <View style={styles.addedWrapper}>
-                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                      {new Date(added).toLocaleDateString(language)}
-                    </Text>
-                  </View>
-                )}
-              </View>
+              <Animated.View
+                style={[
+                  styles.addedContainer,
+                  bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {},
+                ]}
+              >
+                <View style={styles.addedWrapper}>
+                  <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                    {new Date(added).toLocaleDateString(language)}
+                  </Text>
+                </View>
+              </Animated.View>
             </Text>
           )}
         </View>
@@ -136,12 +135,8 @@ const BookItem = ({
             theme={SECONDARY}
             onPress={handleChangeStatus}
           />
-          {updatingVoteForBook ? (
-            <View style={styles.spinnerWrapper}>
-              <Spinner size={Size.SMALL} />
-            </View>
-          ) : (
-            <Pressable onPress={() => updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.ratingWrapper}>
+          <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
+            <Pressable onPress={async () => updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.votesWrapper}>
               {bookWithVote ? (
                 <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
               ) : (
@@ -149,7 +144,7 @@ const BookItem = ({
               )}
               <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
             </Pressable>
-          )}
+          </Animated.View>
         </View>
       </View>
     </View>

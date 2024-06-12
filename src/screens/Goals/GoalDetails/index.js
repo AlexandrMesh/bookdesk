@@ -1,16 +1,9 @@
 import { connect } from 'react-redux';
 import { addGoalItem, getGoalItems, deleteUserGoalItem } from '~redux/actions/goalsActions';
-import {
-  getGoalsData,
-  deriveSectionedPagesDone,
-  getGoalNumberOfPages,
-  deriveNumberOfPagesDoneToday,
-  deriveTodayProgress,
-} from '~redux/selectors/goals';
+import { deriveSectionedPagesDone, getGoalNumberOfPages, deriveNumberOfPagesDoneToday, deriveTodayProgress } from '~redux/selectors/goals';
 import GoalDetails from './GoalDetails';
 
 const mapStateToProps = (state) => ({
-  goalsDataLength: getGoalsData(state)?.length,
   sectionedPagesDone: deriveSectionedPagesDone(state),
   goalNumberOfPages: getGoalNumberOfPages(state),
   numberOfPagesDoneToday: deriveNumberOfPagesDoneToday(state),

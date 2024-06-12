@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { any, func, bool, number } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
-import { Spinner } from '~UI/Spinner';
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
-import { IDLE } from '~constants/loadingStatuses';
+import { IDLE, SUCCEEDED } from '~constants/loadingStatuses';
 import { IN_PROGRESS } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksSectionList from '../BooksList/BooksSectionList';
@@ -27,21 +26,16 @@ const InProgressBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shoul
     }
   }, [loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
-    return <Spinner />;
-  }
-  if (sectionedBookListData.length > 0) {
-    return (
-      <>
-        <TotalCount count={totalItems} />
-        <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
-      </>
-    );
-  }
-  if (isFocused && sectionedBookListData.length === 0) {
+  if (sectionedBookListData.length === 0 && loadingDataStatus === SUCCEEDED && !shouldReloadData) {
     return <EmptyBoard />;
   }
-  return <EmptyBoard shouldNotDisplayContent />;
+
+  return (
+    <>
+      <TotalCount count={totalItems} />
+      <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
+    </>
+  );
 };
 
 InProgressBooks.propTypes = {

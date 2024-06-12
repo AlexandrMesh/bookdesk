@@ -1,6 +1,6 @@
 {
   "name": "bookdesk",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -41,6 +41,7 @@
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "reselect": "^4.1.8",
     "save": "^2.9.0",

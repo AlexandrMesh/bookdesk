@@ -10,11 +10,11 @@ import colors from '~styles/colors';
 import ArrowDown from '~assets/arrow-down.svg';
 import MedalIcon from '~assets/medal-star.svg';
 import RemoveIcon from '~assets/remove.svg';
+import ItemPlaceholder from './ItemPlaceholder';
 import styles from './styles';
 
 const GoalDetails = ({
   addGoalItem,
-  goalsDataLength,
   sectionedPagesDone,
   goalNumberOfPages,
   numberOfPagesDoneToday,
@@ -161,111 +161,115 @@ const GoalDetails = ({
     return colors.neutral_light;
   };
 
+  const disabledControls = isInitialLoading || isLoading || !!loadingGoalItemsId;
+
   return (
     <View style={styles.container}>
-      {isInitialLoading ? (
-        <Spinner />
-      ) : (
-        <View style={styles.content}>
-          <View style={styles.topBlock}>
-            <View style={styles.info}>
-              <View style={styles.blockLeft}>
-                <View>
-                  <Text style={styles.infoText}>{t('goals:pagesDone')}</Text>
-                </View>
-                <View style={styles.goalWrapper}>
-                  {todayProgress >= 100 && <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />}
-                  <Text style={{ ...styles.blockText, color: todayProgress >= 100 ? colors.gold : colors.completed }}>{numberOfPagesDoneToday}</Text>
-                </View>
-              </View>
-
-              <View style={styles.blockRight}>
-                <View>
-                  <Text style={styles.infoText}>{t('goals:goalInPages')}</Text>
-                </View>
-                <View style={styles.goalWrapper}>
-                  <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={{ ...styles.progressBarWrapper, borderColor: todayProgress >= 100 ? colors.gold : colors.completed }}>
-              <View
-                style={{
-                  ...styles.progressBar,
-                  width: todayProgress > 100 ? '100%' : `${todayProgress}%`,
-                  backgroundColor: todayProgress >= 100 ? 'transparent' : colors.completed,
-                }}
-              />
-              <View style={styles.progressBarLabelWrapper}>
-                <Text style={{ ...styles.progressBarLabel, color: getProgressBarLabelColor() }}>
-                  {todayProgress >= 100 ? t('goals:goalAchieved') : `${todayProgress} %`}
-                </Text>
-              </View>
-            </View>
-
-            <Text style={styles.pagesCountDescription}>{t('goals:addedPageCountDescription')}</Text>
-            <View style={styles.actionWrapper}>
-              <Input
-                wrapperClassName={styles.inputWrapper}
-                errorWrapperClassName={styles.inputError}
-                placeholder={t('goals:pagesCount')}
-                disabled={isLoading || !!loadingGoalItemsId}
-                error={errorForPage}
-                onChangeText={handleChangePages}
-                shouldDisplayClearButton={!!pages && !isLoading}
-                onClear={handleClearPages}
-                inputMode='numeric'
-                value={pages}
-              />
+      <View style={styles.content}>
+        <View style={styles.topBlock}>
+          <View style={styles.info}>
+            <View style={styles.blockLeft}>
               <View>
-                <Button
-                  disabled={isLoading || !!loadingGoalItemsId}
-                  iconPosition='right'
-                  icon={isLoading && <Spinner size={Size.SMALL} />}
-                  style={styles.button}
-                  onPress={submitForm}
-                  title={t('goals:add')}
-                />
+                <Text style={styles.infoText}>{t('goals:pagesDone')}</Text>
+              </View>
+              <View style={styles.goalWrapper}>
+                {todayProgress >= 100 && <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />}
+                <Text style={{ ...styles.blockText, color: todayProgress >= 100 ? colors.gold : colors.completed }}>{numberOfPagesDoneToday}</Text>
+              </View>
+            </View>
+
+            <View style={styles.blockRight}>
+              <View>
+                <Text style={styles.infoText}>{t('goals:goalInPages')}</Text>
+              </View>
+              <View style={styles.goalWrapper}>
+                <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
               </View>
             </View>
           </View>
 
-          {goalsDataLength > 0 && (
-            <View style={styles.sectionedList}>
-              <Text style={styles.title}>{t('goals:achievementsJournal')}</Text>
-              <SectionList
-                initialNumToRender={10}
-                sections={sectionedPagesDone}
-                renderItem={({ item }) => (
-                  <>
-                    {renderReadingHistoryItem(item)}
-                    {expandedItems.includes(item.title) && renderReadingHistoryNestedItems(item)}
-                  </>
-                )}
-                renderSectionHeader={({ section }) => (
-                  <View style={styles.stickyHeader}>
-                    <View style={styles.headerTitle}>
-                      <Text style={styles.headerTitleText}>{section.title}</Text>
-                    </View>
-                    <View style={[styles.countColumn, styles.headerTitle]}>
-                      <Text style={styles.headerTitleText}>{t('common:count', { count: section.count })}</Text>
-                    </View>
-                  </View>
-                )}
-                stickySectionHeadersEnabled
+          <View style={{ ...styles.progressBarWrapper, borderColor: todayProgress >= 100 ? colors.gold : colors.completed }}>
+            <View
+              style={{
+                ...styles.progressBar,
+                width: todayProgress > 100 ? '100%' : `${todayProgress}%`,
+                backgroundColor: todayProgress >= 100 ? 'transparent' : colors.completed,
+              }}
+            />
+            <View style={styles.progressBarLabelWrapper}>
+              <Text style={{ ...styles.progressBarLabel, color: getProgressBarLabelColor() }}>
+                {todayProgress >= 100 ? t('goals:goalAchieved') : `${todayProgress} %`}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.pagesCountDescription}>{t('goals:addedPageCountDescription')}</Text>
+          <View style={styles.actionWrapper}>
+            <Input
+              wrapperClassName={styles.inputWrapper}
+              errorWrapperClassName={styles.inputError}
+              placeholder={t('goals:pagesCount')}
+              disabled={disabledControls}
+              error={errorForPage}
+              onChangeText={handleChangePages}
+              shouldDisplayClearButton={!!pages && !isLoading}
+              onClear={handleClearPages}
+              inputMode='numeric'
+              value={pages}
+            />
+            <View>
+              <Button
+                disabled={disabledControls}
+                iconPosition='right'
+                icon={isLoading && <Spinner size={Size.SMALL} />}
+                style={styles.button}
+                onPress={submitForm}
+                title={t('goals:add')}
               />
             </View>
-          )}
+          </View>
         </View>
-      )}
+
+        <View style={styles.sectionedList}>
+          <Text style={styles.title}>{t('goals:achievementsJournal')}</Text>
+          <SectionList
+            initialNumToRender={10}
+            sections={sectionedPagesDone}
+            ListEmptyComponent={
+              <>
+                <ItemPlaceholder />
+                <ItemPlaceholder />
+                <ItemPlaceholder />
+                <ItemPlaceholder />
+                <ItemPlaceholder />
+              </>
+            }
+            renderItem={({ item }) => (
+              <>
+                {renderReadingHistoryItem(item)}
+                {expandedItems.includes(item.title) && renderReadingHistoryNestedItems(item)}
+              </>
+            )}
+            renderSectionHeader={({ section }) => (
+              <View style={styles.stickyHeader}>
+                <View style={styles.headerTitle}>
+                  <Text style={styles.headerTitleText}>{section.title}</Text>
+                </View>
+                <View style={[styles.countColumn, styles.headerTitle]}>
+                  <Text style={styles.headerTitleText}>{t('common:count', { count: section.count })}</Text>
+                </View>
+              </View>
+            )}
+            stickySectionHeadersEnabled
+          />
+        </View>
+      </View>
     </View>
   );
 };
 
 GoalDetails.propTypes = {
   addGoalItem: func.isRequired,
-  goalsDataLength: number,
   sectionedPagesDone: arrayOf(
     shape({
       count: number,

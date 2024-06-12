@@ -629,9 +629,9 @@ export const loadBookList =
       dispatch(
         bookListLoaded({
           boardType,
-          data: items,
-          totalItems: pagination.totalItems,
-          hasNextPage: pagination.hasNextPage,
+          data: items || [],
+          totalItems: pagination?.totalItems,
+          hasNextPage: pagination?.hasNextPage,
           shouldLoadMoreResults,
         }),
       );
@@ -639,6 +639,7 @@ export const loadBookList =
         dispatch(incrementPageIndex(boardType));
       }
     } catch (error) {
+      console.log(error, 'error');
       dispatch(loadingBookListFailed(boardType));
     }
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { View, Pressable, ScrollView, SafeAreaView, Text, Image } from 'react-native';
+import { View, Pressable, ScrollView, SafeAreaView, Text, Image, Animated } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { Spinner, Size } from '~UI/Spinner';
@@ -12,6 +12,7 @@ import { getImgUrl } from '~config/api';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import Input from '~UI/TextInput';
+import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import StarIcon from '~assets/star.svg';
@@ -20,6 +21,7 @@ import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
 import colors from '~styles/colors';
+import Placeholder from './Placeholder';
 import styles from './styles';
 
 const getStatusColor = (bookStatus) =>
@@ -74,6 +76,10 @@ const BookDetails = ({
   const [editedCommentError, setEditedCommentError] = useState('');
   const [internalBookRating, setInternalBookRating] = useState(rating);
   const [updatingRating, setUpdatingRating] = useState(false);
+
+  const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
+  const animatedStyleForRating = useGetAnimatedPlaceholderStyle(updatingRating);
+  const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookValuesUpdatingStatus === PENDING);
 
   const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
   const hideEditCommentForm = () => setIsCommentEditFormVisible(false);
@@ -195,9 +201,7 @@ const BookDetails = ({
   }, []);
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
-    <View style={styles.spinnerWrapper}>
-      <Spinner />
-    </View>
+    <Placeholder />
   ) : (
     <SafeAreaView style={styles.container}>
       <ScrollView keyboardShouldPersistTaps='handled'>
@@ -229,17 +233,13 @@ const BookDetails = ({
           {bookStatus && (
             <Text style={[styles.item, styles.mediumColor]}>
               {t('added')}
-              <View style={styles.addedContainer}>
-                {bookValuesUpdatingStatus === PENDING ? (
-                  <Spinner size={Size.SMALL} />
-                ) : (
-                  <View style={styles.addedWrapper}>
-                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                      {new Date(added).toLocaleDateString(language)}
-                    </Text>
-                  </View>
-                )}
-              </View>
+              <Animated.View style={[styles.addedContainer, bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {}]}>
+                <View style={styles.addedWrapper}>
+                  <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                    {new Date(added).toLocaleDateString(language)}
+                  </Text>
+                </View>
+              </Animated.View>
             </Text>
           )}
           <View style={styles.bookStatusWrapper}>
@@ -253,11 +253,7 @@ const BookDetails = ({
               theme={SECONDARY}
               onPress={handleChangeStatus}
             />
-            {updatingVoteForBook ? (
-              <View style={styles.votesSpinnerWrapper}>
-                <Spinner size={Size.SMALL} />
-              </View>
-            ) : (
+            <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
               <Pressable onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.voteWrapper}>
                 {bookWithVote ? (
                   <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
@@ -266,7 +262,7 @@ const BookDetails = ({
                 )}
                 <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
               </Pressable>
-            )}
+            </Animated.View>
           </View>
 
           {bookStatus ? (
@@ -276,13 +272,8 @@ const BookDetails = ({
                   <View>
                     <Text style={[styles.item, styles.mediumColor]}>{t('rating')}</Text>
                   </View>
-                  {updatingRating && (
-                    <View style={styles.loadingSpinnerWrapper}>
-                      <Spinner size={Size.SMALL} />
-                    </View>
-                  )}
                 </View>
-                <View style={styles.ratingWrapper}>
+                <Animated.View style={[styles.ratingWrapper, updatingRating ? { opacity: animatedStyleForRating } : {}]}>
                   {ratingItems.map(({ id, isSelected, action }) => {
                     return (
                       <Pressable
@@ -297,7 +288,7 @@ const BookDetails = ({
                       </Pressable>
                     );
                   })}
-                </View>
+                </Animated.View>
               </View>
             </View>
           ) : null}

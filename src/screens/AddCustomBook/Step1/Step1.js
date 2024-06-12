@@ -7,10 +7,8 @@ import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import BooksList from '~screens/Home/BooksList';
 import Button from '~UI/Button';
-import { Spinner } from '~UI/Spinner';
 import Input from '~UI/TextInput';
-import { PENDING, SUCCEEDED } from '~constants/loadingStatuses';
-import { ALL } from '~constants/boardType';
+import { PENDING, SUCCEEDED, IDLE } from '~constants/loadingStatuses';
 import styles from './styles';
 
 const Step1 = ({
@@ -94,17 +92,16 @@ const Step1 = ({
         />
       </View>
       <View style={styles.bookListWrapper}>
-        {bookNameTemp === bookName.value && bookNameTemp && !bookNameErrorTemp && loadingDataStatus === SUCCEEDED && suggestedBooks.length === 0 && (
-          <Text style={[styles.suggestionLabel, styles.successLabel]}>{t('customBook:pressNextToAddTheBook')}</Text>
+        {loadingDataStatus !== PENDING && suggestedBooks.length > 0 && bookNameTemp === bookName.value && !bookNameErrorTemp && (
+          <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>
         )}
-        {loadingDataStatus === PENDING && <Spinner />}
-        {loadingDataStatus !== PENDING && suggestedBooks.length > 0 && (
-          <>
-            {bookNameTemp === bookName.value && !bookNameErrorTemp && (
-              <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>
-            )}
+        {!bookNameErrorTemp && loadingDataStatus === SUCCEEDED && suggestedBooks.length === 0 ? (
+          <Text style={[styles.suggestionLabel, styles.successLabel]}>{t('customBook:pressNextToAddTheBook')}</Text>
+        ) : (
+          loadingDataStatus !== IDLE &&
+          !bookNameErrorTemp && (
             <BooksList searchText={bookName.value} data={suggestedBooks} loadingDataStatus={loadingDataStatus} extraData={suggestedBooks} />
-          </>
+          )
         )}
       </View>
 

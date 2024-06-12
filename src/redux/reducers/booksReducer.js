@@ -501,6 +501,7 @@ export default createReducer(initialState, (state, action) => ({
       ...state.board,
       [action.boardType]: {
         ...state.board[action.boardType],
+        data: [],
         shouldReloadData: true,
       },
     },
@@ -832,6 +833,7 @@ export default createReducer(initialState, (state, action) => ({
     search: {
       ...state.search,
       shouldReloadData: true,
+      data: [],
     },
   }),
 

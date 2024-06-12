@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { string, func, bool, number, arrayOf, shape } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
-import { IDLE } from '~constants/loadingStatuses';
+import { IDLE, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import EmptyResults from '~screens/Home/EmptyResults';
-import { Spinner } from '~UI/Spinner';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import ActionBar from '../ActionBar/ActionBar';
 import BooksList from '../BooksList';
@@ -43,22 +42,16 @@ const AllBooks = ({
     }
   }, [loadCategories, loadBookList, loadingDataStatus, shouldReloadData, isFocused]);
 
-  if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
-    return <Spinner />;
-  }
-
-  if (bookList.length > 0) {
-    return (
-      <>
-        <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={showFilters} />
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
-      </>
-    );
-  }
-  if (isFocused && bookList.length === 0) {
+  if (isFocused && bookList.length === 0 && loadingDataStatus === SUCCEEDED && !shouldReloadData) {
     return <EmptyResults />;
   }
-  return undefined;
+
+  return (
+    <>
+      <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={showFilters} />
+      <BooksList data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
+    </>
+  );
 };
 
 AllBooks.propTypes = {
