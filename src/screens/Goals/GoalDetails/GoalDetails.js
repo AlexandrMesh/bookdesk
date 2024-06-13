@@ -6,6 +6,7 @@ import { getValidationFailure, validationTypes } from '~utils/validation';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { Spinner, Size } from '~UI/Spinner';
+import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
 import colors from '~styles/colors';
 import ArrowDown from '~assets/arrow-down.svg';
 import MedalIcon from '~assets/medal-star.svg';
@@ -26,7 +27,7 @@ const GoalDetails = ({
   const [pages, setPages] = useState(null);
   const [errorForPage, setErrorForPages] = useState('');
   const [expandedItems, setExpandedItems] = useState([]);
-  const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(IDLE);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingGoalItemsId, setLoadingGoalItemsId] = useState(null);
 
@@ -96,12 +97,12 @@ const GoalDetails = ({
   useEffect(() => {
     const loadData = async () => {
       try {
-        setIsInitialLoading(true);
+        setLoadingStatus(PENDING);
         await getGoalItems();
+        setLoadingStatus(SUCCEEDED);
       } catch (error) {
+        setLoadingStatus(FAILED);
         console.error(error);
-      } finally {
-        setIsInitialLoading(false);
       }
     };
     loadData();
@@ -161,7 +162,18 @@ const GoalDetails = ({
     return colors.neutral_light;
   };
 
-  const disabledControls = isInitialLoading || isLoading || !!loadingGoalItemsId;
+  const disabledControls = loadingStatus === IDLE || loadingStatus === PENDING || isLoading || !!loadingGoalItemsId;
+
+  const emptyListComponent = () =>
+    loadingStatus === IDLE || loadingStatus === PENDING ? (
+      <>
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+      </>
+    ) : null;
 
   return (
     <View style={styles.container}>
@@ -235,15 +247,7 @@ const GoalDetails = ({
           <SectionList
             initialNumToRender={10}
             sections={sectionedPagesDone}
-            ListEmptyComponent={
-              <>
-                <ItemPlaceholder />
-                <ItemPlaceholder />
-                <ItemPlaceholder />
-                <ItemPlaceholder />
-                <ItemPlaceholder />
-              </>
-            }
+            ListEmptyComponent={emptyListComponent}
             renderItem={({ item }) => (
               <>
                 {renderReadingHistoryItem(item)}
