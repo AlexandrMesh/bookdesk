@@ -3,7 +3,7 @@ import { any, func, bool, number } from 'prop-types';
 import { useIsFocused } from '@react-navigation/native';
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
-import { IDLE, SUCCEEDED } from '~constants/loadingStatuses';
+import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { IN_PROGRESS } from '~constants/boardType';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import BooksSectionList from '../BooksList/BooksSectionList';
@@ -30,11 +30,13 @@ const InProgressBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shoul
     return <EmptyBoard />;
   }
 
-  return (
+  return isFocused ? (
     <>
-      <TotalCount count={totalItems} />
+      {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
       <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </>
+  ) : (
+    <EmptyBoard shouldNotDisplayContent />
   );
 };
 

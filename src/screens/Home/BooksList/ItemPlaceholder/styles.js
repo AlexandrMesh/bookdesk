@@ -22,12 +22,14 @@ export default StyleSheet.create({
   img: {
     width: 120,
     height: 170,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   moreDetails: {
     marginTop: 10,
     width: 120,
     height: 30,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   rightSide: {
@@ -38,30 +40,35 @@ export default StyleSheet.create({
   title: {
     width: 200,
     height: 26,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   author: {
     marginTop: 10,
     width: 100,
     height: 20,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   category: {
     marginTop: 10,
     width: 130,
     height: 10,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   pages: {
     marginTop: 10,
     width: 70,
     height: 10,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   added: {
     marginTop: 10,
     width: 110,
     height: 10,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   footer: {
@@ -74,12 +81,14 @@ export default StyleSheet.create({
   button: {
     width: 140,
     height: 30,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   votesCount: {
     marginLeft: 15,
     width: 30,
     height: 30,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
 });

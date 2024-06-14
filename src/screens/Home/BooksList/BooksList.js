@@ -14,6 +14,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+// eslint-disable-next-line react/display-name
 const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus, horizontal, extraData }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
@@ -34,8 +35,6 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
           <>
-            <ItemPlaceholder />
-            <ItemPlaceholder />
             <ItemPlaceholder />
             <ItemPlaceholder />
             <ItemPlaceholder />

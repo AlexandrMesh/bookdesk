@@ -41,8 +41,6 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
             <ItemPlaceholder />
             <ItemPlaceholder />
             <ItemPlaceholder />
-            <ItemPlaceholder />
-            <ItemPlaceholder />
           </>
         }
         renderItem={({ item }) => <BookItem itemStyle={styles.bookItem} bookItem={item} showModal={showModal} selectBook={selectBook} />}

@@ -254,7 +254,11 @@ const BookDetails = ({
               onPress={handleChangeStatus}
             />
             <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
-              <Pressable onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.voteWrapper}>
+              <Pressable
+                disabled={updatingVoteForBook}
+                onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })}
+                style={styles.voteWrapper}
+              >
                 {bookWithVote ? (
                   <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
                 ) : (

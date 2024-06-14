@@ -13,6 +13,7 @@ export default StyleSheet.create({
   img: {
     width: 260,
     height: 395,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   header: {
@@ -25,30 +26,35 @@ export default StyleSheet.create({
     marginTop: 10,
     width: 300,
     height: 26,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   author: {
     marginTop: 10,
     width: 150,
     height: 22,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   category: {
     marginTop: 10,
     width: 130,
     height: 22,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   pages: {
     marginTop: 10,
     width: 70,
     height: 22,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   added: {
     marginTop: 10,
     width: 110,
     height: 22,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   footer: {
@@ -61,18 +67,21 @@ export default StyleSheet.create({
   button: {
     width: 140,
     height: 34,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   votesCount: {
     marginLeft: 15,
     width: 40,
     height: 34,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
   description: {
     marginTop: 15,
     width: '100%',
     height: 24,
+    opacity: 0.5,
     backgroundColor: colors.neutral_medium,
   },
 });
