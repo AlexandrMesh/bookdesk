@@ -4,6 +4,7 @@ import customBook from './customBookReducer';
 import auth from './authReducer';
 import app from './appReducer';
 import goals from './goalsReducer';
+import statistic from './statisticReducer';
 
 export default combineReducers({
   books,
@@ -11,4 +12,5 @@ export default combineReducers({
   auth,
   app,
   goals,
+  statistic,
 });

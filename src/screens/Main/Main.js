@@ -43,6 +43,7 @@ import BookDetails from '~screens/Home/BookDetails';
 import SignIn from '~screens/Auth/SignIn';
 import SignUp from '~screens/Auth/SignUp';
 import Search from '~screens/Search';
+import Statistic from '~screens/Statistic';
 import Profile from '~screens/Profile';
 import Modals from '~screens/Modals/Modals';
 import Goals from '~screens/Goals/Goals';
@@ -75,7 +76,7 @@ const SearchNavigator = () => {
         headerTintColor: colors.neutral_light,
       }}
     >
-      <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ title: t('search') }} />
+      <Stack.Screen name={SEARCH_ROUTE} component={Statistic} options={{ title: t('search') }} />
     </Stack.Navigator>
   );
 };

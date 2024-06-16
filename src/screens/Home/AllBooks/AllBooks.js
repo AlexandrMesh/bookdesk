@@ -47,8 +47,6 @@ const AllBooks = ({
     return <EmptyResults />;
   }
 
-  console.log('all');
-
   return (
     <>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (

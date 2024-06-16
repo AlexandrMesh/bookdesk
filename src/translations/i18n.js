@@ -11,6 +11,7 @@ import profile from './locales/ru/profile.json';
 import customBook from './locales/ru/customBook.json';
 import app from './locales/ru/app.json';
 import categories from './locales/ru/categories.json';
+import statistic from './locales/ru/statistic.json';
 import commonEn from './locales/en/common.json';
 import authEn from './locales/en/auth.json';
 import booksEn from './locales/en/books.json';
@@ -21,6 +22,7 @@ import profileEn from './locales/en/profile.json';
 import appEn from './locales/en/app.json';
 import categoriesEn from './locales/en/categories.json';
 import customBookEn from './locales/en/customBook.json';
+import statisticEn from './locales/en/statistic.json';
 
 const LanguageDetector = {
   type: 'languageDetector',
@@ -50,6 +52,7 @@ i18n.use(LanguageDetector).init({
       app,
       categories,
       customBook,
+      statistic,
     },
     [EN]: {
       common: commonEn,
@@ -62,6 +65,7 @@ i18n.use(LanguageDetector).init({
       app: appEn,
       categories: categoriesEn,
       customBook: customBookEn,
+      statistic: statisticEn,
     },
   },
 });
