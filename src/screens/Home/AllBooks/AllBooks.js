@@ -5,7 +5,6 @@ import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import EmptyResults from '~screens/Home/EmptyResults';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import EmptyBoard from '../EmptyBoard';
 import ActionBar from '../ActionBar/ActionBar';
 import BooksList from '../BooksList';
 
@@ -47,18 +46,12 @@ const AllBooks = ({
     return <EmptyResults />;
   }
 
-  console.log('all');
-
   return (
     <>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
         <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={showFilters} />
       ) : null}
-      {isFocused ? (
-        <BooksList data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
-      ) : (
-        <EmptyBoard shouldNotDisplayContent />
-      )}
+      <BooksList data={bookList} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </>
   );
 };

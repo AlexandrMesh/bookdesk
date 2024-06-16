@@ -30,13 +30,11 @@ const CompletedBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, should
     return <EmptyBoard />;
   }
 
-  return isFocused ? (
+  return (
     <>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
       <BooksSectionList data={sectionedBookListData} loadMoreBooks={loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </>
-  ) : (
-    <EmptyBoard shouldNotDisplayContent />
   );
 };
 
