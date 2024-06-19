@@ -1,4 +1,5 @@
 {
+  "statistic": "Statistic",
   "january": "Jan.",
   "february": "Feb.",
   "march": "March",
@@ -10,5 +11,8 @@
   "september": "Sep.",
   "october": "Oct.",
   "november": "Nov.",
-  "december": "Dec."
+  "december": "Dec.",
+  "completedBooks": "Read books: ",
+  "averageReadingSpeed": "Books you read per month: ",
+  "noData": "There is not enough data to display statistics on books read."
   }

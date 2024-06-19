@@ -25,6 +25,7 @@ import {
 } from '~redux/selectors/books';
 // eslint-disable-next-line import/no-cycle
 import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/actions/customBookActions';
+import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { ALL } from '~constants/boardType';
 import i18n from '~translations/i18n';
 
@@ -726,6 +727,7 @@ export const updateUserBookAddedDate =
       dispatch(updateBookInSearchResults(bookId, ALL, bookStatus, data.added));
       dispatch(updateSuggestedBook(bookId, bookStatus, data.added));
       dispatch(bookAddedDateUpdated);
+      dispatch(triggerReloadStat);
     } catch (e) {
       dispatch(updatingBookAddedDateFailed);
     }
@@ -763,6 +765,7 @@ export const updateUserBook =
       }
 
       dispatch(reloadBookList(boardType));
+      dispatch(triggerReloadStat);
     } catch (e) {
       dispatch(updatingUsersBookFailed);
     }

@@ -1,12 +1,15 @@
 import { connect } from 'react-redux';
 import { loadStat } from '~redux/actions/statisticActions';
-import { IN_PROGRESS } from '~constants/boardType';
+import { getShouldReloadStat } from '~redux/selectors/statistic';
+import { COMPLETED } from '~constants/boardType';
 import Statistic from './Statistic';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  shouldReloadStat: getShouldReloadStat(state),
+});
 
 const mapDispatchToProps = (dispatch) => ({
-  loadStat: () => dispatch(loadStat(IN_PROGRESS)),
+  loadStat: () => dispatch(loadStat(COMPLETED)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Statistic);

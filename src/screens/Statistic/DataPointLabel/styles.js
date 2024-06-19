@@ -3,15 +3,18 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
-    height: 20,
     backgroundColor: colors.primary_dark,
-    paddingRight: 10,
+    width: 32,
+    paddingVertical: 1,
+    borderRadius: 5,
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   label: {
-    color: colors.neutral_medium,
+    color: colors.neutral_light,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });

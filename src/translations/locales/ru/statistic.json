@@ -1,4 +1,5 @@
 {
+  "statistic": "Статистика",
   "january": "Янв.",
   "february": "Фев.",
   "march": "Март",
@@ -10,5 +11,8 @@
   "september": "Сен.",
   "october": "Окт.",
   "november": "Нояб.",
-  "december": "Дек."
-  }
+  "december": "Дек.",
+  "completedBooks": "Прочитанные книги: ",
+  "averageReadingSpeed": "Вы читаете книг в месяц: ",
+  "noData": "Недостаточно данных для отображения статистики по прочитанным книгам."
+}

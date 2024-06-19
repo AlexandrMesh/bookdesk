@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { getActiveModal } from '~redux/selectors/books';
 import { clearDataForChangeLanguage, hideModal, triggerReloadBookList, loadCategories, clearSearchResults } from '~redux/actions/booksActions';
 import { clearAddCustomBookState } from '~redux/actions/customBookActions';
+import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { LANGUAGE_SETTINGS } from '~constants/modalTypes';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import LanguageSettings from './LanguageSettings';
@@ -20,6 +21,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(triggerReloadBookList(PLANNED));
     dispatch(triggerReloadBookList(IN_PROGRESS));
     dispatch(triggerReloadBookList(COMPLETED));
+    dispatch(triggerReloadStat);
     dispatch(clearSearchResults);
   },
 });

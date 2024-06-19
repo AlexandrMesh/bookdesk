@@ -23,15 +23,16 @@ import {
   ABOUT_ROUTE,
   HOME_NAVIGATOR_ROUTE,
   GOALS_NAVIGATOR_ROUTE,
-  SEARCH_NAVIGATOR_ROUTE,
   PROFILE_NAVIGATOR_ROUTE,
   SIGN_IN_ROUTE,
   SIGN_UP_ROUTE,
+  STAT_NAVIGATOR_ROUTE,
+  STAT_ROUTE,
   ADD_CUSTOM_BOOK_ROUTE,
   ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE,
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
-import SearchIcon from '~assets/search.svg';
+import StatIcon from '~assets/stat.svg';
 import GoalIcon from '~assets/goal.svg';
 import ProfileIcon from '~assets/profile.svg';
 import AddCustomBookIcon from '~assets/add.svg';
@@ -60,8 +61,8 @@ import UpdateApp from './UpdateApp';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const SearchNavigator = () => {
-  const { t } = useTranslation('search');
+const StatNavigator = () => {
+  const { t } = useTranslation('statistic');
 
   return (
     <Stack.Navigator
@@ -76,7 +77,7 @@ const SearchNavigator = () => {
         headerTintColor: colors.neutral_light,
       }}
     >
-      <Stack.Screen name={SEARCH_ROUTE} component={Statistic} options={{ title: t('search') }} />
+      <Stack.Screen name={STAT_ROUTE} component={Statistic} options={{ title: t('statistic') }} />
     </Stack.Navigator>
   );
 };
@@ -123,11 +124,27 @@ GoalsNavigator.propTypes = {
   hasGoal: bool,
 };
 
-const HomeNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
-  </Stack.Navigator>
-);
+const HomeNavigator = () => {
+  const { t } = useTranslation('search');
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.primary_dark,
+          shadowColor: 'transparent',
+          borderBottomWidth: 1,
+          borderColor: colors.neutral_medium,
+        },
+        presentation: 'modal',
+        headerTintColor: colors.neutral_light,
+      }}
+    >
+      <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
+      <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ title: t('search') }} />
+    </Stack.Navigator>
+  );
+};
 
 const AddCustomBookNavigator = ({ customBookName }) => {
   const { t } = useTranslation('customBook');
@@ -195,12 +212,8 @@ const MainNavigator = ({ isTheLatestAppVersion, hasGoal, customBookName }) => {
             HomeNavigator: (
               <HomeIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
             ),
-            SearchNavigator: (
-              <SearchIcon
-                width={BOTTOM_BAR_ICON.width}
-                height={BOTTOM_BAR_ICON.height}
-                fill={focused ? colors.neutral_light : colors.neutral_medium}
-              />
+            StatNavigator: (
+              <StatIcon width={BOTTOM_BAR_ICON.width} height={BOTTOM_BAR_ICON.height} fill={focused ? colors.neutral_light : colors.neutral_medium} />
             ),
             AddCustomBookNavigator: (
               <AddCustomBookIcon
@@ -227,7 +240,7 @@ const MainNavigator = ({ isTheLatestAppVersion, hasGoal, customBookName }) => {
       })}
     >
       <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
-      <Tab.Screen name={SEARCH_NAVIGATOR_ROUTE} component={SearchNavigator} />
+      <Tab.Screen name={STAT_NAVIGATOR_ROUTE} component={StatNavigator} />
       <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE}>{() => <AddCustomBookNavigator customBookName={customBookName} />}</Tab.Screen>
       <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
       <Tab.Screen

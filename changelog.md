@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.14.0
+
+###### 2024-06-19
+- [New] New statistic view
+- [Fix] UI improvements
+
 ## 2.13.1
 
 ###### 2024-06-16

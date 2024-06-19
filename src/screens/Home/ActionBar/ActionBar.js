@@ -1,17 +1,21 @@
 import React from 'react';
 import { arrayOf, string, shape, number, func } from 'prop-types';
-import { View } from 'react-native';
+import { View, TouchableHighlight } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 import colors from '~styles/colors';
 import Button from '~UI/Button';
 import { SECONDARY } from '~constants/themes';
 import { FILTER_ICON } from '~constants/dimensions';
+import { SEARCH_ROUTE } from '~constants/routes';
 import FilterIcon from '~assets/filter.svg';
+import SearchIcon from '~assets/search.svg';
 import TotalCount from './TotalCount';
 import styles from './styles';
 
 const ActionBar = ({ filterParams, totalItems, showFilters, activeFiltersCount }) => {
   const { t } = useTranslation('common');
+  const navigation = useNavigation();
 
   const categoriesLength = filterParams?.categoryPaths?.length;
   const isActiveFilter = categoriesLength > 0;
@@ -30,7 +34,12 @@ const ActionBar = ({ filterParams, totalItems, showFilters, activeFiltersCount }
             title={isActiveFilter ? t('categoriesCount', { count: activeFiltersCount }) : t('categoriesTitle')}
           />
         </View>
-        <TotalCount count={totalItems} />
+        <View style={styles.rightSide}>
+          <TotalCount count={totalItems} />
+          <TouchableHighlight style={styles.searchIconWrapper} onPress={() => navigation.navigate(SEARCH_ROUTE)}>
+            <SearchIcon width={24} height={24} fill={colors.neutral_light} />
+          </TouchableHighlight>
+        </View>
       </View>
     </View>
   );
