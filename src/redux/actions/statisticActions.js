@@ -1,6 +1,9 @@
+import React from 'react';
 import DataService from '~http/services/books';
 import i18n from '~translations/i18n';
 import generateBarChartData from '~utils/generateBarChartData';
+import DataPointLabel from '~screens/Statistic/DataPointLabel';
+import colors from '~styles/colors';
 
 const PREFIX = 'STATISTIC';
 
@@ -24,7 +27,35 @@ export const loadStat = (boardType) => async (dispatch) => {
     dispatch(setStat(chartData));
     return chartData;
   } catch (e) {
-    console.error(e);
-    return [];
+    return {
+      data: [],
+      totalCount: 0,
+      averageReadingSpeed: 0,
+    };
+  }
+};
+
+export const loadUsersStat = (boardType) => async (dispatch) => {
+  const { language } = i18n;
+  const limit = 100;
+  try {
+    const { data } = (await DataService().getUsersCompletedBooksCount({ boardType, limit, language })) || {};
+    const currentUserPlace = data?.currentUserPlace || '> 100';
+    const chartData =
+      data?.data.map(({ count }, index) => ({
+        label: index + 1,
+        value: count,
+        frontColor: index + 1 === currentUserPlace ? colors.gold : colors.success,
+        topLabelComponent: () => <DataPointLabel value={count} />,
+      })) || [];
+    return {
+      data: chartData,
+      currentUserPlace,
+    };
+  } catch (e) {
+    return {
+      data: [],
+      currentUserPlace: 0,
+    };
   }
 };

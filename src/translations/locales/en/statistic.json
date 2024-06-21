@@ -12,7 +12,9 @@
   "october": "Oct.",
   "november": "Nov.",
   "december": "Dec.",
-  "completedBooks": "Read books: ",
-  "averageReadingSpeed": "Books you read per month: ",
-  "noData": "There is not enough data to display statistics on books read."
+  "completedBooks": "Read books:",
+  "averageReadingSpeed": "Books you read per month:",
+  "noData": "There is not enough data to display statistics on books read.",
+  "topReaders": "Top-100 readers",
+  "placeInTheRating": "Your place in the rating:"
   }

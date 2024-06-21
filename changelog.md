@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.15.0
+
+###### 2024-06-21
+- [New] New top 100 readers statistic and rating
+
 ## 2.14.0
 
 ###### 2024-06-19

@@ -3,12 +3,22 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
+    display: 'flex',
+    flex: 1,
     width: '100%',
     height: '100%',
     backgroundColor: colors.primary_dark,
   },
+  statBlock: {
+    display: 'flex',
+    flex: 1,
+    minHeight: 360,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.neutral_medium,
+  },
   title: {
     fontSize: 20,
+    fontWeight: 'bold',
     paddingHorizontal: 15,
     marginVertical: 15,
     color: colors.neutral_light,

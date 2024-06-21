@@ -54,10 +54,10 @@ export default (data) => {
     const yearLabel = findFirstItemWithYear - 1 || flattedResult[0].label;
     finalResult.data = [getYearItem(yearLabel), ...finalResult.data];
   }
-  const totalCount = sumBy(finalResult.data, 'value');
-  const averageReadingSpeed = Math.round((totalCount / finalResult.data.filter(({ isYear }) => !isYear).length) * 10) / 10;
+  const totalCount = sumBy(finalResult.data, 'value') || 0;
+  const averageReadingSpeed = Math.round((totalCount / finalResult.data.filter(({ isYear }) => !isYear).length) * 10) / 10 || 0;
   return {
-    data: finalResult.data,
+    data: finalResult.data || [],
     totalCount,
     averageReadingSpeed,
     // + 10 for have top space for visibility of the label on the chart (for the linechart)

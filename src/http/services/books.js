@@ -2,6 +2,7 @@ import http from '../http';
 import { getApiUrl } from '../../config/api';
 
 const DataService = () => ({
+  getUsersCompletedBooksCount: async (params) => http.get(`${await getApiUrl()}/usersCompletedBooksCount`, { params }),
   getBookList: async (params) => http.get(`${await getApiUrl()}/books`, { params }),
   getBookComment: async (params) => http.get(`${await getApiUrl()}/userBookComment`, { params }),
   getUserBookRating: async (params) => http.get(`${await getApiUrl()}/userBookRating`, { params }),
