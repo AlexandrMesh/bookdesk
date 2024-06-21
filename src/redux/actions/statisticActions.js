@@ -31,6 +31,7 @@ export const loadStat = (boardType) => async (dispatch) => {
       data: [],
       totalCount: 0,
       averageReadingSpeed: 0,
+      maxValue: 10,
     };
   }
 };
@@ -51,11 +52,13 @@ export const loadUsersStat = (boardType) => async (dispatch) => {
     return {
       data: chartData,
       currentUserPlace,
+      maxValue: Math.max(...chartData.map(({ value }) => value)) + 10 || 200,
     };
   } catch (e) {
     return {
       data: [],
       currentUserPlace: 0,
+      maxValue: 200,
     };
   }
 };

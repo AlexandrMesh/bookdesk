@@ -61,6 +61,6 @@ export default (data) => {
     totalCount,
     averageReadingSpeed,
     // + 10 for have top space for visibility of the label on the chart (for the linechart)
-    // maxValue: Math.max(...finalResult.data.map(({ value }) => value)) + 10,
+    maxValue: Math.max(...finalResult.data.map(({ value }) => value)) + 5 || 10,
   };
 };

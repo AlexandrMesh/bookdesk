@@ -17,16 +17,19 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
   const [currentUserPlace, setCurrentUserPlace] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [averageReadingSpeed, setAverageReadingSpeed] = useState(0);
+  const [maxValueForStat, setMaxValueForStat] = useState(10);
+  const [maxValueForRating, setMaxValueForRating] = useState(200);
 
   const isFocused = useIsFocused();
 
   const fetchStat = useCallback(async () => {
     setIsLoadingStat(true);
     try {
-      const { data, totalCount, averageReadingSpeed } = await loadStat();
+      const { data, totalCount, averageReadingSpeed, maxValue } = await loadStat();
       setStat(data);
       setTotalCount(totalCount);
       setAverageReadingSpeed(averageReadingSpeed);
+      setMaxValueForStat(maxValue);
     } finally {
       setIsLoadingStat(false);
     }
@@ -35,9 +38,10 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
   const fetchUsersStat = useCallback(async () => {
     setIsLoadingUsersStat(true);
     try {
-      const { data, currentUserPlace } = await loadUsersStat();
+      const { data, currentUserPlace, maxValue } = await loadUsersStat();
       setUsersStat(data);
       setCurrentUserPlace(currentUserPlace);
+      setMaxValueForRating(maxValue);
     } finally {
       setIsLoadingUsersStat(false);
     }
@@ -76,6 +80,7 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
                 width={stat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
                 noOfSections={3}
                 scrollToEnd
+                maxValue={maxValueForStat}
                 barBorderRadius={4}
                 yAxisTextStyle={{ color: colors.neutral_light }}
                 xAxisTextStyle={{ color: colors.neutral_light }}
@@ -104,6 +109,7 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
                 barWidth={32}
                 noOfSections={3}
                 barBorderRadius={4}
+                maxValue={maxValueForRating}
                 width={usersStat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
                 scrollToIndex={currentUserPlace - 1}
                 yAxisTextStyle={{ color: colors.neutral_light }}
