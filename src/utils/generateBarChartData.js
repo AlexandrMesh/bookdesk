@@ -21,6 +21,7 @@ export default (data) => {
       data: [],
       totalCount: 0,
       averageReadingSpeed: 0,
+      maxValue: 10,
     };
   }
   const years = data.map(({ year }) => year);
