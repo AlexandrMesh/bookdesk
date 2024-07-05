@@ -7,3 +7,6 @@ export const SORTABLE_ITEMS = [
   { key: 'title', direction: 1 },
   { key: 'pages', direction: -1 },
 ];
+
+export const MAX_COUNT_CHARACTERS_FOR_COMMENT = 10000;
+export const MIN_COUNT_CHARACTERS_FOR_COMMENT = 5;

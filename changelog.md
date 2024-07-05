@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.16.0
+
+###### 2024-07-05
+- [New] UI improvements
+- [Fix] Expanded limit of characters for user comments (1000 -> 10000)
+
 ## 2.15.0
 
 ###### 2024-06-21

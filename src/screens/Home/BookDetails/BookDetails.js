@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { View, Pressable, ScrollView, SafeAreaView, Text, Image, Animated } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
+import { MIN_COUNT_CHARACTERS_FOR_COMMENT, MAX_COUNT_CHARACTERS_FOR_COMMENT } from '~constants/bookList';
 import { Spinner, Size } from '~UI/Spinner';
 import Button from '~UI/Button';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
@@ -153,8 +154,8 @@ const BookDetails = ({
 
   const validateComment = () => {
     const params = {
-      minLength: 5,
-      maxLength: 1000,
+      minLength: MIN_COUNT_CHARACTERS_FOR_COMMENT,
+      maxLength: MAX_COUNT_CHARACTERS_FOR_COMMENT,
     };
     const error = getValidationFailure(
       editedComment.trim(),
@@ -222,26 +223,7 @@ const BookDetails = ({
               </View>
             ))}
         </View>
-        <View styles={styles.info}>
-          <Text style={[styles.item, styles.lightColor, styles.marginTop]}>{t(`categories:${categoryValue}`)}</Text>
-          {!!pages && (
-            <Text style={[styles.item, styles.mediumColor]}>
-              {t('pages')}
-              <Text style={styles.lightColor}>{pages}</Text>
-            </Text>
-          )}
-          {bookStatus && (
-            <Text style={[styles.item, styles.mediumColor]}>
-              {t('added')}
-              <Animated.View style={[styles.addedContainer, bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {}]}>
-                <View style={styles.addedWrapper}>
-                  <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                    {new Date(added).toLocaleDateString(language)}
-                  </Text>
-                </View>
-              </Animated.View>
-            </Text>
-          )}
+        <View>
           <View style={styles.bookStatusWrapper}>
             <Button
               title={t(bookStatus) || t('noStatus')}
@@ -267,6 +249,27 @@ const BookDetails = ({
                 <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
               </Pressable>
             </Animated.View>
+          </View>
+          <View style={[styles.info, styles.marginTop]}>
+            <Text style={[styles.item, styles.lightColor]}>{t(`categories:${categoryValue}`)}</Text>
+            {!!pages && (
+              <Text style={[styles.item, styles.mediumColor]}>
+                {t('pages')}
+                <Text style={styles.lightColor}>{pages}</Text>
+              </Text>
+            )}
+            {bookStatus && (
+              <Text style={[styles.item, styles.mediumColor]}>
+                {t('added')}
+                <Animated.View style={[styles.addedContainer, bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {}]}>
+                  <View style={styles.addedWrapper}>
+                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                      {new Date(added).toLocaleDateString(language)}
+                    </Text>
+                  </View>
+                </Animated.View>
+              </Text>
+            )}
           </View>
 
           {bookStatus ? (
@@ -302,7 +305,9 @@ const BookDetails = ({
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
                 {isCommentEditFormVisible ? (
-                  <Text style={styles.subTitle}>{t('common:charactersCount', { count: editedComment.trim().length, maxCount: 1000 })}</Text>
+                  <Text style={styles.subTitle}>
+                    {t('common:charactersCount', { count: editedComment.trim().length, maxCount: MAX_COUNT_CHARACTERS_FOR_COMMENT })}
+                  </Text>
                 ) : (
                   <Text style={[styles.item, styles.mediumColor]}>{new Date(commentAdded).toLocaleDateString(language)}</Text>
                 )}

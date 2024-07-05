@@ -73,58 +73,61 @@ const BookItem = ({
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING);
 
   return (
-    <View style={[styles.bookItem, itemStyle]}>
-      <View style={styles.leftSide}>
-        {imgUrl && (
-          <Image
-            style={styles.cover}
-            source={{
-              uri: `${imgUrl}/${coverPath}.webp`,
-            }}
-          />
-        )}
-        <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
-      </View>
-      <View style={styles.rightSide}>
-        <Text style={[styles.title, styles.lightColor]}>{title}</Text>
-        {authorsList.length > 0 &&
-          authorsList.map(
-            (author, index) =>
-              index < 2 && (
-                // eslint-disable-next-line react/no-array-index-key
-                <View key={`${author}_${index}`}>
-                  <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
-                </View>
-              ),
-          )}
-        <View style={styles.info}>
-          <Text style={styles.lightColor}>{t(`categories:${categoryValue}`)}</Text>
-          {!!pages && (
-            <Text style={[styles.item, styles.mediumColor]}>
-              {t('pages')}
-              <Text style={styles.lightColor}>{pages}</Text>
-            </Text>
-          )}
-          {bookStatus && (
-            <Text style={[styles.item, styles.mediumColor]}>
-              {t('added')}
-              <Animated.View
-                style={[
-                  styles.addedContainer,
-                  bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {},
-                ]}
-              >
-                <View style={styles.addedWrapper}>
-                  <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                    {new Date(added).toLocaleDateString(language)}
-                  </Text>
-                </View>
-              </Animated.View>
-            </Text>
+    <View style={[styles.wrapper, itemStyle]}>
+      <View style={styles.bookItem}>
+        <View style={styles.leftSide}>
+          {imgUrl && (
+            <Image
+              style={styles.cover}
+              source={{
+                uri: `${imgUrl}/${coverPath}.webp`,
+              }}
+            />
           )}
         </View>
-
-        <View style={styles.footer}>
+        <View style={styles.rightSide}>
+          <Text style={[styles.title, styles.lightColor]}>{title}</Text>
+          {authorsList.length > 0 &&
+            authorsList.map(
+              (author, index) =>
+                index < 2 && (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <View key={`${author}_${index}`} style={styles.authorBlock}>
+                    <Text style={[styles.item, styles.mediumColor]}>{author}</Text>
+                  </View>
+                ),
+            )}
+          <View style={styles.info}>
+            <Text style={[styles.lightColor]}>{t(`categories:${categoryValue}`)}</Text>
+            {!!pages && (
+              <Text style={[styles.pagesBlock, styles.item, styles.mediumColor]}>
+                {t('pages')}
+                <Text style={styles.lightColor}>{pages}</Text>
+              </Text>
+            )}
+            {bookStatus && (
+              <Text style={[styles.item, styles.mediumColor]}>
+                {t('added')}
+                <Animated.View
+                  style={[
+                    styles.addedContainer,
+                    bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {},
+                  ]}
+                >
+                  <View style={styles.addedWrapper}>
+                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                      {new Date(added).toLocaleDateString(language)}
+                    </Text>
+                  </View>
+                </Animated.View>
+              </Text>
+            )}
+          </View>
+        </View>
+      </View>
+      <View style={styles.bottom}>
+        <View>
+          <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
           <Button
             title={t(bookStatus) || t('noStatus')}
             style={[styles.statusButton, { borderColor: statusColor }]}
@@ -135,6 +138,8 @@ const BookItem = ({
             theme={SECONDARY}
             onPress={handleChangeStatus}
           />
+        </View>
+        <View>
           <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
             <Pressable onPress={async () => updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.votesWrapper}>
               {bookWithVote ? (

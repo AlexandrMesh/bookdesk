@@ -13,6 +13,7 @@ import { getValidationFailure, validationTypes } from '~utils/validation';
 import { SECONDARY } from '~constants/themes';
 import { COMMON_SLIDE_MENU_HEIGHT, BIG_SLIDE_MENU_HEIGHT } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
+import { MIN_COUNT_CHARACTERS_FOR_COMMENT, MAX_COUNT_CHARACTERS_FOR_COMMENT } from '~constants/bookList';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import Input from '~UI/TextInput';
 import FilledStarIcon from '~assets/star-filled.svg';
@@ -241,8 +242,8 @@ const BookStatusModal = ({
 
   const validateComment = () => {
     const params = {
-      minLength: 5,
-      maxLength: 1000,
+      minLength: MIN_COUNT_CHARACTERS_FOR_COMMENT,
+      maxLength: MAX_COUNT_CHARACTERS_FOR_COMMENT,
     };
     const error = getValidationFailure(
       comment.trim(),
@@ -288,7 +289,11 @@ const BookStatusModal = ({
         <View style={styles.commentForm}>
           <View style={styles.labelWrapper}>
             <Text style={styles.subTitle}>{t('books:comment')}</Text>
-            {comment && <Text style={styles.subTitle}>{t('common:charactersCount', { count: comment.trim().length, maxCount: 1000 })}</Text>}
+            {comment && (
+              <Text style={styles.subTitle}>
+                {t('common:charactersCount', { count: comment.trim().length, maxCount: MAX_COUNT_CHARACTERS_FOR_COMMENT })}
+              </Text>
+            )}
           </View>
           <Input
             placeholder={t('books:enterComment')}

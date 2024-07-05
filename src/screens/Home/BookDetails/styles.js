@@ -110,6 +110,9 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    backgroundColor: colors.primary_darkest,
+    padding: 10,
+    borderRadius: 4,
   },
   addedContainer: {
     height: 25,
@@ -126,11 +129,11 @@ export default StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   voteWrapper: {
     height: 30,
-    marginLeft: 20,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
