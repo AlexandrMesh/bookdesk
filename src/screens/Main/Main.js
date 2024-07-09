@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { func, bool, string } from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
+import { useNetInfo } from '@react-native-community/netinfo';
 import { lt } from 'semver';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -57,6 +58,7 @@ import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
 import UnderConstruction from './UnderConstruction';
 import UpdateApp from './UpdateApp';
+import NoConnection from './NoConnection';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -103,7 +105,7 @@ const GoalsNavigator = ({ hasGoal }) => {
         name={GOALS_ROUTE}
         component={Goals}
         options={{
-          title: t('goals'),
+          title: t('readingTracker'),
         }}
       />
       <Stack.Screen name={ADD_GOAL} component={AddGoal} options={{ title: t('addGoal') }} />
@@ -283,6 +285,7 @@ MainNavigator.propTypes = {
 const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion, hasGoal, customBookName, getConfig }) => {
   const [shouldDisplayUpdateView, setShouldDisplayUpdateView] = useState(false);
   const [shouldDisplayUnderConstructionView, setShouldDisplayUnderConstructionView] = useState(false);
+  const { isConnected } = useNetInfo();
 
   const checkAuthentication = useCallback(async () => {
     try {
@@ -322,6 +325,10 @@ const Main = ({ checkAuth, checkingStatus, isSignedIn, isTheLatestAppVersion, ha
 
   if (shouldDisplayUpdateView) {
     return <UpdateApp />;
+  }
+
+  if (isConnected === false) {
+    return <NoConnection />;
   }
 
   if (checkingStatus === IDLE || checkingStatus === PENDING) {

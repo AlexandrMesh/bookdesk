@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.17.0
+
+###### 2024-07-09
+- [New] UI improvements
+- [New] Added NoConnection View for the case with no internet
+
 ## 2.16.0
 
 ###### 2024-07-05

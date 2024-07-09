@@ -9,5 +9,16 @@
   "appLanguage": "App language: ",
   "ru": "Russian",
   "en": "English",
-  "needsToBeUpdated": "Application needs to be updated"
+  "needsToBeUpdated": "Application needs to be updated",
+  "noConnectionMessage": "Connect to the Internet. Check your network connection.",
+  "connectionType": "Connection type: {{type}}",
+  "none": "None",
+  "unknown": "Unknown",
+  "cellular": "Cellular",
+  "wifi": "Wi-Fi",
+  "bluetooth": "Bluetooth",
+  "ethernet": "Ethernet",
+  "wimax": "WiMax",
+  "vpn": "VPN",
+  "other": "Other"
 }

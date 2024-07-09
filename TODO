@@ -1163,17 +1163,16 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 Настроить автобэкапы базы данных https://gupta-aditya333.medium.com/how-to-backup-mongodb-automatically-3b953cd2c8c8
 Добавить кнопку поиск на странице поиска
 Ускорить сохранение результатов в Слайд меню Статус книги
-Перенести кнопку статус книги под обложку
++ Перенести кнопку статус книги под обложку
 Разместить рейтинг в правой части под названием
 Разместить кнопку с votes в виде кнопки
 Подумать над рейтингом чтецов
 Нотификацию для достижения целей
-Переименовать Цели в Трекер
++ Переименовать Цели в Трекер
 График пирог (категории, авторы прочитанных книг)
 Выводить модалку с просьбой поставить рейтинг и написать отзыв
-Обновить версию react-native
 Обновить версию пакетов
-Поставить кнопки в линию под обложкой
++ Поставить кнопки в линию под обложкой
 Сделать светлую тему
 + Статья про создание приложения на vc.ru и habr
 Для конкретного пользователя - "Вы перечитали книгу N раз"
@@ -1181,15 +1180,8 @@ Become a user of our reading diary and put your ratings and reviews for books, r
 На какой странице читаю для доски Читаю
 Сделать закладку чтобы книга отображалсь сверху всегда
 Возможность выбрать свою обложку для книги при добавлении своей книги
-Изменить логику проверки токена (если токен хранится в async storage то сразу показывать страницу с книгами а если подмена токена то перекидывать на страницу логина)
++ Изменить логику проверки токена (если токен хранится в async storage то сразу показывать страницу с книгами а если подмена токена то перекидывать на страницу логина) - без проверки невозможно сделать
 + Выделить в блоки другого оттенка каждый элемент: Заголовок, автор, описание и т.д.
-Обновить target версию  api
-Your highest non-compliant target API level is Android 13 (API level 33).
-
-To ensure that you can continue to make updates to your app you must:
-
-Update your app to target Android 14 (API level 34) or higher.
-Publish a new version of your app to production. Before you do this, you can test your app using internal, closed, or open testing.
 добавить  сообщение о том что нет интернета
 + Если доска пуста то при нажатии отправлять на добавление своей книги
 Тип книги, аудио, обычная, электронная
@@ -1197,4 +1189,15 @@ Publish a new version of your app to production. Before you do this, you can tes
 3 рекомендации книги из категории
 Загружать данные из досок в фоне (подумать еще, так как вырастет нагрузка на API, вместо 1 запроса сразу полетит 4)
 + Увеличить кол-во максимальных символов в комментарии
+
+05.07.2024
+Обновить версию react-native
+Обновить target версию  api
+Your highest non-compliant target API level is Android 13 (API level 33).
+To ensure that you can continue to make updates to your app you must:
+Update your app to target Android 14 (API level 34) or higher.
+Publish a new version of your app to production. Before you do this, you can test your app using internal, closed, or open testing.
 upgrade react native https://react-native-community.github.io/upgrade-helper/?from=0.72.5&to=0.74.3&package=com.bookdesk&name=BookDesk
+
+08.07.2024
+Добавить вкладку Избранное

@@ -29,5 +29,6 @@
   "confirm": "Подтвердить",
   "count": "{{count}} шт.",
   "charactersCount": "Символов: {{count}}/{{maxCount}}",
-  "moreDetails": "Подробнее"
+  "moreDetails": "Подробнее",
+  "retry": "Проверить"
 }

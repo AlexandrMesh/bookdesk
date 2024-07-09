@@ -29,5 +29,6 @@
   "confirm": "Confirm",
   "count": "{{count}} pcs",
   "charactersCount": "Characters: {{count}}/{{maxCount}}",
-  "moreDetails": "More details"
+  "moreDetails": "More details",
+  "retry": "Retry"
 }

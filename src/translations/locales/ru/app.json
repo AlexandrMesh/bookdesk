@@ -9,5 +9,16 @@
   "appLanguage": "Язык приложения: ",
   "ru": "Русский",
   "en": "Английский",
-  "needsToBeUpdated": "Необходимо обновить приложение"
+  "needsToBeUpdated": "Необходимо обновить приложение",
+  "noConnectionMessage": "Подключитесь к Интернету. Проверьте Ваше подключение к сети.",
+  "connectionType": "Тип соединения: {{type}}",
+  "none": "Нет",
+  "unknown": "Неизвестное",
+  "cellular": "Сотовая связь",
+  "wifi": "Wi-Fi",
+  "bluetooth": "Bluetooth",
+  "ethernet": "Ethernet",
+  "wimax": "WiMax",
+  "vpn": "VPN",
+  "other": "Другое"
 }
