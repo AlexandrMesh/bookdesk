@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 import axios from 'axios';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { clearBooksData, setBookVotes } from '~redux/actions/booksActions';
+import { clearBooksData, setBookVotes, userBookRatingsUpdated } from '~redux/actions/booksActions';
 import { setGoal } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
 import i18n, { getT } from '~translations/i18n';
@@ -159,6 +159,7 @@ export const checkAuth = (token) => async (dispatch) => {
         }
         dispatch(setProfile({ _id, email, registered, updated }));
         dispatch(setBookVotes(data.userVotes));
+        dispatch(userBookRatingsUpdated(data.userBookRatings));
         dispatch(signedIn);
         dispatch(authChecked);
         return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));

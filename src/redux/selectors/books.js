@@ -12,7 +12,6 @@ const getBoard = (state) => getBooks(state).board;
 const getBookDetails = (state) => getBooks(state).bookDetails;
 const getUpdatedBookValues = (state) => getBooks(state).updatedBookValues;
 const getBookComment = (state) => getBooks(state).bookComment;
-const getUserBookRating = (state) => getBooks(state).bookRating;
 
 export const getBoardType = (state) => getBooks(state).boardType;
 export const getBookVotes = (state) => getBooks(state).bookVotes;
@@ -48,8 +47,10 @@ export const getBookCommentUpdatingStatus = (state) => getBookComment(state).upd
 export const getBookCommentLoadingStatus = (state) => getBookComment(state).loadingDataStatus;
 export const getBookCommentDeletingStatus = (state) => getBookComment(state).deletingDataStatus;
 
-export const getUserBookRatingData = (state) => getUserBookRating(state).data;
-export const getUserBookRatingLoadingStatus = (state) => getUserBookRating(state).loadingDataStatus;
+export const getUserBookRatings = (state) => getBooks(state).bookRatings;
+
+export const deriveUserBookRating = (bookIdExternal) =>
+  createSelector([getUserBookRatings], (bookRatings) => bookRatings.find(({ bookId }) => bookId === bookIdExternal));
 
 export const deriveBookListEditableFilterParams = (status) => createSelector([getBoard], (board) => board[status].editableFilterParams);
 export const deriveBookListFilterParams = (status) => createSelector([getBoard], (board) => board[status].filterParams);

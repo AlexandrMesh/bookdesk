@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { View, Pressable, ScrollView, SafeAreaView, Text, Image, Animated } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
@@ -16,8 +17,8 @@ import Input from '~UI/TextInput';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
-import StarIcon from '~assets/star.svg';
-import FilledStarIcon from '~assets/star-filled.svg';
+import Rating from '~UI/Rating';
+import { deriveUserBookRating } from '~redux/selectors/books';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
@@ -53,21 +54,8 @@ const BookDetails = ({
   deleteUserComment,
   bookCommentDeletingStatus,
 }) => {
-  const {
-    title,
-    coverPath,
-    authorsList,
-    pages,
-    categoryPath,
-    categoryValue,
-    bookStatus,
-    added,
-    annotation,
-    votesCount,
-    comment,
-    rating,
-    commentAdded,
-  } = bookDetailsData || {};
+  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
+    bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const [imgUrl, setImgUrl] = useState('');
   const { language } = i18n;
@@ -75,11 +63,9 @@ const BookDetails = ({
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
   const [editedComment, setEditedComment] = useState(comment || '');
   const [editedCommentError, setEditedCommentError] = useState('');
-  const [internalBookRating, setInternalBookRating] = useState(rating);
   const [updatingRating, setUpdatingRating] = useState(false);
 
   const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
-  const animatedStyleForRating = useGetAnimatedPlaceholderStyle(updatingRating);
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookValuesUpdatingStatus === PENDING);
 
   const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
@@ -87,12 +73,12 @@ const BookDetails = ({
 
   const { params } = useRoute();
 
+  const bookRating = useSelector(deriveUserBookRating(params?.bookId))?.rating;
   const statusColor = getStatusColor(bookStatus);
 
   const handleUpdateRating = async (value) => {
     try {
       setUpdatingRating(true);
-      setInternalBookRating(value);
       const ratingAdded = new Date().getTime();
       await updateUserBookRating({ bookId: params?.bookId, rating: value, added: ratingAdded });
     } catch (error) {
@@ -102,20 +88,6 @@ const BookDetails = ({
     }
   };
 
-  const ratingItems = [
-    { id: '1', isSelected: internalBookRating >= 1, action: () => handleUpdateRating(1) },
-    { id: '2', isSelected: internalBookRating >= 2, action: () => handleUpdateRating(2) },
-    { id: '3', isSelected: internalBookRating >= 3, action: () => handleUpdateRating(3) },
-    { id: '4', isSelected: internalBookRating >= 4, action: () => handleUpdateRating(4) },
-    { id: '5', isSelected: internalBookRating >= 5, action: () => handleUpdateRating(5) },
-  ];
-
-  const clearBookRating = () => setInternalBookRating(0);
-
-  useEffect(() => {
-    setInternalBookRating(rating);
-  }, [rating]);
-
   useEffect(() => {
     loadBookDetails({ bookId: params?.bookId });
   }, [loadBookDetails, params]);
@@ -123,7 +95,6 @@ const BookDetails = ({
   useEffect(() => {
     if (!isFocused) {
       clearBookDetails();
-      clearBookRating();
       hideEditCommentForm();
       setEditedComment('');
       setEditedCommentError('');
@@ -280,22 +251,7 @@ const BookDetails = ({
                     <Text style={[styles.item, styles.mediumColor]}>{t('rating')}</Text>
                   </View>
                 </View>
-                <Animated.View style={[styles.ratingWrapper, updatingRating ? { opacity: animatedStyleForRating } : {}]}>
-                  {ratingItems.map(({ id, isSelected, action }) => {
-                    return (
-                      <Pressable
-                        key={id}
-                        onPress={() => {
-                          if (!updatingRating) {
-                            action();
-                          }
-                        }}
-                      >
-                        {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
-                      </Pressable>
-                    );
-                  })}
-                </Animated.View>
+                <Rating rating={bookRating} onChangeRating={handleUpdateRating} isLoading={updatingRating} />
               </View>
             </View>
           ) : null}

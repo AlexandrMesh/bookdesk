@@ -8,7 +8,7 @@ const DataService = () => ({
   getUserBookRating: async (params) => http.get(`${await getApiUrl()}/userBookRating`, { params }),
   updateUserBook: async (params) => http.post(`${await getApiUrl()}/updateUserBook`, params),
   updateUserComment: async (params) => http.post(`${await getApiUrl()}/updateUserComment`, params),
-  updateUserBookRating: async (params) => http.post(`${await getApiUrl()}/updateUserBookRating`, params),
+  updateUserBookRating: async (params) => http.post(`${await getApiUrl()}/updateUserBookRatingV2`, params),
   updateBookVotes: async (params) => http.post(`${await getApiUrl()}/updateBookVotes`, params),
   getCategories: async (params) => http.get(`${await getApiUrl()}/categories`, { params }),
   getBookDetails: async (params) => http.get(`${await getApiUrl()}/book`, { params }),

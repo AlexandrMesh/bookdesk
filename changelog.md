@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 2.18.0
+
+###### 2024-07-11
+- [New] Rating in the book item
+- [New] Performance improvements for book boards
+
 ## 2.17.0
 
 ###### 2024-07-09

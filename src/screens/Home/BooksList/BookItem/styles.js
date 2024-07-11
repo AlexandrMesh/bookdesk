@@ -69,6 +69,9 @@ export default StyleSheet.create({
     width: 126,
     height: 180,
   },
+  ratingWrapper: {
+    marginTop: 10,
+  },
   info: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -120,12 +123,5 @@ export default StyleSheet.create({
   },
   moreTitle: {
     fontSize: 16,
-  },
-  ratingWrapper: {
-    marginTop: 10,
-    height: 24,
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignItems: 'center',
   },
 });

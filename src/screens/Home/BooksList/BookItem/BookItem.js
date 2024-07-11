@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { any, shape, func, string, number, bool, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Image, Pressable, Animated } from 'react-native';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
 import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
@@ -12,7 +13,9 @@ import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
 import { BOOK_STATUS } from '~constants/modalTypes';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import { deriveUserBookRating } from '~redux/selectors/books';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
+import Rating from '~UI/Rating';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
 import DropdownIcon from '~assets/dropdown.svg';
@@ -39,12 +42,15 @@ const BookItem = ({
   bookValuesUpdatingStatus,
   bookIdToUpdateAddedDate,
   itemStyle,
+  updateUserBookRating,
 }) => {
   const { bookId, title, coverPath, votesCount, pages, categoryValue, authorsList, added, bookStatus } = bookItem;
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const { language } = i18n;
   const navigation = useNavigation();
   const [imgUrl, setImgUrl] = useState('');
+  const [updatingRating, setUpdatingRating] = useState(false);
+  const bookRating = useSelector(deriveUserBookRating(bookId))?.rating;
 
   const statusColor = getStatusColor(bookStatus);
 
@@ -71,6 +77,17 @@ const BookItem = ({
 
   const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING);
+
+  const handleUpdateRating = async (value) => {
+    try {
+      setUpdatingRating(true);
+      const added = new Date().getTime();
+      await updateUserBookRating({ bookId, rating: value, added });
+      setUpdatingRating(false);
+    } catch (error) {
+      setUpdatingRating(false);
+    }
+  };
 
   return (
     <View style={[styles.wrapper, itemStyle]}>
@@ -122,6 +139,16 @@ const BookItem = ({
                 </Animated.View>
               </Text>
             )}
+            {bookStatus && (
+              <Rating
+                rating={bookRating}
+                onChangeRating={handleUpdateRating}
+                wrapperStyle={styles.ratingWrapper}
+                isLoading={updatingRating}
+                width={28}
+                height={28}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -172,6 +199,7 @@ BookItem.propTypes = {
     added: number,
   }).isRequired,
   showModal: func.isRequired,
+  updateUserBookRating: func.isRequired,
   setBookToUpdate: func.isRequired,
   setBookValuesToUpdate: func.isRequired,
   showDateUpdater: func.isRequired,

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { bool, string, func, shape } from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Pressable, View, Text, Platform, UIManager, LayoutAnimation, Animated } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-native-date-picker';
+import { deriveUserBookRating } from '~redux/selectors/books';
 import Button from '~UI/Button';
 import { Spinner, Size } from '~UI/Spinner';
 import SlideMenu from '~UI/SlideMenu';
@@ -16,8 +18,7 @@ import { PENDING } from '~constants/loadingStatuses';
 import { MIN_COUNT_CHARACTERS_FOR_COMMENT, MAX_COUNT_CHARACTERS_FOR_COMMENT } from '~constants/bookList';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import Input from '~UI/TextInput';
-import FilledStarIcon from '~assets/star-filled.svg';
-import StarIcon from '~assets/star.svg';
+import Rating from '~UI/Rating';
 import BookStatusItem from './BookStatusItem';
 import styles from './styles';
 
@@ -38,7 +39,6 @@ const BookStatusModal = ({
   updateUserBook,
   bookCommentLoadingStatus,
   getBookComment,
-  getUserBookRating,
   updateUserComment,
   hideModal,
   boardType,
@@ -46,11 +46,11 @@ const BookStatusModal = ({
   deleteUserComment,
   clearBookComment,
   updateUserBookCommentInBookDetails,
-  userBookRatingLoadingStatus,
   updateUserBookRating,
   deleteUserBookRating,
 }) => {
   const { t, i18n } = useTranslation(['books', 'common']);
+  const bookRating = useSelector(deriveUserBookRating(book?.bookId))?.rating;
   const [newBookStatus, setNewBookStatus] = useState(book?.bookStatus);
   const [isVisibleDatePicker, setIsVisibleDatePicker] = useState(false);
   const [added, setAdded] = useState(book?.added || new Date().getTime());
@@ -61,26 +61,18 @@ const BookStatusModal = ({
   const [comment, setComment] = useState('');
   const [savedComment, setSavedComment] = useState('');
   const [commentError, setCommentError] = useState(null);
-  const [bookRating, setBookRating] = useState(0);
-  const [internalBookRating, setInternalBookRating] = useState(0);
+  const [internalBookRating, setInternalBookRating] = useState(bookRating);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { language } = i18n;
 
-  const animatedStyleForRating = useGetAnimatedPlaceholderStyle(userBookRatingLoadingStatus === PENDING);
   const animatedStyleForComment = useGetAnimatedPlaceholderStyle(bookCommentLoadingStatus === PENDING);
-
-  const clearBookRating = () => setInternalBookRating(0);
 
   const handleAction = (status) => {
     setAdded(new Date().getTime());
     setNewBookStatus(status);
     setShouldRecalculateDimensions(true);
     setMenuHeight(status !== ALL ? BIG_SLIDE_MENU_HEIGHT : COMMON_SLIDE_MENU_HEIGHT);
-  };
-
-  const handleChangeRating = (value) => {
-    setInternalBookRating(value);
   };
 
   const showDatePicker = () => {
@@ -108,14 +100,6 @@ const BookStatusModal = ({
     { title: t('completed'), isSelected: newBookStatus === COMPLETED, action: () => handleAction(COMPLETED) },
   ];
 
-  const ratingItems = [
-    { id: '1', isSelected: internalBookRating >= 1, action: () => handleChangeRating(1) },
-    { id: '2', isSelected: internalBookRating >= 2, action: () => handleChangeRating(2) },
-    { id: '3', isSelected: internalBookRating >= 3, action: () => handleChangeRating(3) },
-    { id: '4', isSelected: internalBookRating >= 4, action: () => handleChangeRating(4) },
-    { id: '5', isSelected: internalBookRating >= 5, action: () => handleChangeRating(5) },
-  ];
-
   const handleConfirmChangeDate = (date) => {
     setAdded(date.getTime());
     hideDatePicker();
@@ -132,7 +116,7 @@ const BookStatusModal = ({
 
   useEffect(() => {
     if (isVisible) {
-      clearBookRating();
+      setInternalBookRating(bookRating);
       clearBookComment();
       const loadData = async () => {
         try {
@@ -140,11 +124,8 @@ const BookStatusModal = ({
           setAdded(book?.added || new Date().getTime());
           if (book?.bookStatus && book?.bookStatus !== ALL) {
             const bookId = book?.bookId;
-            const result = await Promise.all([getBookComment(bookId), getUserBookRating(bookId)]);
+            const result = await Promise.all([getBookComment(bookId)]);
             setComment(result[0]?.comment || '');
-            const rating = result[1]?.rating || 0;
-            setBookRating(rating);
-            setInternalBookRating(rating);
           }
         } catch (error) {
           console.error(error);
@@ -175,7 +156,7 @@ const BookStatusModal = ({
           new Date(added)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }))
     ) &&
     !((bookComment && !savedComment) || (savedComment && newBookStatus === ALL)) &&
-    !(bookRating !== internalBookRating && internalBookRating !== 0) &&
+    !(bookRating !== internalBookRating) &&
     !(bookRating && newBookStatus === ALL) &&
     !(savedComment && savedComment !== bookComment);
 
@@ -201,7 +182,7 @@ const BookStatusModal = ({
         if ((bookComment && !savedComment) || (savedComment && newBookStatus === ALL)) {
           await deleteUserComment(book.bookId);
         }
-        if (bookRating !== internalBookRating && internalBookRating !== 0) {
+        if (bookRating !== internalBookRating) {
           const added = new Date().getTime();
           await updateUserBookRating({ bookId: book.bookId, rating: internalBookRating, added });
         }
@@ -220,7 +201,6 @@ const BookStatusModal = ({
           LayoutAnimation.configureNext(layoutAnimConfig);
         }
       } catch (error) {
-        console.error(error);
         setIsLoading(false);
       }
     }
@@ -352,27 +332,12 @@ const BookStatusModal = ({
                 <Text style={styles.menuItemTitle}>{new Date(added).toLocaleDateString(language)}</Text>
               </Pressable>
             </View>
-            <Animated.View style={[styles.customItem, userBookRatingLoadingStatus === PENDING ? { opacity: animatedStyleForRating } : {}]}>
+            <View style={styles.customItem}>
               <View>
                 <Text style={styles.menuItemTitle}>{t('books:rating')}</Text>
               </View>
-              <View style={styles.ratingWrapper}>
-                {ratingItems.map(({ id, isSelected, action }) => {
-                  return (
-                    <Pressable
-                      key={id}
-                      onPress={() => {
-                        if (!isLoading && userBookRatingLoadingStatus !== PENDING) {
-                          action();
-                        }
-                      }}
-                    >
-                      {isSelected ? <FilledStarIcon width={32} height={32} /> : <StarIcon width={32} height={32} />}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </Animated.View>
+              <Rating rating={internalBookRating} onChangeRating={setInternalBookRating} isLoading={isLoading} />
+            </View>
             <Animated.View style={[styles.customItem, bookCommentLoadingStatus === PENDING ? { opacity: animatedStyleForComment } : {}]}>
               <View style={styles.menuItemTitleWrapper}>
                 <View style={styles.menuItemTitleWrapperLeft}>
@@ -443,7 +408,6 @@ const BookStatusModal = ({
 
 BookStatusModal.propTypes = {
   bookCommentLoadingStatus: loadingDataStatusShape,
-  userBookRatingLoadingStatus: loadingDataStatusShape,
   isVisible: bool,
   book: shape({
     bookId: string,
@@ -452,7 +416,6 @@ BookStatusModal.propTypes = {
   bookComment: string,
   getBookComment: func.isRequired,
   updateUserBookRating: func.isRequired,
-  getUserBookRating: func.isRequired,
   updateUserBookCommentInBookDetails: func.isRequired,
   clearBookComment: func.isRequired,
   updateUserComment: func.isRequired,

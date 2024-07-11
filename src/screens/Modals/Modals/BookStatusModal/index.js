@@ -1,15 +1,7 @@
 import { connect } from 'react-redux';
-import {
-  getActiveModal,
-  getBoardType,
-  getSelectedBook,
-  getBookCommentLoadingStatus,
-  getUserBookRatingLoadingStatus,
-  getBookCommentData,
-} from '~redux/selectors/books';
+import { getActiveModal, getBoardType, getSelectedBook, getBookCommentLoadingStatus, getBookCommentData } from '~redux/selectors/books';
 import {
   getBookComment,
-  getUserBookRating,
   updateUserBookRating,
   updateUserBook,
   updateUserComment,
@@ -27,13 +19,11 @@ const mapStateToProps = (state) => ({
   boardType: getBoardType(state),
   book: getSelectedBook(state),
   bookCommentLoadingStatus: getBookCommentLoadingStatus(state),
-  userBookRatingLoadingStatus: getUserBookRatingLoadingStatus(state),
   bookComment: getBookCommentData(state)?.comment || '',
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getBookComment: (params) => dispatch(getBookComment(params)),
-  getUserBookRating: (params) => dispatch(getUserBookRating(params)),
   updateUserBookRating: (params) => dispatch(updateUserBookRating(params)),
   updateUserBook: (params) => dispatch(updateUserBook(params)),
   updateUserComment: (params) => dispatch(updateUserComment(params)),

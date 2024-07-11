@@ -18,7 +18,7 @@ const PlannedBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shouldRe
   }, [isFocused, setBoardType]);
 
   useEffect(() => {
-    if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
+    if (loadingDataStatus === IDLE || shouldReloadData) {
       loadBookList({
         boardType: PLANNED,
         shouldLoadMoreResults: false,
