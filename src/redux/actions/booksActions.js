@@ -161,7 +161,7 @@ export const commentUpdated = (comment) => ({
   comment,
 });
 
-export const userBookRatingsUpdated = (ratings) => ({
+export const userBookRatingsLoaded = (ratings) => ({
   type: USER_BOOK_RATINGS_LOADED,
   ratings,
 });
@@ -811,7 +811,7 @@ export const updateUserBookRating =
     dispatch(startUpdatingUserBookRating);
     try {
       const { data } = await DataService().updateUserBookRating({ bookId, added, rating });
-      dispatch(userBookRatingsUpdated(data));
+      dispatch(userBookRatingsLoaded(data));
       return data;
     } catch (e) {
       dispatch(updatingUserBookRatingFailed);
