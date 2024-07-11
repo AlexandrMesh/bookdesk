@@ -785,9 +785,10 @@ export const deleteUserComment = (bookId) => async (dispatch) => {
   }
 };
 
-export const deleteUserBookRating = (bookId) => async () => {
+export const deleteUserBookRating = (bookId) => async (dispatch) => {
   try {
-    await DataService().deleteUserBookRating({ bookId });
+    const { data } = await DataService().deleteUserBookRating({ bookId });
+    dispatch(userBookRatingsLoaded(data));
   } catch (e) {
     console.error(e);
   }
