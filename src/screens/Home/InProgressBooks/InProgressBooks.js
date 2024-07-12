@@ -18,7 +18,7 @@ const InProgressBooks = ({ loadingDataStatus, loadBookList, loadMoreBooks, shoul
   }, [isFocused, setBoardType]);
 
   useEffect(() => {
-    if (loadingDataStatus === IDLE || shouldReloadData) {
+    if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
       loadBookList({
         boardType: IN_PROGRESS,
         shouldLoadMoreResults: false,
