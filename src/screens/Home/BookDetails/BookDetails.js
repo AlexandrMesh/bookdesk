@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { View, Pressable, ScrollView, SafeAreaView, Text, Image, Animated } from 'react-native';
+import { View, Pressable, SafeAreaView, Text, Image, Animated } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
-import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { MIN_COUNT_CHARACTERS_FOR_COMMENT, MAX_COUNT_CHARACTERS_FOR_COMMENT } from '~constants/bookList';
 import { Spinner, Size } from '~UI/Spinner';
 import Button from '~UI/Button';
@@ -15,23 +14,14 @@ import { getValidationFailure, validationTypes } from '~utils/validation';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import Input from '~UI/TextInput';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
-import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
-import { BOOK_STATUS } from '~constants/modalTypes';
+import { LIKE_ICON } from '~constants/dimensions';
 import Rating from '~UI/Rating';
 import { deriveUserBookRating } from '~redux/selectors/books';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
-import DropdownIcon from '~assets/dropdown.svg';
-import colors from '~styles/colors';
+import BookStatusDropdown from '../BookStatusDropdown';
 import Placeholder from './Placeholder';
 import styles from './styles';
-
-const getStatusColor = (bookStatus) =>
-  ({
-    [PLANNED]: colors.planned,
-    [IN_PROGRESS]: colors.in_progress,
-    [COMPLETED]: colors.completed,
-  }[bookStatus] || colors.neutral_light);
 
 const BookDetails = ({
   loadingDataStatus,
@@ -40,8 +30,6 @@ const BookDetails = ({
   updateBookVotes,
   bookWithVote,
   updatingVoteForBook,
-  showModal,
-  selectBook,
   clearBookDetails,
   setBookToUpdate,
   setBookValuesToUpdate,
@@ -53,20 +41,22 @@ const BookDetails = ({
   bookCommentUpdatingStatus,
   deleteUserComment,
   bookCommentDeletingStatus,
+  bookCommentData,
 }) => {
-  const { title, coverPath, authorsList, pages, categoryPath, categoryValue, bookStatus, added, annotation, votesCount, comment, commentAdded } =
-    bookDetailsData || {};
+  const { title, coverPath, authorsList, pages, categoryValue, bookStatus, added, annotation, votesCount } = bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const [imgUrl, setImgUrl] = useState('');
   const { language } = i18n;
   const isFocused = useIsFocused();
   const [isCommentEditFormVisible, setIsCommentEditFormVisible] = useState(false);
-  const [editedComment, setEditedComment] = useState(comment || '');
+  const [editedComment, setEditedComment] = useState(bookCommentData?.comment || '');
   const [editedCommentError, setEditedCommentError] = useState('');
   const [updatingRating, setUpdatingRating] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookValuesUpdatingStatus === PENDING);
+  const animatedStyleForBookStatus = useGetAnimatedPlaceholderStyle(isUpdatingStatus);
 
   const displayEditCommentForm = () => setIsCommentEditFormVisible(true);
   const hideEditCommentForm = () => setIsCommentEditFormVisible(false);
@@ -74,7 +64,6 @@ const BookDetails = ({
   const { params } = useRoute();
 
   const bookRating = useSelector(deriveUserBookRating(params?.bookId))?.rating;
-  const statusColor = getStatusColor(bookStatus);
 
   const handleUpdateRating = async (value) => {
     try {
@@ -101,12 +90,10 @@ const BookDetails = ({
     }
   }, [isFocused, clearBookDetails]);
 
-  const handleChangeStatus = () => {
-    showModal(BOOK_STATUS);
-    selectBook({ authorsList, title, coverPath, pages, votesCount, categoryPath, bookId: params?.bookId, categoryValue, added, bookStatus });
-  };
-
   const handleAddedPress = () => {
+    if (isUpdatingStatus) {
+      return;
+    }
     setBookToUpdate(params?.bookId, bookStatus);
     setBookValuesToUpdate(added);
     showDateUpdater();
@@ -119,7 +106,7 @@ const BookDetails = ({
 
   const handleDisplayEditCommentForm = () => {
     setEditedCommentError(null);
-    setEditedComment(comment || '');
+    setEditedComment(bookCommentData?.comment || '');
     displayEditCommentForm();
   };
 
@@ -161,6 +148,13 @@ const BookDetails = ({
     }
   };
 
+  const handleUpdateBookVote = () => {
+    if (isUpdatingStatus) {
+      return;
+    }
+    updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus });
+  };
+
   const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
   const isDeletingComment = bookCommentDeletingStatus === PENDING;
 
@@ -176,7 +170,7 @@ const BookDetails = ({
     <Placeholder />
   ) : (
     <SafeAreaView style={styles.container}>
-      <ScrollView keyboardShouldPersistTaps='handled'>
+      <Animated.ScrollView keyboardShouldPersistTaps='handled' style={isUpdatingStatus ? { opacity: animatedStyleForBookStatus } : {}}>
         <View style={styles.header}>
           {imgUrl && (
             <Image
@@ -196,22 +190,16 @@ const BookDetails = ({
         </View>
         <View>
           <View style={styles.bookStatusWrapper}>
-            <Button
-              title={t(bookStatus) || t('noStatus')}
-              style={[styles.statusButton, { borderColor: statusColor }]}
-              titleStyle={[styles.buttonTitle, { color: statusColor }]}
-              icon={<DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />}
-              iconPosition='right'
-              iconClassName={styles.buttonIcon}
-              theme={SECONDARY}
-              onPress={handleChangeStatus}
+            <BookStatusDropdown
+              wrapperStyle={styles.statusButton}
+              buttonLabelStyle={styles.buttonTitle}
+              isLoading={isUpdatingStatus}
+              onLoading={setIsUpdatingStatus}
+              bookStatus={bookStatus}
+              bookId={params?.bookId}
             />
             <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
-              <Pressable
-                disabled={updatingVoteForBook}
-                onPress={() => updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus })}
-                style={styles.voteWrapper}
-              >
+              <Pressable disabled={updatingVoteForBook} onPress={handleUpdateBookVote} style={styles.voteWrapper}>
                 {bookWithVote ? (
                   <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
                 ) : (
@@ -256,7 +244,7 @@ const BookDetails = ({
             </View>
           ) : null}
 
-          {bookStatus && (comment || isCommentEditFormVisible) ? (
+          {bookStatus && (bookCommentData?.comment || isCommentEditFormVisible) ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
@@ -265,7 +253,7 @@ const BookDetails = ({
                     {t('common:charactersCount', { count: editedComment.trim().length, maxCount: MAX_COUNT_CHARACTERS_FOR_COMMENT })}
                   </Text>
                 ) : (
-                  <Text style={[styles.item, styles.mediumColor]}>{new Date(commentAdded).toLocaleDateString(language)}</Text>
+                  <Text style={[styles.item, styles.mediumColor]}>{new Date(bookCommentData?.added).toLocaleDateString(language)}</Text>
                 )}
               </View>
               {isCommentEditFormVisible ? (
@@ -277,13 +265,13 @@ const BookDetails = ({
                   value={editedComment}
                   error={editedCommentError}
                   shouldDisplayClearButton={!!editedComment && !isUpdatingComment}
-                  disabled={isUpdatingComment}
+                  disabled={isUpdatingComment || isUpdatingStatus}
                   onClear={() => setEditedComment('')}
                   multiline
                   numberOfLines={5}
                 />
               ) : (
-                <Text style={[styles.comment, styles.lightColor]}>{comment}</Text>
+                <Text style={[styles.comment, styles.lightColor]}>{bookCommentData?.comment}</Text>
               )}
               <View style={styles.borderedBlockFooter}>
                 {isCommentEditFormVisible ? (
@@ -292,14 +280,14 @@ const BookDetails = ({
                       style={styles.commentButton}
                       titleStyle={styles.commentButtonTitle}
                       onPress={handleSaveComment}
-                      disabled={isUpdatingComment}
+                      disabled={isUpdatingComment || isUpdatingStatus}
                       icon={isUpdatingComment && <Spinner size={Size.SMALL} />}
                       title={t('common:save')}
                     />
                     <Button
                       theme={SECONDARY}
                       style={styles.commentButton}
-                      disabled={isUpdatingComment}
+                      disabled={isUpdatingComment || isUpdatingStatus}
                       titleStyle={styles.commentButtonTitle}
                       onPress={hideEditCommentForm}
                       title={t('common:cancel')}
@@ -311,13 +299,13 @@ const BookDetails = ({
                       style={styles.commentButton}
                       titleStyle={styles.commentButtonTitle}
                       onPress={handleDisplayEditCommentForm}
-                      disabled={isDeletingComment}
+                      disabled={isDeletingComment || isUpdatingStatus}
                       title={t('common:edit')}
                     />
                     <Button
                       theme={SECONDARY}
                       style={styles.commentButton}
-                      disabled={isDeletingComment}
+                      disabled={isDeletingComment || isUpdatingStatus}
                       icon={isDeletingComment && <Spinner size={Size.SMALL} />}
                       titleStyle={styles.commentButtonTitle}
                       onPress={handleDeleteComment}
@@ -328,7 +316,7 @@ const BookDetails = ({
               </View>
             </View>
           ) : null}
-          {bookStatus && !isCommentEditFormVisible && !comment ? (
+          {bookStatus && !isCommentEditFormVisible && !bookCommentData?.comment ? (
             <View style={[styles.bordered, styles.marginTop]}>
               <View style={styles.blockHeader}>
                 <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
@@ -336,6 +324,7 @@ const BookDetails = ({
               <View style={styles.borderedBlockFooter}>
                 <Button
                   style={styles.commentButton}
+                  disabled={isUpdatingStatus}
                   titleStyle={styles.commentButtonTitle}
                   onPress={handleDisplayEditCommentForm}
                   title={t('common:add')}
@@ -352,7 +341,7 @@ const BookDetails = ({
             </View>
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
@@ -371,9 +360,11 @@ BookDetails.propTypes = {
   setBookToUpdate: func.isRequired,
   setBookValuesToUpdate: func.isRequired,
   showDateUpdater: func.isRequired,
-  showModal: func.isRequired,
-  selectBook: func.isRequired,
   clearBookDetails: func.isRequired,
+  bookCommentData: shape({
+    comment: string,
+    added: number,
+  }),
   bookDetailsData: shape({
     title: string,
     authorsList: arrayOf(string),

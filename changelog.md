@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.19.0
+
+###### 2024-07-15
+- [New] Reworked change book status control
+
 ## 2.18.1
 
 ###### 2024-07-12

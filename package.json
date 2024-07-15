@@ -1,6 +1,6 @@
 {
   "name": "bookdesk",
-  "version": "2.18.1",
+  "version": "2.19.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -38,6 +38,7 @@
     "react-native-pager-view": "^6.2.1",
     "react-native-safe-area-context": "^4.7.2",
     "react-native-screens": "^3.25.0",
+    "react-native-select-dropdown": "^4.0.1",
     "react-native-svg": "^13.14.1",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-webp-format": "^1.2.0",

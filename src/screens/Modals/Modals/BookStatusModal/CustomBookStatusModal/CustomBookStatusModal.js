@@ -7,18 +7,18 @@ import Button from '~UI/Button';
 import SlideMenu from '~UI/SlideMenu';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import BookStatusItem from '../BookStatusItem';
-import styles from '../styles';
+import styles from './styles';
 
 const CustomBookStatusModal = ({ isVisible, status, setStatus, hideModal }) => {
-  const { t } = useTranslation(['books', 'common']);
+  const { t } = useTranslation(['customBook', 'books', 'common']);
   const [newBookStatus, setNewBookStatus] = useState(status);
   const [shouldAutoClose, setShouldAutoClose] = useState(false);
 
   const actionTypes = [
-    { title: t('noStatus'), isSelected: newBookStatus === ALL, action: () => setNewBookStatus(ALL) },
-    { title: t('planned'), isSelected: newBookStatus === PLANNED, action: () => setNewBookStatus(PLANNED) },
-    { title: t('inProgress'), isSelected: newBookStatus === IN_PROGRESS, action: () => setNewBookStatus(IN_PROGRESS) },
-    { title: t('completed'), isSelected: newBookStatus === COMPLETED, action: () => setNewBookStatus(COMPLETED) },
+    { title: t('books:noStatus'), isSelected: newBookStatus === ALL, action: () => setNewBookStatus(ALL) },
+    { title: t('books:planned'), isSelected: newBookStatus === PLANNED, action: () => setNewBookStatus(PLANNED) },
+    { title: t('books:inProgress'), isSelected: newBookStatus === IN_PROGRESS, action: () => setNewBookStatus(IN_PROGRESS) },
+    { title: t('books:completed'), isSelected: newBookStatus === COMPLETED, action: () => setNewBookStatus(COMPLETED) },
   ];
 
   useEffect(() => {

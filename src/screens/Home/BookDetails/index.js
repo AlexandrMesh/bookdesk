@@ -7,12 +7,12 @@ import {
   getBookValuesUpdatingStatus,
   getBookCommentUpdatingStatus,
   getBookCommentDeletingStatus,
+  getBookCommentData,
 } from '~redux/selectors/books';
 import {
   loadBookDetails,
   updateBookVotes,
   showModal,
-  selectBook,
   clearBookDetails,
   setBookToUpdate,
   setBookValuesToUpdate,
@@ -32,13 +32,12 @@ const mapStateToProps = (state, ownProps) => ({
   bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
   bookCommentUpdatingStatus: getBookCommentUpdatingStatus(state),
   bookCommentDeletingStatus: getBookCommentDeletingStatus(state),
+  bookCommentData: getBookCommentData(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   loadBookDetails: (bookId) => dispatch(loadBookDetails(bookId)),
   updateBookVotes: ({ bookId, shouldAdd, bookStatus }) => dispatch(updateBookVotes({ bookId, shouldAdd, bookStatus })),
-  showModal: (modal) => dispatch(showModal(modal)),
-  selectBook: (book) => dispatch(selectBook(book)),
   clearBookDetails: () => dispatch(clearBookDetails),
   setBookToUpdate: (bookId, bookStatus) => dispatch(setBookToUpdate(bookId, bookStatus)),
   setBookValuesToUpdate: (added) => dispatch(setBookValuesToUpdate(added)),

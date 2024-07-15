@@ -5,12 +5,9 @@ import { View, Text, Image, Pressable, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Button from '~UI/Button';
-import { PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { getImgUrl } from '~config/api';
-import { SECONDARY } from '~constants/themes';
 import { BOOK_DETAILS_ROUTE } from '~constants/routes';
-import { DROPDOWN_ICON, LIKE_ICON } from '~constants/dimensions';
-import { BOOK_STATUS } from '~constants/modalTypes';
+import { LIKE_ICON } from '~constants/dimensions';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import { deriveUserBookRating } from '~redux/selectors/books';
@@ -18,21 +15,11 @@ import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyl
 import Rating from '~UI/Rating';
 import LikeIcon from '~assets/like.svg';
 import LikeFillIcon from '~assets/like_fill.svg';
-import DropdownIcon from '~assets/dropdown.svg';
-import colors from '~styles/colors';
+import BookStatusDropdown from '../../BookStatusDropdown';
 import styles from './styles';
-
-const getStatusColor = (bookStatus) =>
-  ({
-    [PLANNED]: colors.planned,
-    [IN_PROGRESS]: colors.in_progress,
-    [COMPLETED]: colors.completed,
-  }[bookStatus] || colors.neutral_light);
 
 const BookItem = ({
   bookItem,
-  showModal,
-  selectBook,
   bookWithVote,
   updateBookVotes,
   updatingVoteForBook,
@@ -50,16 +37,13 @@ const BookItem = ({
   const navigation = useNavigation();
   const [imgUrl, setImgUrl] = useState('');
   const [updatingRating, setUpdatingRating] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const bookRating = useSelector(deriveUserBookRating(bookId))?.rating;
 
-  const statusColor = getStatusColor(bookStatus);
-
-  const handleChangeStatus = () => {
-    showModal(BOOK_STATUS);
-    selectBook(bookItem);
-  };
-
   const handleAddedPress = () => {
+    if (isUpdatingStatus) {
+      return;
+    }
     setBookToUpdate(bookId, bookStatus);
     setBookValuesToUpdate(added);
     showDateUpdater();
@@ -77,8 +61,12 @@ const BookItem = ({
 
   const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING);
+  const animatedStyleForBookStatus = useGetAnimatedPlaceholderStyle(isUpdatingStatus);
 
   const handleUpdateRating = async (value) => {
+    if (isUpdatingStatus) {
+      return;
+    }
     try {
       setUpdatingRating(true);
       const added = new Date().getTime();
@@ -89,8 +77,15 @@ const BookItem = ({
     }
   };
 
+  const handleLike = async () => {
+    if (isUpdatingStatus) {
+      return;
+    }
+    updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus });
+  };
+
   return (
-    <View style={[styles.wrapper, itemStyle]}>
+    <Animated.View style={[styles.wrapper, itemStyle, isUpdatingStatus ? { opacity: animatedStyleForBookStatus } : {}]}>
       <View style={styles.bookItem}>
         <View style={styles.leftSide}>
           {imgUrl && (
@@ -155,20 +150,11 @@ const BookItem = ({
       <View style={styles.bottom}>
         <View>
           <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
-          <Button
-            title={t(bookStatus) || t('noStatus')}
-            style={[styles.statusButton, { borderColor: statusColor }]}
-            titleStyle={[styles.buttonTitle, { color: statusColor }]}
-            icon={<DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />}
-            iconPosition='right'
-            iconClassName={styles.buttonIcon}
-            theme={SECONDARY}
-            onPress={handleChangeStatus}
-          />
+          <BookStatusDropdown isLoading={isUpdatingStatus} onLoading={setIsUpdatingStatus} bookStatus={bookStatus} bookId={bookId} />
         </View>
         <View>
           <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
-            <Pressable onPress={async () => updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus })} style={styles.votesWrapper}>
+            <Pressable onPress={handleLike} style={styles.votesWrapper}>
               {bookWithVote ? (
                 <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
               ) : (
@@ -179,7 +165,7 @@ const BookItem = ({
           </Animated.View>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -198,12 +184,10 @@ BookItem.propTypes = {
     pages: number,
     added: number,
   }).isRequired,
-  showModal: func.isRequired,
   updateUserBookRating: func.isRequired,
   setBookToUpdate: func.isRequired,
   setBookValuesToUpdate: func.isRequired,
   showDateUpdater: func.isRequired,
-  selectBook: func.isRequired,
   updateBookVotes: func.isRequired,
   bookWithVote: bool,
   bookIdToUpdateAddedDate: string,

@@ -15,7 +15,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 
 // eslint-disable-next-line react/display-name
-const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus, horizontal, extraData }) => {
+const BookList = ({ data, loadMoreBooks, loadingDataStatus, horizontal, extraData }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -30,7 +30,7 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
         estimatedItemSize={210}
         data={data}
         extraData={extraData}
-        renderItem={({ item }) => <BookItem bookItem={item} showModal={showModal} selectBook={selectBook} />}
+        renderItem={({ item }) => <BookItem bookItem={item} />}
         keyExtractor={(item) => item.bookId}
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
@@ -73,8 +73,6 @@ BookList.propTypes = {
   ).isRequired,
   loadMoreBooks: func,
   extraData: any,
-  showModal: func.isRequired,
-  selectBook: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
 };
 
