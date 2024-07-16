@@ -1,12 +1,11 @@
 import { connect } from 'react-redux';
-import { deriveBookVotes, deriveUpdatingVoteForBook, getBookValuesUpdatingStatus, getBookToUpdate } from '~redux/selectors/books';
+import { deriveBookVotes, getBookValuesUpdatingStatus, getBookToUpdate } from '~redux/selectors/books';
 import { updateBookVotes, setBookToUpdate, setBookValuesToUpdate, showModal, updateUserBookRating } from '~redux/actions/booksActions';
 import { DATE_UPDATER } from '~constants/modalTypes';
 import BookItem from './BookItem';
 
 const mapStateToProps = (state, ownProps) => ({
   bookWithVote: deriveBookVotes(ownProps.bookItem.bookId)(state),
-  updatingVoteForBook: deriveUpdatingVoteForBook(ownProps.bookItem.bookId)(state),
   bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
   bookIdToUpdateAddedDate: getBookToUpdate(state)?.bookId,
 });

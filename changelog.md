@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 2.20.0
+
+###### 2024-07-16
+- [New] interface improvements
+
 ## 2.19.0
 
 ###### 2024-07-15

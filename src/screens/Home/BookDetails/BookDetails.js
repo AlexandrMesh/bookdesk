@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { shape, func, string, number, arrayOf, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { View, Pressable, SafeAreaView, Text, Image, Animated } from 'react-native';
+import { View, SafeAreaView, Text, Image, Animated } from 'react-native';
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { MIN_COUNT_CHARACTERS_FOR_COMMENT, MAX_COUNT_CHARACTERS_FOR_COMMENT } from '~constants/bookList';
 import { Spinner, Size } from '~UI/Spinner';
@@ -14,11 +14,9 @@ import { getValidationFailure, validationTypes } from '~utils/validation';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import Input from '~UI/TextInput';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
-import { LIKE_ICON } from '~constants/dimensions';
 import Rating from '~UI/Rating';
+import Like from '~UI/Like';
 import { deriveUserBookRating } from '~redux/selectors/books';
-import LikeIcon from '~assets/like.svg';
-import LikeFillIcon from '~assets/like_fill.svg';
 import BookStatusDropdown from '../BookStatusDropdown';
 import Placeholder from './Placeholder';
 import styles from './styles';
@@ -29,7 +27,6 @@ const BookDetails = ({
   bookDetailsData,
   updateBookVotes,
   bookWithVote,
-  updatingVoteForBook,
   clearBookDetails,
   setBookToUpdate,
   setBookValuesToUpdate,
@@ -43,7 +40,7 @@ const BookDetails = ({
   bookCommentDeletingStatus,
   bookCommentData,
 }) => {
-  const { title, coverPath, authorsList, pages, categoryValue, bookStatus, added, annotation, votesCount } = bookDetailsData || {};
+  const { title, coverPath, authorsList, pages, categoryValue, bookStatus, added, votesCount, annotation } = bookDetailsData || {};
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const [imgUrl, setImgUrl] = useState('');
   const { language } = i18n;
@@ -54,7 +51,6 @@ const BookDetails = ({
   const [updatingRating, setUpdatingRating] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
-  const animatedStyleForVotes = useGetAnimatedPlaceholderStyle(updatingVoteForBook);
   const animatedStyleForDate = useGetAnimatedPlaceholderStyle(bookValuesUpdatingStatus === PENDING);
   const animatedStyleForBookStatus = useGetAnimatedPlaceholderStyle(isUpdatingStatus);
 
@@ -148,11 +144,11 @@ const BookDetails = ({
     }
   };
 
-  const handleUpdateBookVote = () => {
+  const handleUpdateBookVote = async () => {
     if (isUpdatingStatus) {
       return;
     }
-    updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus });
+    await updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus });
   };
 
   const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
@@ -198,16 +194,7 @@ const BookDetails = ({
               bookStatus={bookStatus}
               bookId={params?.bookId}
             />
-            <Animated.View style={updatingVoteForBook ? { opacity: animatedStyleForVotes } : {}}>
-              <Pressable disabled={updatingVoteForBook} onPress={handleUpdateBookVote} style={styles.voteWrapper}>
-                {bookWithVote ? (
-                  <LikeFillIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
-                ) : (
-                  <LikeIcon width={LIKE_ICON.width} height={LIKE_ICON.width} />
-                )}
-                <Text style={[styles.lightColor, styles.votesCount]}>{votesCount}</Text>
-              </Pressable>
-            </Animated.View>
+            <Like bookId={params?.bookId} votesCount={votesCount} onLike={handleUpdateBookVote} />
           </View>
           <View style={[styles.info, styles.marginTop]}>
             <Text style={[styles.item, styles.lightColor]}>{t(`categories:${categoryValue}`)}</Text>
@@ -378,7 +365,6 @@ BookDetails.propTypes = {
     annotation: string,
   }),
   bookWithVote: bool,
-  updatingVoteForBook: bool,
 };
 
 export default BookDetails;

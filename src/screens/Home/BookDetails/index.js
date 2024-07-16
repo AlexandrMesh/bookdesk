@@ -3,7 +3,6 @@ import {
   getLoadingBookDetailsStatus,
   deriveBookDetails,
   deriveBookVotes,
-  deriveUpdatingVoteForBook,
   getBookValuesUpdatingStatus,
   getBookCommentUpdatingStatus,
   getBookCommentDeletingStatus,
@@ -26,7 +25,6 @@ import BookDetails from './BookDetails';
 
 const mapStateToProps = (state, ownProps) => ({
   bookWithVote: deriveBookVotes(ownProps.route.params.bookId)(state),
-  updatingVoteForBook: deriveUpdatingVoteForBook(ownProps.route.params.bookId)(state),
   loadingDataStatus: getLoadingBookDetailsStatus(state),
   bookDetailsData: deriveBookDetails(state),
   bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
