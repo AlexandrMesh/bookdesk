@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { any, shape, func, string, number, bool, arrayOf } from 'prop-types';
+import { any, shape, func, string, number, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Image, Animated } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -13,13 +13,11 @@ import { deriveUserBookRating } from '~redux/selectors/books';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import Rating from '~UI/Rating';
 import Like from '~UI/Like';
-import BookStatusDropdown from '../../BookStatusDropdown';
+import Dropdown from '~UI/Dropdown';
 import styles from './styles';
 
 const BookItem = ({
   bookItem,
-  bookWithVote,
-  updateBookVotes,
   setBookToUpdate,
   setBookValuesToUpdate,
   showDateUpdater,
@@ -73,13 +71,6 @@ const BookItem = ({
     }
   };
 
-  const handleLike = async () => {
-    if (isUpdatingStatus) {
-      return;
-    }
-    await updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus });
-  };
-
   return (
     <Animated.View style={[styles.wrapper, itemStyle, isUpdatingStatus ? { opacity: animatedStyleForBookStatus } : {}]}>
       <View style={styles.bookItem}>
@@ -114,31 +105,31 @@ const BookItem = ({
               </Text>
             )}
             {bookStatus && (
-              <Text style={[styles.item, styles.mediumColor]}>
-                {t('added')}
-                <Animated.View
-                  style={[
-                    styles.addedContainer,
-                    bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {},
-                  ]}
-                >
-                  <View style={styles.addedWrapper}>
-                    <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
-                      {new Date(added).toLocaleDateString(language)}
-                    </Text>
-                  </View>
-                </Animated.View>
-              </Text>
-            )}
-            {bookStatus && (
-              <Rating
-                rating={bookRating}
-                onChangeRating={handleUpdateRating}
-                wrapperStyle={styles.ratingWrapper}
-                isLoading={updatingRating}
-                width={28}
-                height={28}
-              />
+              <>
+                <View style={styles.dateWrapper}>
+                  <Text style={[styles.item, styles.mediumColor]}>{t('added')}</Text>
+                  <Animated.View
+                    style={[
+                      styles.addedContainer,
+                      bookIdToUpdateAddedDate === bookId && bookValuesUpdatingStatus === PENDING ? { opacity: animatedStyleForDate } : {},
+                    ]}
+                  >
+                    <View style={styles.addedWrapper}>
+                      <Text onPress={handleAddedPress} style={[styles.item, styles.lightColor]}>
+                        {new Date(added).toLocaleDateString(language)}
+                      </Text>
+                    </View>
+                  </Animated.View>
+                </View>
+                <Rating
+                  wrapperStyle={styles.ratingWrapper}
+                  rating={bookRating}
+                  onChangeRating={handleUpdateRating}
+                  isLoading={updatingRating}
+                  width={28}
+                  height={28}
+                />
+              </>
             )}
           </View>
         </View>
@@ -146,10 +137,17 @@ const BookItem = ({
       <View style={styles.bottom}>
         <View>
           <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
-          <BookStatusDropdown isLoading={isUpdatingStatus} onLoading={setIsUpdatingStatus} bookStatus={bookStatus} bookId={bookId} />
+          <Dropdown
+            isLoading={isUpdatingStatus}
+            onLoading={setIsUpdatingStatus}
+            bookStatus={bookStatus}
+            bookId={bookId}
+            dropdownHeight={150}
+            dropdownLeftPosition={16}
+          />
         </View>
         <View>
-          <Like bookId={bookId} votesCount={votesCount} onLike={handleLike} />
+          <Like bookId={bookId} votesCount={votesCount} bookStatus={bookStatus} />
         </View>
       </View>
     </Animated.View>
@@ -175,8 +173,6 @@ BookItem.propTypes = {
   setBookToUpdate: func.isRequired,
   setBookValuesToUpdate: func.isRequired,
   showDateUpdater: func.isRequired,
-  updateBookVotes: func.isRequired,
-  bookWithVote: bool,
   bookIdToUpdateAddedDate: string,
   // eslint-disable-next-line react/forbid-prop-types
   itemStyle: any,

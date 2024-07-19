@@ -5,7 +5,7 @@ import colors from '~styles/colors';
 import Size from '../constants/sizes';
 import styles from '../styles';
 
-const Spinner = ({ backgroundColor, color, labelColor, size, label }) => {
+const Spinner = ({ backgroundColor = colors.primary_dark, color = colors.neutral_light, labelColor = colors.neutral_light, size = Size.LARGE, label }) => {
   return (
     <View
       style={[
@@ -19,13 +19,6 @@ const Spinner = ({ backgroundColor, color, labelColor, size, label }) => {
       {label && <Text style={[{ color: labelColor }, styles.label]}>{label}</Text>}
     </View>
   );
-};
-
-Spinner.defaultProps = {
-  size: Size.LARGE,
-  backgroundColor: colors.primary_dark,
-  color: colors.neutral_light,
-  labelColor: colors.neutral_light,
 };
 
 Spinner.propTypes = {

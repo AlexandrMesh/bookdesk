@@ -44,8 +44,6 @@ import {
   SEARCH_CATEGORY,
   CLEAR_SEARCH_QUERY_FOR_CATEGORY,
   SET_BOOK_VOTES,
-  START_UPDATING_BOOK_VOTES,
-  UPDATING_BOOK_VOTES_FAILED,
   UPDATED_BOOK_VOTES,
   UPDATE_BOOK_VOTES,
   UPDATE_BOOK_VOTES_IN_SEARCH,
@@ -152,7 +150,6 @@ const initialState = {
     loadingDataStatus: IDLE,
   },
   bookVotes: [],
-  updatingVotesForBooks: [],
   bookComment: getDefaultBookCommentState(),
   bookRatings: [],
   bookDetails: getDefaultBookDetailsState(),
@@ -375,19 +372,8 @@ export default createReducer(initialState, (state, action) => ({
     bookVotes: action.data,
   }),
 
-  [START_UPDATING_BOOK_VOTES]: () => ({
-    ...state,
-    updatingVotesForBooks: [...state.updatingVotesForBooks, action.bookId],
-  }),
-
-  [UPDATING_BOOK_VOTES_FAILED]: () => ({
-    ...state,
-    updatingVotesForBooks: state.updatingVotesForBooks.filter((item) => item !== action.bookId),
-  }),
-
   [UPDATED_BOOK_VOTES]: () => ({
     ...state,
-    updatingVotesForBooks: state.updatingVotesForBooks.filter((item) => item !== action.bookId),
     bookVotes: action.userVotes,
   }),
 

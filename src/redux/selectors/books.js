@@ -15,7 +15,6 @@ const getBookComment = (state) => getBooks(state).bookComment;
 
 export const getBoardType = (state) => getBooks(state).boardType;
 export const getBookVotes = (state) => getBooks(state).bookVotes;
-export const getUpdatingVotesForBooks = (state) => getBooks(state).updatingVotesForBooks;
 export const getActiveModal = (state) => getBooks(state).activeModal;
 export const getSelectedBook = (state) => getBooks(state).selectedBook;
 export const getSearchQuery = (state) => getSearch(state).query;
@@ -68,9 +67,6 @@ export const deriveExpandedCategories = (status) => createSelector([deriveBookLi
 
 export const deriveBookVotes = (bookIdExternal) =>
   createSelector([getBookVotes], (bookVotes) => bookVotes.some(({ bookId }) => bookId === bookIdExternal));
-
-export const deriveUpdatingVoteForBook = (bookId) =>
-  createSelector([getUpdatingVotesForBooks], (updatingVotesForBooks) => updatingVotesForBooks.some((item) => bookId === item));
 
 export const deriveCategorySearchQuery = (status) =>
   createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.categorySearchQuery);

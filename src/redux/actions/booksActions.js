@@ -89,8 +89,6 @@ export const ADD_TO_INDETERMINATED_CATEGORIES = `${PREFIX}/ADD_TO_INDETERMINATED
 export const CLEAR_INDETERMINATED_CATEGORIES = `${PREFIX}/CLEAR_INDETERMINATED_CATEGORIES`;
 
 export const SET_BOOK_VOTES = `${PREFIX}/SET_BOOK_VOTES`;
-export const START_UPDATING_BOOK_VOTES = `${PREFIX}/START_UPDATING_BOOK_VOTES`;
-export const UPDATING_BOOK_VOTES_FAILED = `${PREFIX}/UPDATING_BOOK_VOTES_FAILED`;
 export const UPDATED_BOOK_VOTES = `${PREFIX}/UPDATED_BOOK_VOTES`;
 export const UPDATE_BOOK_VOTES = `${PREFIX}/UPDATE_BOOK_VOTES`;
 export const UPDATE_BOOK_VOTES_IN_SEARCH = `${PREFIX}/UPDATE_BOOK_VOTES_IN_SEARCH`;
@@ -301,16 +299,6 @@ export const clearIndeterminatedCategories = (boardType, path) => ({
   type: CLEAR_INDETERMINATED_CATEGORIES,
   boardType,
   path,
-});
-
-export const startUpdatingBookVotes = (bookId) => ({
-  type: START_UPDATING_BOOK_VOTES,
-  bookId,
-});
-
-export const updatingBookVotesFailed = (bookId) => ({
-  type: UPDATING_BOOK_VOTES_FAILED,
-  bookId,
 });
 
 export const updatedBookVotes = (userVotes, bookId) => ({
@@ -735,6 +723,13 @@ export const updateUserBook =
       const { data } = await DataService().updateUserBook({ bookId, added, bookStatus: newBookStatus, language, boardType: bookStatus });
       dispatch(setBookCountByYear(bookStatus, data.countByYear));
 
+      if (newBookStatus === ALL) {
+        await dispatch(deleteUserComment(bookId));
+      }
+      if (newBookStatus === ALL) {
+        await dispatch(deleteUserBookRating(bookId));
+      }
+
       if (!isEmpty(bookDetailsData)) {
         dispatch(updateBookDetails(data.bookStatus, data.added));
       }
@@ -823,7 +818,6 @@ export const updateUserBookRating =
 export const updateBookVotes =
   ({ bookId, shouldAdd, bookStatus }) =>
   async (dispatch, getState) => {
-    dispatch(startUpdatingBookVotes(bookId));
     try {
       const state = getState();
       const bookDetailsData = getBookDetailsData(state);
@@ -840,6 +834,6 @@ export const updateBookVotes =
         dispatch(updateBookVotesAction(bookStatus, bookId, data.votesCount));
       }
     } catch (e) {
-      dispatch(updatingBookVotesFailed(bookId));
+      console.error(e);
     }
   };

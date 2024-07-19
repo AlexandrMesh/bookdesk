@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { shape, func, string, number, arrayOf, bool } from 'prop-types';
+import { shape, func, string, number, arrayOf } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { View, SafeAreaView, Text, Image, Animated } from 'react-native';
@@ -16,8 +16,8 @@ import Input from '~UI/TextInput';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import Rating from '~UI/Rating';
 import Like from '~UI/Like';
+import Dropdown from '~UI/Dropdown';
 import { deriveUserBookRating } from '~redux/selectors/books';
-import BookStatusDropdown from '../BookStatusDropdown';
 import Placeholder from './Placeholder';
 import styles from './styles';
 
@@ -25,8 +25,6 @@ const BookDetails = ({
   loadingDataStatus,
   loadBookDetails,
   bookDetailsData,
-  updateBookVotes,
-  bookWithVote,
   clearBookDetails,
   setBookToUpdate,
   setBookValuesToUpdate,
@@ -144,13 +142,6 @@ const BookDetails = ({
     }
   };
 
-  const handleUpdateBookVote = async () => {
-    if (isUpdatingStatus) {
-      return;
-    }
-    await updateBookVotes({ bookId: params?.bookId, shouldAdd: !bookWithVote, bookStatus });
-  };
-
   const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
   const isDeletingComment = bookCommentDeletingStatus === PENDING;
 
@@ -186,15 +177,16 @@ const BookDetails = ({
         </View>
         <View>
           <View style={styles.bookStatusWrapper}>
-            <BookStatusDropdown
-              wrapperStyle={styles.statusButton}
-              buttonLabelStyle={styles.buttonTitle}
+            <Dropdown
               isLoading={isUpdatingStatus}
               onLoading={setIsUpdatingStatus}
               bookStatus={bookStatus}
               bookId={params?.bookId}
+              dropdownHeight={150}
+              wrapperStyle={styles.statusButton}
+              buttonLabelStyle={styles.buttonTitle}
             />
-            <Like bookId={params?.bookId} votesCount={votesCount} onLike={handleUpdateBookVote} />
+            <Like bookId={params?.bookId} bookStatus={bookStatus} votesCount={votesCount} />
           </View>
           <View style={[styles.info, styles.marginTop]}>
             <Text style={[styles.item, styles.lightColor]}>{t(`categories:${categoryValue}`)}</Text>
@@ -343,7 +335,6 @@ BookDetails.propTypes = {
   deleteUserComment: func.isRequired,
   updateUserBookCommentInBookDetails: func.isRequired,
   loadBookDetails: func.isRequired,
-  updateBookVotes: func.isRequired,
   setBookToUpdate: func.isRequired,
   setBookValuesToUpdate: func.isRequired,
   showDateUpdater: func.isRequired,
@@ -364,7 +355,6 @@ BookDetails.propTypes = {
     added: number,
     annotation: string,
   }),
-  bookWithVote: bool,
 };
 
 export default BookDetails;

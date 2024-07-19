@@ -7,7 +7,7 @@ import FilledStarIcon from '~assets/star-filled.svg';
 import StarIcon from '~assets/star.svg';
 import styles from './styles';
 
-const Rating = ({ isLoading, width, height, wrapperStyle, onChangeRating, rating }) => {
+const Rating = ({ isLoading, width = 32, height = 32, wrapperStyle, onChangeRating = () => undefined, rating = 0 }) => {
   const [internalBookRating, setInternalBookRating] = useState(rating);
 
   const animatedStyleForRating = useGetAnimatedPlaceholderStyle(isLoading);
@@ -59,13 +59,6 @@ const Rating = ({ isLoading, width, height, wrapperStyle, onChangeRating, rating
       </View>
     </Animated.View>
   );
-};
-
-Rating.defaultProps = {
-  rating: 0,
-  width: 32,
-  height: 32,
-  onChangeRating: () => undefined,
 };
 
 Rating.propTypes = {

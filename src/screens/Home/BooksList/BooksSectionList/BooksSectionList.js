@@ -14,7 +14,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatus }) => {
+const BookList = ({ data, loadMoreBooks = () => undefined, showModal, selectBook, loadingDataStatus }) => {
   const { t } = useTranslation('common');
 
   const getSpinner = () =>
@@ -57,10 +57,6 @@ const BookList = ({ data, loadMoreBooks, showModal, selectBook, loadingDataStatu
       />
     </View>
   );
-};
-
-BookList.defaultProps = {
-  loadMoreBooks: () => undefined,
 };
 
 BookList.propTypes = {

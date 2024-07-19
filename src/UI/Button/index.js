@@ -1,11 +1,10 @@
 /* eslint-disable react/forbid-prop-types */
-import React from 'react';
 import { bool, shape, string, func, node, oneOf, any } from 'prop-types';
 import { TouchableHighlight, View, Text } from 'react-native';
 import { PRIMARY, SECONDARY } from '~constants/themes';
 import styles from './styles';
 
-const Button = ({ icon, iconPosition, title, titleStyle, onPress, theme, style, iconClassName, disabled }) => {
+const Button = ({ icon, iconPosition = 'left', title, titleStyle, onPress, theme = PRIMARY, style, iconClassName, disabled }) => {
   const getTheme = () => ({
     [PRIMARY]: styles.primary,
     [SECONDARY]: styles.secondary,
@@ -29,11 +28,6 @@ const Button = ({ icon, iconPosition, title, titleStyle, onPress, theme, style, 
       </View>
     </TouchableHighlight>
   );
-};
-
-Button.defaultProps = {
-  theme: PRIMARY,
-  iconPosition: 'left',
 };
 
 Button.propTypes = {

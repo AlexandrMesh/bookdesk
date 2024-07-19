@@ -3,15 +3,22 @@ import { Animated, Easing } from 'react-native';
 
 const useGetAnimatedPlaceholderStyle = (shouldStartAnimation) => {
   const pulseAnim = useRef(new Animated.Value(0)).current;
+  const sharedAnimationConfig = {
+    duration: 1000,
+    useNativeDriver: true,
+  };
 
-  const stopAnimation = useCallback(() => pulseAnim.stopAnimation(), [pulseAnim]);
+  const stopAnimation = useCallback(() => {
+    Animated.timing(pulseAnim, {
+      ...sharedAnimationConfig,
+      toValue: 0,
+      easing: Easing.out(Easing.ease),
+    }).start();
+    pulseAnim.stopAnimation();
+  }, [pulseAnim]);
 
   useEffect(() => {
     if (shouldStartAnimation) {
-      const sharedAnimationConfig = {
-        duration: 1000,
-        useNativeDriver: true,
-      };
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -26,6 +33,8 @@ const useGetAnimatedPlaceholderStyle = (shouldStartAnimation) => {
           }),
         ]),
       ).start();
+    } else {
+      stopAnimation();
     }
 
     return () => {

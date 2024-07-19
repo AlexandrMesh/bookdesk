@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 3.0.0
+
+###### 2024-07-18
+- [New] Performance improvements
+- [BREAKING] Update react native to `0.74.3`
+
 ## 2.20.0
 
 ###### 2024-07-16

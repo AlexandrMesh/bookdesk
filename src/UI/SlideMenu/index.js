@@ -9,7 +9,7 @@ import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
 import styles from './styles';
 
-const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, title, titleReset, menuHeight, shouldRecalculateDimensions }) => {
+const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset = () => undefined, children, title, titleReset, menuHeight = 336, shouldRecalculateDimensions }) => {
   const keyboard = useKeyboard();
   const windowHeight = Dimensions.get('window').height - 40;
   const [calculatedMenuHeight, setCalculatedMenuHeight] = useState(menuHeight);
@@ -136,11 +136,6 @@ const SlideMenu = ({ isVisible, onClose, shouldAutoClose, onReset, children, tit
       </View>
     )
   );
-};
-
-SlideMenu.defaultProps = {
-  menuHeight: 336,
-  onReset: () => undefined,
 };
 
 SlideMenu.propTypes = {

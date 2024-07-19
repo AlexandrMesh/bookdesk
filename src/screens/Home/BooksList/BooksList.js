@@ -15,7 +15,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 
 // eslint-disable-next-line react/display-name
-const BookList = ({ data, loadMoreBooks, loadingDataStatus, horizontal, extraData }) => {
+const BookList = ({ data, loadMoreBooks = () => undefined, loadingDataStatus, horizontal, extraData }) => {
   const getSpinner = () =>
     loadingDataStatus === PENDING ? (
       <View style={styles.listFooterComponent}>
@@ -49,10 +49,6 @@ const BookList = ({ data, loadMoreBooks, loadingDataStatus, horizontal, extraDat
       />
     </View>
   );
-};
-
-BookList.defaultProps = {
-  loadMoreBooks: () => undefined,
 };
 
 BookList.propTypes = {

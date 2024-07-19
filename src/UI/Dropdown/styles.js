@@ -2,6 +2,23 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
+  overlay: {
+    backgroundColor: 'black',
+    opacity: 0.5,
+    width: '100%',
+    height: '100%',
+  },
+  dropdown: {
+    position: 'absolute',
+    width: 200,
+    backgroundColor: colors.primary_dark,
+    borderWidth: 1,
+    borderColor: colors.neutral_medium,
+    shadowColor: colors.neutral_light,
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+  },
   dropdownButtonStyle: {
     display: 'flex',
     justifyContent: 'center',
@@ -24,17 +41,9 @@ export default StyleSheet.create({
     fontSize: 15,
     marginRight: 5,
   },
-  dropdownMenuStyle: {
-    backgroundColor: colors.primary_dark,
-    borderWidth: 1,
-    borderColor: colors.neutral_medium,
-    shadowColor: colors.neutral_light,
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
-  },
   dropdownItemStyle: {
     width: '100%',
+    height: 40,
     flexDirection: 'row',
     paddingHorizontal: 12,
     justifyContent: 'center',

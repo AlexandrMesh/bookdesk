@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { I18nManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RU, EN } from '~constants/languages';
 
@@ -7,7 +7,7 @@ const detectLanguage = async () => {
   if (language) {
     return language;
   }
-  const userLocale = (NativeModules?.I18nManager?.localeIdentifier || EN).split('_');
+  const userLocale = (I18nManager?.getConstants()?.localeIdentifier || EN).split('_');
   return userLocale[0] === RU ? RU : EN;
 };
 

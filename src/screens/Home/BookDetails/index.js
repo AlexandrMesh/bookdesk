@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import {
   getLoadingBookDetailsStatus,
   deriveBookDetails,
-  deriveBookVotes,
   getBookValuesUpdatingStatus,
   getBookCommentUpdatingStatus,
   getBookCommentDeletingStatus,
@@ -10,7 +9,6 @@ import {
 } from '~redux/selectors/books';
 import {
   loadBookDetails,
-  updateBookVotes,
   showModal,
   clearBookDetails,
   setBookToUpdate,
@@ -23,8 +21,7 @@ import {
 import { DATE_UPDATER } from '~constants/modalTypes';
 import BookDetails from './BookDetails';
 
-const mapStateToProps = (state, ownProps) => ({
-  bookWithVote: deriveBookVotes(ownProps.route.params.bookId)(state),
+const mapStateToProps = (state) => ({
   loadingDataStatus: getLoadingBookDetailsStatus(state),
   bookDetailsData: deriveBookDetails(state),
   bookValuesUpdatingStatus: getBookValuesUpdatingStatus(state),
@@ -35,7 +32,6 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loadBookDetails: (bookId) => dispatch(loadBookDetails(bookId)),
-  updateBookVotes: ({ bookId, shouldAdd, bookStatus }) => dispatch(updateBookVotes({ bookId, shouldAdd, bookStatus })),
   clearBookDetails: () => dispatch(clearBookDetails),
   setBookToUpdate: (bookId, bookStatus) => dispatch(setBookToUpdate(bookId, bookStatus)),
   setBookValuesToUpdate: (added) => dispatch(setBookValuesToUpdate(added)),

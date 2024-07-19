@@ -18,10 +18,10 @@ const Input = ({
   wrapperClassName,
   className,
   shouldDisplayClearButton,
-  onClear,
+  onClear = () => undefined,
   inputMode,
-  validateable,
-  numberOfLines,
+  validateable = true,
+  numberOfLines = 1,
   multiline,
   errorWrapperClassName,
 }) => {
@@ -81,12 +81,6 @@ const Input = ({
       ) : null}
     </View>
   );
-};
-
-Input.defaultProps = {
-  validateable: true,
-  onClear: () => undefined,
-  numberOfLines: 1,
 };
 
 Input.propTypes = {

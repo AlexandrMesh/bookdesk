@@ -87,6 +87,11 @@ export default StyleSheet.create({
   item: {
     fontSize: 15,
   },
+  dateWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   lightColor: {
     color: colors.neutral_light,
   },
