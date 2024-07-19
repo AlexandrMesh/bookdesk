@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
-import { SUCCEEDED, PENDING } from '~constants/loadingStatuses';
+import { SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import BooksList from '~screens/Home/BooksList';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
@@ -53,7 +53,7 @@ const SearchResults = ({
 
   return (
     <>
-      {loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
+      <TotalCount count={searchResult.length > 0 ? totalItems : 0} />
       <BooksList
         searchText={searchQuery}
         boardType={ALL}

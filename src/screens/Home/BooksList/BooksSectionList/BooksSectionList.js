@@ -18,7 +18,7 @@ const BookList = ({ data, loadMoreBooks = () => undefined, showModal, selectBook
   const { t } = useTranslation('common');
 
   const getSpinner = () =>
-    loadingDataStatus === PENDING ? (
+    loadingDataStatus === PENDING && data.length > 0 ? (
       <View style={styles.listFooterComponent}>
         <Spinner />
       </View>

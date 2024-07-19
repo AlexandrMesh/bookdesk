@@ -17,7 +17,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 // eslint-disable-next-line react/display-name
 const BookList = ({ data, loadMoreBooks = () => undefined, loadingDataStatus, horizontal, extraData }) => {
   const getSpinner = () =>
-    loadingDataStatus === PENDING ? (
+    loadingDataStatus === PENDING && data.length > 0 ? (
       <View style={styles.listFooterComponent}>
         <Spinner />
       </View>
