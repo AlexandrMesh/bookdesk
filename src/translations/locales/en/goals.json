@@ -12,5 +12,5 @@
   "goalInPages": "Goal (pages)",
   "goalAchieved": "Goal achieved!",
   "achievementsJournal": "Achievements Journal",
-  "pageCountInputDescription": "Enter the number of pages read. Can be added in parts."
+  "addedPageCountDescription": "Enter the number of pages read. Can be added in parts."
 }
