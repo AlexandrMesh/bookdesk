@@ -10,8 +10,9 @@ const getUpdateAppInfo = (state) => getAuth(state).updateAppInfo;
 export const getUserId = (state) => getProfile(state)._id;
 export const getUserEmail = (state) => getProfile(state).email;
 export const getRegistered = (state) => getProfile(state).registered;
-export const getSignInEmail = (state) => getSignIn(state).email.value;
-export const getSignInPassword = (state) => getSignIn(state).password.value;
+export const getSupportAppViewedAt = (state) => getProfile(state).supportApp?.viewedAt;
+export const getSignInEmail = (state) => getSignIn(state).email?.value;
+export const getSignInPassword = (state) => getSignIn(state).password?.value;
 export const getSignInLoadingDataStatus = (state) => getSignIn(state).loadingDataStatus;
 
 export const getIsSignedIn = (state) => getSignIn(state).isSignedIn;

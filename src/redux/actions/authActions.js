@@ -120,11 +120,25 @@ export const getConfig = (url) => async (dispatch) => {
       },
       timeout: 5000,
     });
-    const { apiUrl, imgUrl, googlePlayUrl, appVersion, underConstruction, underConstructionMessage, underConstructionMessageEn } = data || {};
+    const {
+      apiUrl,
+      imgUrl,
+      googlePlayUrl,
+      appVersion,
+      underConstruction,
+      underConstructionMessage,
+      underConstructionMessageEn,
+      enabledSupportAppModal,
+      daysRegisteredUserFromNowToDisplaySupportAppModal,
+      daysViewedSupportModalFromNowToDisplaySupportAppModal,
+    } = data || {};
     await AsyncStorage.setItem('apiUrl', apiUrl);
     await AsyncStorage.setItem('imgUrl', imgUrl);
     await AsyncStorage.setItem('googlePlayUrl', googlePlayUrl);
     await AsyncStorage.setItem('appVersion', appVersion);
+    await AsyncStorage.setItem('enabledSupportAppModal', enabledSupportAppModal);
+    await AsyncStorage.setItem('daysRegisteredUserFromNowToDisplaySupportAppModal', daysRegisteredUserFromNowToDisplaySupportAppModal);
+    await AsyncStorage.setItem('daysViewedSupportModalFromNowToDisplaySupportAppModal', daysViewedSupportModalFromNowToDisplaySupportAppModal);
     await AsyncStorage.setItem('underConstruction', underConstruction);
     await AsyncStorage.setItem('underConstructionMessage', i18n.language === RU ? underConstructionMessage : underConstructionMessageEn);
     dispatch(setUpdateAppInfo(data?.appVersion, data?.googlePlayUrl));
@@ -142,6 +156,17 @@ export const getConfig = (url) => async (dispatch) => {
   }
 };
 
+const signInFailed = (error) => async (dispatch) => {
+  dispatch(singInFailed);
+  const responseData = error?.response?.data;
+  if (responseData) {
+    const { fieldName, key } = responseData;
+    dispatch(setSignInError(fieldName, getT('errors')(key)));
+  } else {
+    dispatch(setSignInError('password', getT('errors')('serverNotAvailable')));
+  }
+};
+
 export const checkAuth = (token) => async (dispatch) => {
   dispatch(startAuthChecking);
   if (!token) {
@@ -152,12 +177,12 @@ export const checkAuth = (token) => async (dispatch) => {
       const isGoogleSignedIn = result[0];
       const { data } = result[1];
       if (data.profile) {
-        const { _id, email, registered, updated } = data.profile;
+        const { _id, email, registered, updated, supportApp } = data.profile;
         const { numberOfPagesForGoal } = data;
         if (numberOfPagesForGoal) {
           dispatch(setGoal(numberOfPagesForGoal));
         }
-        dispatch(setProfile({ _id, email, registered, updated }));
+        dispatch(setProfile({ _id, email, registered, updated, supportApp }));
         dispatch(setBookVotes(data.userVotes));
         dispatch(userBookRatingsLoaded(data.userBookRatings));
         dispatch(signedIn);
@@ -165,21 +190,11 @@ export const checkAuth = (token) => async (dispatch) => {
         return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));
       }
     } catch (error) {
+      dispatch(signInFailed(error));
       dispatch(authCheckingFailed);
     }
   }
   return true;
-};
-
-const signInFailed = (error) => async (dispatch) => {
-  dispatch(singInFailed);
-  const responseData = error?.response?.data;
-  if (responseData) {
-    const { fieldName, key } = responseData;
-    dispatch(setSignInError(fieldName, getT('errors')(key)));
-  } else {
-    dispatch(setSignInError('password', getT('errors')('serverNotAvailable')));
-  }
 };
 
 export const signIn =

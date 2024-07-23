@@ -13,7 +13,7 @@
   "invalidGoogleEmail": "Invalid Google Email",
   "noUser": "No such user exists",
   "wrongEmailOrPassword": "Invalid email or password",
-  "serverNotAvailable": "Server is not available",
+  "serverNotAvailable": "Server is not available. Please try again later.",
   "mustContainOnlyLetters": "Only letters can be used",
   "mustContainOnlyNumbers": "Only integers can be used",
   "containsSpecialCharacters": "Unacceptable symbols @^&/#+$~%;~`*<>=%[]{}_|",
