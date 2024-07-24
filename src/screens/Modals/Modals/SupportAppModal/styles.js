@@ -13,12 +13,12 @@ export default StyleSheet.create({
     padding: 15,
     display: 'flex',
     width: '100%',
-    maxWidth: 500,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modal: {
+    maxWidth: 500,
     backgroundColor: colors.primary_dark,
     padding: 15,
     borderRadius: 5,

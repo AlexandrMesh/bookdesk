@@ -6,13 +6,13 @@ export default StyleSheet.create({
     height: '100%',
     width: '100%',
     display: 'flex',
+    justifyContent: 'space-between',
     padding: 15,
     backgroundColor: colors.primary_dark,
   },
   profile: {
     display: 'flex',
     justifyContent: 'flex-start',
-    flexGrow: 1,
   },
   label: {
     fontSize: 18,
@@ -25,7 +25,7 @@ export default StyleSheet.create({
   buttonsWrapper: {
     width: '100%',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   buttons: {

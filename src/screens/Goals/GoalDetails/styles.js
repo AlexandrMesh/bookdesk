@@ -19,6 +19,7 @@ export default StyleSheet.create({
     color: colors.neutral_light,
   },
   topBlock: {
+    flex: 0.3,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
@@ -130,7 +131,7 @@ export default StyleSheet.create({
     borderTopColor: colors.neutral_medium,
     borderTopWidth: 1,
     display: 'flex',
-    flex: 1,
+    flex: 2,
     paddingBottom: 10,
   },
   readingHistory: {

@@ -105,9 +105,11 @@ const Step1 = ({
         )}
       </View>
 
-      <View style={styles.nextButtonWrapper}>
-        <Button disabled={!allowsNextAction} style={styles.nextButton} onPress={onPressNext} title={t('common:next')} />
-      </View>
+      {allowsNextAction ? (
+        <View style={styles.nextButtonWrapper}>
+          <Button disabled={!allowsNextAction} style={styles.nextButton} onPress={onPressNext} title={t('common:next')} />
+        </View>
+      ) : null}
     </View>
   );
 };

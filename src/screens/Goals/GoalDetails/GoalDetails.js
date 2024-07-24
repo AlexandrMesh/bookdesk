@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { arrayOf, shape, string, func, number } from 'prop-types';
-import { View, Text, SectionList, FlatList, Pressable } from 'react-native';
+import { ScrollView, View, Text, SectionList, FlatList, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import Button from '~UI/Button';
@@ -178,72 +178,74 @@ const GoalDetails = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <View style={styles.topBlock}>
-          <View style={styles.info}>
-            <View style={styles.blockLeft}>
-              <View>
-                <Text style={styles.infoText}>{t('goals:pagesDone')}</Text>
+        <ScrollView keyboardShouldPersistTaps='handled' style={styles.topBlock}>
+          <View>
+            <View style={styles.info}>
+              <View style={styles.blockLeft}>
+                <View>
+                  <Text style={styles.infoText}>{t('goals:pagesDone')}</Text>
+                </View>
+                <View style={styles.goalWrapper}>
+                  {todayProgress >= 100 && <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />}
+                  <Text style={{ ...styles.blockText, color: todayProgress >= 100 ? colors.gold : colors.completed }}>{numberOfPagesDoneToday}</Text>
+                </View>
               </View>
-              <View style={styles.goalWrapper}>
-                {todayProgress >= 100 && <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} />}
-                <Text style={{ ...styles.blockText, color: todayProgress >= 100 ? colors.gold : colors.completed }}>{numberOfPagesDoneToday}</Text>
+
+              <View style={styles.blockRight}>
+                <View>
+                  <Text style={styles.infoText}>{t('goals:goalInPages')}</Text>
+                </View>
+                <View style={styles.goalWrapper}>
+                  <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
+                </View>
               </View>
             </View>
 
-            <View style={styles.blockRight}>
-              <View>
-                <Text style={styles.infoText}>{t('goals:goalInPages')}</Text>
-              </View>
-              <View style={styles.goalWrapper}>
-                <Text style={[styles.blockText, styles.goal]}>{goalNumberOfPages}</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={{ ...styles.progressBarWrapper, borderColor: todayProgress >= 100 ? colors.gold : colors.completed }}>
-            <View
-              style={{
-                ...styles.progressBar,
-                width: todayProgress > 100 ? '100%' : `${todayProgress}%`,
-                backgroundColor: todayProgress >= 100 ? 'transparent' : colors.completed,
-              }}
-            />
-            <View style={styles.progressBarLabelWrapper}>
-              <Text style={{ ...styles.progressBarLabel, color: getProgressBarLabelColor() }}>
-                {todayProgress >= 100 ? t('goals:goalAchieved') : `${todayProgress} %`}
-              </Text>
-            </View>
-          </View>
-
-          <Text style={styles.pagesCountDescription}>{t('goals:addedPageCountDescription')}</Text>
-          <View style={styles.actionWrapper}>
-            <Input
-              wrapperClassName={styles.inputWrapper}
-              errorWrapperClassName={styles.inputError}
-              placeholder={t('goals:pagesCount')}
-              disabled={disabledControls}
-              error={errorForPage}
-              onChangeText={handleChangePages}
-              shouldDisplayClearButton={!!pages && !isLoading}
-              onClear={handleClearPages}
-              inputMode='numeric'
-              value={pages}
-            />
-            <View>
-              <Button
-                disabled={disabledControls}
-                iconPosition='right'
-                icon={isLoading && <Spinner size={Size.SMALL} />}
-                style={styles.button}
-                onPress={submitForm}
-                title={t('goals:add')}
+            <View style={{ ...styles.progressBarWrapper, borderColor: todayProgress >= 100 ? colors.gold : colors.completed }}>
+              <View
+                style={{
+                  ...styles.progressBar,
+                  width: todayProgress > 100 ? '100%' : `${todayProgress}%`,
+                  backgroundColor: todayProgress >= 100 ? 'transparent' : colors.completed,
+                }}
               />
+              <View style={styles.progressBarLabelWrapper}>
+                <Text style={{ ...styles.progressBarLabel, color: getProgressBarLabelColor() }}>
+                  {todayProgress >= 100 ? t('goals:goalAchieved') : `${todayProgress} %`}
+                </Text>
+              </View>
+            </View>
+
+            <Text style={styles.pagesCountDescription}>{t('goals:addedPageCountDescription')}</Text>
+            <View style={styles.actionWrapper}>
+              <Input
+                wrapperClassName={styles.inputWrapper}
+                errorWrapperClassName={styles.inputError}
+                placeholder={t('goals:pagesCount')}
+                disabled={disabledControls}
+                error={errorForPage}
+                onChangeText={handleChangePages}
+                shouldDisplayClearButton={!!pages && !isLoading}
+                onClear={handleClearPages}
+                inputMode='numeric'
+                value={pages}
+              />
+              <View>
+                <Button
+                  disabled={disabledControls}
+                  iconPosition='right'
+                  icon={isLoading && <Spinner size={Size.SMALL} />}
+                  style={styles.button}
+                  onPress={submitForm}
+                  title={t('goals:add')}
+                />
+              </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
 
         <View style={styles.sectionedList}>
-          <Text style={styles.title}>{t('goals:achievementsJournal')}</Text>
+          {sectionedPagesDone.length > 0 ? <Text style={styles.title}>{t('goals:achievementsJournal')}</Text> : null}
           <SectionList
             initialNumToRender={10}
             sections={sectionedPagesDone}

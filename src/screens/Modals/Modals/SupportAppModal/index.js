@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Modal, View, Text, TouchableOpacity, Linking } from 'react-native';
+import { Modal, ScrollView, View, Text, TouchableOpacity, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +47,7 @@ const SupportAppModal = () => {
     <Modal animationType='slide' transparent visible={isVisible}>
       <View style={styles.overlay} />
       <View style={styles.wrapper}>
-        <View style={styles.modal}>
+        <ScrollView keyboardShouldPersistTaps='handled' contentContainerStyle={styles.modal}>
           <Text style={styles.title}>{t('supportAppTitle')}</Text>
           <Text style={styles.description}>{t('supportAppDescription.line1')}</Text>
           <Text style={styles.description}>{t('supportAppDescription.line2')}</Text>
@@ -59,7 +59,7 @@ const SupportAppModal = () => {
               <Text style={styles.alreadySupportedLink}>{t('alreadySupported')}</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
