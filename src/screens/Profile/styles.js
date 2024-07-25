@@ -6,6 +6,7 @@ export default StyleSheet.create({
     height: '100%',
     width: '100%',
     display: 'flex',
+    flex: 1,
     justifyContent: 'space-between',
     padding: 15,
     backgroundColor: colors.primary_dark,
@@ -27,6 +28,7 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    flex: 1,
   },
   buttons: {
     width: '50%',

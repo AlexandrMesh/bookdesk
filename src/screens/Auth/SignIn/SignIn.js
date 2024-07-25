@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { func, string, shape } from 'prop-types';
 import { ScrollView, View, Text } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import isEmpty from 'lodash/isEmpty';
 import Button from '~UI/Button';
@@ -17,9 +16,8 @@ import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
-const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError, navigation }) => {
+const SignIn = ({ signIn, loadingDataStatus, errors, setSignInError, navigation }) => {
   const { t } = useTranslation(['auth', 'errors']);
-  const isFocused = useIsFocused();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,11 +41,6 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
     setPassword(password);
   };
 
-  const clearForm = () => {
-    setEmail('');
-    setPassword('');
-  };
-
   const handleSubmitSignIn = () => {
     if (isValidForm()) {
       signIn({ email, password });
@@ -61,13 +54,6 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
       navigation.navigate(SIGN_UP_ROUTE);
     }
   };
-
-  useEffect(() => {
-    if (!isFocused) {
-      clearForm();
-      clearErrors();
-    }
-  }, [isFocused, clearErrors]);
 
   return (
     <View style={styles.wrapper}>
@@ -133,7 +119,6 @@ const SignIn = ({ signIn, clearErrors, loadingDataStatus, errors, setSignInError
 
 SignIn.propTypes = {
   signIn: func.isRequired,
-  clearErrors: func.isRequired,
   setSignInError: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
   errors: shape({

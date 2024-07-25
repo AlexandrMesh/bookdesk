@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { func, string, shape } from 'prop-types';
 import { ScrollView, View, Text } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'ramda';
 import { getValidationFailure, validationTypes } from '~utils/validation';
@@ -15,9 +14,8 @@ import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
 import styles from './styles';
 
-const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation, clearErrors }) => {
+const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation }) => {
   const { t } = useTranslation(['auth', 'errors']);
-  const isFocused = useIsFocused();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -41,11 +39,6 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
     setPassword(password);
   };
 
-  const clearForm = useCallback(() => {
-    setEmail('');
-    setPassword('');
-  }, []);
-
   const handleSubmitSignIn = () => {
     if (isValidForm()) {
       signUp({ email, password });
@@ -57,13 +50,6 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
       navigation.navigate(SIGN_IN_ROUTE);
     }
   };
-
-  useEffect(() => {
-    if (!isFocused) {
-      clearForm();
-      clearErrors();
-    }
-  }, [isFocused, clearForm, clearErrors]);
 
   return (
     <View style={styles.wrapper}>
@@ -117,7 +103,6 @@ const SignUp = ({ signUp, loadingDataStatus, errors, setSignUpError, navigation,
 
 SignUp.propTypes = {
   signUp: func.isRequired,
-  clearErrors: func.isRequired,
   loadingDataStatus: loadingDataStatusShape,
   errors: shape({
     email: string,

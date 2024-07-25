@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Linking } from 'react-native';
+import { ScrollView, View, Text, Linking } from 'react-native';
 import { string, func, number, bool } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -30,14 +30,16 @@ const Profile = ({ email, registered, signOut, googlePlayUrl, isTheLatestAppVers
       </View>
       <View style={styles.buttonsWrapper}>
         <View style={styles.buttons}>
-          {!isTheLatestAppVersion && (
-            <View style={styles.marginBottom}>
-              <Text style={[styles.updateLabel]}>{t('newVersionAvailable')}</Text>
-              <Button onPress={() => Linking.openURL(googlePlayUrl)} title={t('common:update')} />
-            </View>
-          )}
-          <Button theme={SECONDARY} style={styles.marginBottom} onPress={() => navigation.navigate(ABOUT_ROUTE)} title={t('aboutApp')} />
-          <Button theme={SECONDARY} onPress={signOut} title={t('signOut')} />
+          <ScrollView>
+            {!isTheLatestAppVersion && (
+              <View style={styles.marginBottom}>
+                <Text style={[styles.updateLabel]}>{t('newVersionAvailable')}</Text>
+                <Button onPress={() => Linking.openURL(googlePlayUrl)} title={t('common:update')} />
+              </View>
+            )}
+            <Button theme={SECONDARY} style={styles.marginBottom} onPress={() => navigation.navigate(ABOUT_ROUTE)} title={t('aboutApp')} />
+            <Button theme={SECONDARY} onPress={signOut} title={t('signOut')} />
+          </ScrollView>
         </View>
       </View>
     </View>
