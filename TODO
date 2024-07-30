@@ -1222,7 +1222,7 @@ upgrade react native https://react-native-community.github.io/upgrade-helper/?fr
 Например react navigation, после выпуска 7 версии можно будет пробовать, а на данном этапе есть баги. И meta сама на данном этапе не рекомендует использовать new architecture по умолчанию.
 
 19.07.2024
-Настроить автобэкапы базы данных https://gupta-aditya333.medium.com/how-to-backup-mongodb-automatically-3b953cd2c8c8
++ Настроить автобэкапы базы данных https://gupta-aditya333.medium.com/how-to-backup-mongodb-automatically-3b953cd2c8c8
 Подумать над рейтингом чтецов
 Нотификацию для достижения целей
 График пирог (категории, авторы прочитанных книг)
@@ -1239,3 +1239,9 @@ upgrade react native https://react-native-community.github.io/upgrade-helper/?fr
 
 23.07.2024
 + Поправить отображение трекера при повороте экрана (нет скролла)
+
+30.07.2024
++ Поправить сроллинг в golas view
++ Сделать плашки заголовков сbackground color в разделе статистика
+Выводить список популярных запросов в Поиске
+Поправить лейбл кнопки Поддержать на Поддержать отзывом

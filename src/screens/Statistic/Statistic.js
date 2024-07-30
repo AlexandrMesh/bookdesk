@@ -72,9 +72,11 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
             </View>
           ) : (
             <>
-              <Text style={styles.title}>
-                {t('completedBooks')} <Text style={styles.highlightedCount}>{t('common:count', { count: totalCount })}</Text>
-              </Text>
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>
+                  {t('completedBooks')} <Text style={styles.highlightedCount}>{t('common:count', { count: totalCount })}</Text>
+                </Text>
+              </View>
               <BarChart
                 barWidth={32}
                 width={stat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
@@ -104,7 +106,9 @@ const Statistic = ({ loadStat, loadUsersStat, shouldReloadStat }) => {
             </View>
           ) : (
             <>
-              <Text style={styles.title}>{t('topReaders')}</Text>
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>{t('topReaders')}</Text>
+              </View>
               <BarChart
                 barWidth={32}
                 noOfSections={3}

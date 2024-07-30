@@ -44,6 +44,9 @@ export default StyleSheet.create({
     width: 140,
     marginRight: 15,
   },
+  supportButtonTitle: {
+    textAlign: 'center',
+  },
   alreadySupportedLink: {
     color: colors.neutral_light,
     fontSize: 18,

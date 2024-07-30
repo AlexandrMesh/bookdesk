@@ -54,7 +54,7 @@ const SupportAppModal = () => {
           <Text style={styles.description}>{t('supportAppDescription.line3')}</Text>
 
           <View style={styles.footer}>
-            <Button style={styles.supportButton} title={t('supportApp')} onPress={handlePressSupportButton} />
+            <Button style={styles.supportButton} titleStyle={styles.supportButtonTitle} title={t('supportApp')} onPress={handlePressSupportButton} />
             <TouchableOpacity onPress={handlePressAlreadySupportButton}>
               <Text style={styles.alreadySupportedLink}>{t('alreadySupported')}</Text>
             </TouchableOpacity>
