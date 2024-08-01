@@ -34,18 +34,8 @@ export default StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'flex-end',
-  },
-  addedContainer: {
-    height: 20,
-  },
-  addedWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    borderStyle: 'dotted',
-    borderBottomWidth: 1,
-    borderColor: colors.neutral_light,
   },
   votesWrapper: {
     height: 30,
@@ -65,12 +55,12 @@ export default StyleSheet.create({
   title: {
     fontSize: 18,
   },
+  coverWrapper: {
+    marginBottom: 10,
+  },
   cover: {
     width: 126,
     height: 180,
-  },
-  ratingWrapper: {
-    marginTop: 10,
   },
   info: {
     display: 'flex',
@@ -90,7 +80,7 @@ export default StyleSheet.create({
   dateWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   lightColor: {
     color: colors.neutral_light,
@@ -104,8 +94,10 @@ export default StyleSheet.create({
   buttonTitle: {
     fontSize: 15,
   },
+  buttonsWrapper: {
+    marginTop: 20,
+  },
   statusButton: {
-    marginTop: 10,
     width: 126,
     height: 30,
   },
@@ -124,7 +116,6 @@ export default StyleSheet.create({
   more: {
     width: 126,
     height: 30,
-    marginRight: 15,
   },
   moreTitle: {
     fontSize: 16,

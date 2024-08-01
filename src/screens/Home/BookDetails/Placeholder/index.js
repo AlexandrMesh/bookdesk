@@ -1,11 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
+import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import styles from './styles';
 
 const Placeholder = () => {
+  const animatedStyle = useGetAnimatedPlaceholderStyle(true);
+
   return (
     <View style={styles.emptyWrapper}>
-      <View style={styles.emptyItem}>
+      <Animated.View style={{ opacity: animatedStyle }}>
         <View style={styles.header}>
           <View style={styles.img} />
           <View style={styles.title} />
@@ -16,7 +19,7 @@ const Placeholder = () => {
         <View style={styles.description} />
         <View style={styles.description} />
         <View style={styles.description} />
-      </View>
+      </Animated.View>
     </View>
   );
 };

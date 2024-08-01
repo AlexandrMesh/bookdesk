@@ -1,11 +1,12 @@
 /* eslint-disable react/forbid-prop-types */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { bool, any, arrayOf, shape, string, number, func } from 'prop-types';
 import { Platform, UIManager, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Spinner } from '~UI/Spinner';
 import { PENDING } from '~constants/loadingStatuses';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
+import useGetImgUrl from '~hooks/useGetImgUrl';
 import BookItem from './BookItem';
 import ItemPlaceholder from './ItemPlaceholder';
 import styles from './styles';
@@ -14,14 +15,38 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-// eslint-disable-next-line react/display-name
 const BookList = ({ data, loadMoreBooks = () => undefined, loadingDataStatus, horizontal, extraData }) => {
-  const getSpinner = () =>
-    loadingDataStatus === PENDING && data.length > 0 ? (
-      <View style={styles.listFooterComponent}>
-        <Spinner />
-      </View>
-    ) : null;
+  const imgUrl = useGetImgUrl();
+  const getSpinner = useCallback(
+    () =>
+      loadingDataStatus === PENDING && data.length > 0 ? (
+        <View style={styles.listFooterComponent}>
+          <Spinner />
+        </View>
+      ) : null,
+    [data.length, loadingDataStatus],
+  );
+
+  const getListEmptyComponent = useCallback(
+    () => (
+      <>
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+        <ItemPlaceholder />
+      </>
+    ),
+    [],
+  );
+
+  const onEndReached = useCallback(() => {
+    if (loadingDataStatus !== PENDING) {
+      loadMoreBooks();
+    }
+  }, [loadMoreBooks, loadingDataStatus]);
+
+  const getKeyExtractor = useCallback((item) => item.bookId, []);
+
+  const renderItem = useCallback(({ item }) => <BookItem imgUrl={imgUrl} bookItem={item} />, [imgUrl]);
 
   return (
     <View style={styles.container}>
@@ -30,21 +55,11 @@ const BookList = ({ data, loadMoreBooks = () => undefined, loadingDataStatus, ho
         estimatedItemSize={210}
         data={data}
         extraData={extraData}
-        renderItem={({ item }) => <BookItem bookItem={item} />}
-        keyExtractor={(item) => item.bookId}
+        renderItem={renderItem}
+        keyExtractor={getKeyExtractor}
         onEndReachedThreshold={0.5}
-        ListEmptyComponent={
-          <>
-            <ItemPlaceholder />
-            <ItemPlaceholder />
-            <ItemPlaceholder />
-          </>
-        }
-        onEndReached={() => {
-          if (loadingDataStatus !== PENDING) {
-            loadMoreBooks();
-          }
-        }}
+        ListEmptyComponent={getListEmptyComponent}
+        onEndReached={onEndReached}
         ListFooterComponent={getSpinner}
       />
     </View>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { bool, string, func } from 'prop-types';
 import { View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
@@ -43,14 +43,13 @@ const CustomBookStatusModal = ({ isVisible, status, setStatus, hideModal }) => {
     hideModal();
   };
 
+  const renderItem = useCallback(({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} />, []);
+
+  const getKeyExtractor = useCallback(({ title }) => title, []);
+
   return (
     <SlideMenu isVisible={isVisible} title={t('status')} onClose={handleClose} shouldAutoClose={shouldAutoClose} onReset={() => undefined}>
-      <FlashList
-        data={actionTypes}
-        estimatedItemSize={actionTypes.length}
-        renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} />}
-        keyExtractor={({ title }) => title}
-      />
+      <FlashList data={actionTypes} estimatedItemSize={40} renderItem={renderItem} keyExtractor={getKeyExtractor} />
       <View style={styles.submitButtonWrapper}>
         <Button style={styles.submitButton} title={t('common:save')} onPress={handleSubmit} />
       </View>

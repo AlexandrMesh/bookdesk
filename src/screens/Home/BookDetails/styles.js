@@ -114,16 +114,6 @@ export default StyleSheet.create({
     padding: 10,
     borderRadius: 4,
   },
-  addedContainer: {
-    height: 25,
-  },
-  addedWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    borderStyle: 'dotted',
-    borderBottomWidth: 2,
-    borderColor: colors.neutral_light,
-  },
   bookStatusWrapper: {
     marginTop: 15,
     width: '100%',

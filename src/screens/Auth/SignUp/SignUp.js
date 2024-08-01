@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { func, string, shape } from 'prop-types';
 import { ScrollView, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'ramda';
+import isEmpty from 'lodash/isEmpty';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { SIGN_IN_ROUTE } from '~constants/routes';
 import Button from '~UI/Button';

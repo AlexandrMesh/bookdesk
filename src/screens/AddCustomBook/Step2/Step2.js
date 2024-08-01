@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, Image, Pressable } from 'react-native';
+import React, { useEffect, useCallback } from 'react';
+import { ScrollView, View, Text, Pressable } from 'react-native';
 import { bool, string, func, number, arrayOf, shape } from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { FlashList } from '@shopify/flash-list';
+import FastImage from 'react-native-fast-image';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
-import { getImgUrl } from '~config/api';
+import useGetImgUrl from '~hooks/useGetImgUrl';
 import { Spinner } from '~UI/Spinner';
 import { DEFAULT_COVER } from '~constants/customBooks';
 import RadioButton from '~UI/RadioButton';
@@ -27,7 +28,7 @@ const Step2 = ({
   onPressNext,
 }) => {
   const { t } = useTranslation(['customBook, common']);
-  const [imgUrl, setImgUrl] = useState('');
+  const imgUrl = useGetImgUrl();
 
   const handlePressOnWithoutCover = () => {
     setShouldAddCover(false);
@@ -37,19 +38,32 @@ const Step2 = ({
 
   const suggestedCoversExist = suggestedCoversData.length > 0;
 
+  const getKeyExtractor = useCallback(({ coverPath }) => coverPath, []);
+
+  const renderItem = useCallback(
+    ({ item, extraData }) => {
+      const selected = extraData === item.coverPath;
+      return (
+        <Pressable style={[styles.coverWrapper, selected && styles.selectedCover]} onPress={() => selectCover(item.coverPath)}>
+          <RadioButton style={styles.selectedCoverRadioButton} isSelected={selected} />
+          <FastImage
+            style={styles.cover}
+            source={{
+              uri: item.coverPath,
+            }}
+          />
+        </Pressable>
+      );
+    },
+    [selectCover],
+  );
+
   useEffect(() => {
     if (bookName.value && shouldAddCover && !suggestedCoversExist) {
       loadSuggestedCovers();
     }
   }, [bookName.value, shouldAddCover, loadSuggestedCovers, suggestedCoversExist]);
 
-  useEffect(() => {
-    async function getData() {
-      const response = await getImgUrl();
-      setImgUrl(response);
-    }
-    getData();
-  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -79,7 +93,7 @@ const Step2 = ({
                   <View style={[styles.defaultCover, styles.selectedCover]}>
                     <RadioButton style={styles.selectedCoverRadioButton} isSelected />
                     {imgUrl && (
-                      <Image
+                      <FastImage
                         style={styles.cover}
                         source={{
                           uri: `${imgUrl}/${DEFAULT_COVER}.webp`,
@@ -95,25 +109,12 @@ const Step2 = ({
                 <Text style={styles.suggestionLabel}>{t('customBook:chooseTheBookCover')}</Text>
                 <FlashList
                   data={suggestedCoversData}
-                  estimatedItemSize={suggestedCoversData.length}
-                  estimatedListSize={{ height: 260, width: 1000 }}
+                  estimatedItemSize={50}
+                  estimatedListSize={{ height: 260, width: 500 }}
                   horizontal
                   extraData={selectedCover}
-                  renderItem={({ item, extraData }) => {
-                    const selected = extraData === item.coverPath;
-                    return (
-                      <Pressable style={[styles.coverWrapper, selected && styles.selectedCover]} onPress={() => selectCover(item.coverPath)}>
-                        <RadioButton style={styles.selectedCoverRadioButton} isSelected={selected} />
-                        <Image
-                          style={styles.cover}
-                          source={{
-                            uri: item.coverPath,
-                          }}
-                        />
-                      </Pressable>
-                    );
-                  }}
-                  keyExtractor={({ coverPath }) => coverPath}
+                  renderItem={renderItem}
+                  keyExtractor={getKeyExtractor}
                 />
               </View>
             )}

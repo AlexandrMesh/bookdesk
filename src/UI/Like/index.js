@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { number, string } from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Animated, Pressable, Text, Vibration } from 'react-native';
@@ -17,12 +17,12 @@ const Like = ({ bookId, votesCount, bookStatus }) => {
 
   const animatedStyle = useGetAnimatedPlaceholderStyle(isLoading);
 
-  const handleLike = async () => {
+  const handleLike = useCallback(async () => {
     if (isLoading) {
       return;
     }
     try {
-      Vibration.vibrate(150);
+      Vibration.vibrate(70);
       setIsloading(true);
       await dispatch(updateBookVotes({ bookId, shouldAdd: !bookWithVote, bookStatus }));
     } catch (error) {
@@ -30,7 +30,7 @@ const Like = ({ bookId, votesCount, bookStatus }) => {
     } finally {
       setIsloading(false);
     }
-  };
+  }, [bookId, bookStatus, bookWithVote, dispatch, isLoading]);
 
   return (
     <Animated.View style={isLoading ? { opacity: animatedStyle } : {}}>

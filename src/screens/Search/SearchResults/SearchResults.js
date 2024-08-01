@@ -6,7 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
-import { SUCCEEDED } from '~constants/loadingStatuses';
+import { PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import BooksList from '~screens/Home/BooksList';
 import loadingDataStatusShape from '~shapes/loadingDataStatus';
@@ -32,10 +32,10 @@ const SearchResults = ({
   }, [isFocused, setBoardType]);
 
   useEffect(() => {
-    if (!isEmpty(searchQuery)) {
+    if (!isEmpty(searchQuery) && shouldReloadData) {
       loadSearchResults(false);
     }
-  }, [searchQuery, loadSearchResults]);
+  }, [searchQuery, loadSearchResults, shouldReloadData]);
 
   if (isEmpty(searchQuery)) {
     return (
@@ -53,7 +53,7 @@ const SearchResults = ({
 
   return (
     <>
-      <TotalCount count={searchResult.length > 0 ? totalItems : 0} />
+      {loadingDataStatus === PENDING ? null : <TotalCount count={searchResult.length > 0 ? totalItems : 0} />}
       <BooksList
         searchText={searchQuery}
         boardType={ALL}

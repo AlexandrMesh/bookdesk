@@ -1,4 +1,3 @@
-import updateIn from '~utils/updateIn';
 import { IDLE, PENDING, FAILED, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import {
@@ -316,10 +315,9 @@ export default createReducer(initialState, (state, action) => ({
         ...state.add.steps,
         3: {
           ...state.add.steps[3],
-          authorsList: updateIn(state.add.steps[3].authorsList, (author) => author.id === action.id, {
-            name: action.name,
-            error: action.error,
-          }),
+          authorsList: state.add.steps[3].authorsList.map((author) =>
+            author.id === action.id ? { ...author, name: action.name, error: action.error } : author,
+          ),
         },
       },
     },
@@ -425,10 +423,9 @@ export default createReducer(initialState, (state, action) => ({
           updatingBookStatus: SUCCEEDED,
           suggestedBooks: {
             ...state.add.steps[1].suggestedBooks,
-            data: updateIn(state.add.steps[1].suggestedBooks.data, (book) => book.bookId === action.bookId, {
-              bookStatus: action.bookStatus,
-              added: action.added,
-            }),
+            data: state.add.steps[1].suggestedBooks.data.map((book) =>
+              book.bookId === action.bookId ? { ...book, bookStatus: action.bookStatus, added: action.added } : book,
+            ),
           },
         },
       },
@@ -444,9 +441,9 @@ export default createReducer(initialState, (state, action) => ({
           ...state.add.steps[1],
           suggestedBooks: {
             ...state.add.steps[1].suggestedBooks,
-            data: updateIn(state.add.steps[1].suggestedBooks.data, (book) => book.bookId === action.bookId, {
-              votesCount: action.votesCount,
-            }),
+            data: state.add.steps[1].suggestedBooks.data.map((book) =>
+              book.bookId === action.bookId ? { ...book, votesCount: action.votesCount } : book,
+            ),
           },
         },
       },

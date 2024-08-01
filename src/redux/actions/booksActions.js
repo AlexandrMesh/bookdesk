@@ -711,6 +711,25 @@ export const updateUserBookAddedDate =
     }
   };
 
+export const deleteUserComment = (bookId) => async (dispatch) => {
+  dispatch(startDeletingBookComment);
+  try {
+    await DataService().deleteUserComment({ bookId });
+    dispatch(bookCommentDeleted);
+  } catch (e) {
+    dispatch(deletingBookCommentFailed);
+  }
+};
+
+export const deleteUserBookRating = (bookId) => async (dispatch) => {
+  try {
+    const { data } = await DataService().deleteUserBookRating({ bookId });
+    dispatch(userBookRatingsLoaded(data));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const updateUserBook =
   ({ book, newBookStatus, added, boardType }) =>
   async (dispatch, getState) => {
@@ -720,6 +739,7 @@ export const updateUserBook =
     const state = getState();
     const bookDetailsData = getBookDetailsData(state);
     try {
+      const startTime = performance.now();
       const { data } = await DataService().updateUserBook({ bookId, added, bookStatus: newBookStatus, language, boardType: bookStatus });
       dispatch(setBookCountByYear(bookStatus, data.countByYear));
 
@@ -751,6 +771,8 @@ export const updateUserBook =
 
       dispatch(reloadBookList(boardType));
       dispatch(triggerReloadStat);
+      const endTime = performance.now();
+      console.log(`${endTime - startTime} ms`);
     } catch (e) {
       dispatch(updatingUsersBookFailed);
     }
@@ -769,25 +791,6 @@ export const updateUserComment =
       return false;
     }
   };
-
-export const deleteUserComment = (bookId) => async (dispatch) => {
-  dispatch(startDeletingBookComment);
-  try {
-    await DataService().deleteUserComment({ bookId });
-    dispatch(bookCommentDeleted);
-  } catch (e) {
-    dispatch(deletingBookCommentFailed);
-  }
-};
-
-export const deleteUserBookRating = (bookId) => async (dispatch) => {
-  try {
-    const { data } = await DataService().deleteUserBookRating({ bookId });
-    dispatch(userBookRatingsLoaded(data));
-  } catch (e) {
-    console.error(e);
-  }
-};
 
 export const getBookComment = (bookId) => async (dispatch) => {
   dispatch(startLoadingBookComment);

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
-  emptyItem: {
+  emptyWrapper: {
     width: '100%',
     height: '100%',
     padding: 15,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { bool, func, string, shape, arrayOf } from 'prop-types';
 import { View, Text, Pressable, SectionList, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -48,55 +48,67 @@ const FilteringModal = ({
     </View>
   );
 
-  const renderCategoryItem = ({ value, path, isExpanded, isSearchResult }) => {
-    const splittedPath = path.split('.');
-    const level = splittedPath.length;
-    const iconWrapperStyle = () => {
-      if (level === 1) {
-        return styles.firstLevel;
-      }
-      return null;
-    };
+  const renderCategoryItem = useCallback(
+    ({ value, path, isExpanded, isSearchResult }) => {
+      const splittedPath = path.split('.');
+      const level = splittedPath.length;
+      const iconWrapperStyle = () => {
+        if (level === 1) {
+          return styles.firstLevel;
+        }
+        return null;
+      };
 
-    const shouldDisplayArrowIcon = level === 1 || level === 2;
-    const indeterminate = indeterminatedCategories.includes(path);
+      const shouldDisplayArrowIcon = level === 1 || level === 2;
+      const indeterminate = indeterminatedCategories.includes(path);
 
-    return (
-      <View key={path} style={[styles.menuItem, isSearchResult && styles.searchResult]}>
-        {!isSearchResult && (
-          <Pressable
-            disabled={!shouldDisplayArrowIcon}
-            onPress={() => toggleExpandedCategory(path, boardType)}
-            style={[styles.arrowIconWrapper, iconWrapperStyle()]}
-          >
-            {shouldDisplayArrowIcon ? (
-              <ArrowDown style={isExpanded ? null : styles.collapsed} width={FILTER_ICON.width} height={FILTER_ICON.height} />
-            ) : null}
+      return (
+        <View key={path} style={[styles.menuItem, isSearchResult && styles.searchResult]}>
+          {!isSearchResult && (
+            <Pressable
+              disabled={!shouldDisplayArrowIcon}
+              onPress={() => toggleExpandedCategory(path, boardType)}
+              style={[styles.arrowIconWrapper, iconWrapperStyle()]}
+            >
+              {shouldDisplayArrowIcon ? (
+                <ArrowDown style={isExpanded ? null : styles.collapsed} width={FILTER_ICON.width} height={FILTER_ICON.height} />
+              ) : null}
+            </Pressable>
+          )}
+          <Pressable style={styles.labelWrapper} onPress={() => manageFilters(path, boardType, categoryPaths)}>
+            <Text style={styles.menuItemTitle}>{t(`categories:${value}`)}</Text>
+            <CheckBox isChecked={categoryPaths.includes(path)} indeterminate={indeterminate} />
           </Pressable>
-        )}
-        <Pressable style={styles.labelWrapper} onPress={() => manageFilters(path, boardType, categoryPaths)}>
-          <Text style={styles.menuItemTitle}>{t(`categories:${value}`)}</Text>
-          <CheckBox isChecked={categoryPaths.includes(path)} indeterminate={indeterminate} />
-        </Pressable>
-      </View>
-    );
-  };
+        </View>
+      );
+    },
+    [boardType, categoryPaths, indeterminatedCategories, manageFilters, t, toggleExpandedCategory],
+  );
 
-  const renderCategory = ({ value, path, isExpanded, data }) => {
-    return (
-      <>
-        {renderCategoryItem({ value, path, isExpanded })}
-        {isExpanded && data.length > 0 && (
-          <FlatList
-            keyboardShouldPersistTaps='handled'
-            data={data}
-            renderItem={({ item }) => renderCategoryItem({ value: item.title, path: item.path })}
-            keyExtractor={(item) => item.path}
-          />
-        )}
-      </>
-    );
-  };
+  const getKeyExtractorForCategory = useCallback((item) => item.path, []);
+
+  const renderItemForCategory = useCallback(({ item }) => renderCategoryItem({ value: item.title, path: item.path }), [renderCategoryItem]);
+
+  const renderCategory = useCallback(
+    ({ value, path, isExpanded, data }) => {
+      return (
+        <>
+          {renderCategoryItem({ value, path, isExpanded })}
+          {isExpanded && data.length > 0 && (
+            <FlatList keyboardShouldPersistTaps='handled' data={data} renderItem={renderItemForCategory} keyExtractor={getKeyExtractorForCategory} />
+          )}
+        </>
+      );
+    },
+    [getKeyExtractorForCategory, renderCategoryItem, renderItemForCategory],
+  );
+
+  const getKeyExtractorForSearch = useCallback((item) => item.path, []);
+
+  const renderItemForSearch = useCallback(
+    ({ item }) => renderCategoryItem({ value: item.title, path: item.path, isSearchResult: true }),
+    [renderCategoryItem],
+  );
 
   const renderSearchResults = () => {
     if (shouldDisplaySearchResults) {
@@ -104,14 +116,28 @@ const FilteringModal = ({
         <FlatList
           keyboardShouldPersistTaps='handled'
           data={categoriesSearchResult}
-          renderItem={({ item }) => renderCategoryItem({ value: item.title, path: item.path, isSearchResult: true })}
-          keyExtractor={(item) => item.path}
+          renderItem={renderItemForSearch}
+          keyExtractor={getKeyExtractorForSearch}
           ListEmptyComponent={emptySearchResult()}
         />
       );
     }
     return null;
   };
+
+  const getKeyExtractor = useCallback((item) => item.path, []);
+
+  const renderItem = useCallback(
+    ({ item, section }) =>
+      section.isExpanded &&
+      renderCategory({ value: item.title, path: item.path, isExpanded: item.isExpanded, data: item.data, section: item.isExpanded }),
+    [renderCategory],
+  );
+
+  const renderSectionHeader = useCallback(
+    ({ section }) => renderCategoryItem({ value: section.title, path: section.path, isExpanded: section.isExpanded }),
+    [renderCategoryItem],
+  );
 
   useEffect(() => {
     if (shouldAutoClose) {
@@ -144,12 +170,9 @@ const FilteringModal = ({
             keyboardShouldPersistTaps='handled'
             sections={categories}
             extraData={categories}
-            keyExtractor={(item) => item.path}
-            renderItem={({ item, section }) =>
-              section.isExpanded &&
-              renderCategory({ value: item.title, path: item.path, isExpanded: item.isExpanded, data: item.data, section: item.isExpanded })
-            }
-            renderSectionHeader={({ section }) => renderCategoryItem({ value: section.title, path: section.path, isExpanded: section.isExpanded })}
+            keyExtractor={getKeyExtractor}
+            renderItem={renderItem}
+            renderSectionHeader={renderSectionHeader}
           />
         )}
       </View>

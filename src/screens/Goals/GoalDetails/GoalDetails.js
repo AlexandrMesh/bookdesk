@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { arrayOf, shape, string, func, number } from 'prop-types';
 import { ScrollView, View, Text, SectionList, FlatList, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -33,11 +33,14 @@ const GoalDetails = ({
 
   const { language } = i18n;
 
-  const addExpandedItem = (item) => setExpandedItems([...expandedItems, item]);
+  const addExpandedItem = useCallback((item) => setExpandedItems([...expandedItems, item]), [expandedItems]);
 
-  const removeExpandedItem = (item) => setExpandedItems(expandedItems.filter((expandedItem) => expandedItem !== item));
+  const removeExpandedItem = useCallback((item) => setExpandedItems(expandedItems.filter((expandedItem) => expandedItem !== item)), [expandedItems]);
 
-  const toggleExpandedItem = (item) => (expandedItems.includes(item) ? removeExpandedItem(item) : addExpandedItem(item));
+  const toggleExpandedItem = useCallback(
+    (item) => (expandedItems.includes(item) ? removeExpandedItem(item) : addExpandedItem(item)),
+    [addExpandedItem, expandedItems, removeExpandedItem],
+  );
 
   const validateForm = () => {
     const params = {
@@ -83,16 +86,19 @@ const GoalDetails = ({
     setPages(null);
   };
 
-  const handleDeleteGoalItem = async (id) => {
-    setLoadingGoalItemsId(id);
-    try {
-      await deleteUserGoalItem(id);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingGoalItemsId(null);
-    }
-  };
+  const handleDeleteGoalItem = useCallback(
+    async (id) => {
+      setLoadingGoalItemsId(id);
+      try {
+        await deleteUserGoalItem(id);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingGoalItemsId(null);
+      }
+    },
+    [deleteUserGoalItem],
+  );
 
   useEffect(() => {
     const loadData = async () => {
@@ -108,48 +114,54 @@ const GoalDetails = ({
     loadData();
   }, [getGoalItems, i18n.language]);
 
-  const renderReadingHistoryItem = (item) => (
-    <Pressable
-      style={[styles.readingHistory, expandedItems.includes(item.title) && styles.readingHistoryActive]}
-      onPress={() => toggleExpandedItem(item.title)}
-    >
-      <View style={styles.titleColumn}>
-        <ArrowDown style={[styles.arrowIcon, expandedItems.includes(item.title) ? null : styles.collapsedIcon]} width={16} height={16} />
-        <Text style={styles.readingHistoryItem}>{item.title}</Text>
-      </View>
-      <View style={styles.countColumn}>
-        {item.count >= goalNumberOfPages ? <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} /> : null}
-        <Text style={styles.countItem}>{t('common:count', { count: item.count })}</Text>
-      </View>
-    </Pressable>
+  const renderReadingHistoryItem = useCallback(
+    (item) => (
+      <Pressable
+        style={[styles.readingHistory, expandedItems.includes(item.title) && styles.readingHistoryActive]}
+        onPress={() => toggleExpandedItem(item.title)}
+      >
+        <View style={styles.titleColumn}>
+          <ArrowDown style={[styles.arrowIcon, expandedItems.includes(item.title) ? null : styles.collapsedIcon]} width={16} height={16} />
+          <Text style={styles.readingHistoryItem}>{item.title}</Text>
+        </View>
+        <View style={styles.countColumn}>
+          {item.count >= goalNumberOfPages ? <MedalIcon style={styles.starIcon} width={24} height={24} fill={colors.gold} /> : null}
+          <Text style={styles.countItem}>{t('common:count', { count: item.count })}</Text>
+        </View>
+      </Pressable>
+    ),
+    [expandedItems, goalNumberOfPages, t, toggleExpandedItem],
   );
 
-  const renderReadingHistoryNestedItems = (item) => (
-    <FlatList
-      keyboardShouldPersistTaps='handled'
-      data={item.data}
-      renderItem={({ item }) => (
-        <View style={[styles.readingHistory, styles.nested]}>
-          <View style={styles.createdColumn}>
-            <Text style={styles.readingHistoryItem}>
-              {new Date(item.added_at).toLocaleString(language, {
-                day: 'numeric',
-                month: 'long',
-                hour: 'numeric',
-                minute: 'numeric',
-              })}
-            </Text>
-          </View>
-          <View style={styles.countColumn}>
-            <Text style={styles.countItem}>{t('common:count', { count: item.pages })}</Text>
-            <Pressable style={styles.removeIcon} onPress={() => !loadingGoalItemsId && handleDeleteGoalItem(item._id)}>
-              {loadingGoalItemsId === item._id ? <Spinner size={Size.SMALL} /> : <RemoveIcon fill={colors.neutral_medium} width={20} height={20} />}
-            </Pressable>
-          </View>
+  const getKeyExtractor = useCallback((item) => item._id, []);
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <View style={[styles.readingHistory, styles.nested]}>
+        <View style={styles.createdColumn}>
+          <Text style={styles.readingHistoryItem}>
+            {new Date(item.added_at).toLocaleString(language, {
+              day: 'numeric',
+              month: 'long',
+              hour: 'numeric',
+              minute: 'numeric',
+            })}
+          </Text>
         </View>
-      )}
-      keyExtractor={(item) => item._id}
-    />
+        <View style={styles.countColumn}>
+          <Text style={styles.countItem}>{t('common:count', { count: item.pages })}</Text>
+          <Pressable style={styles.removeIcon} onPress={() => !loadingGoalItemsId && handleDeleteGoalItem(item._id)}>
+            {loadingGoalItemsId === item._id ? <Spinner size={Size.SMALL} /> : <RemoveIcon fill={colors.neutral_medium} width={20} height={20} />}
+          </Pressable>
+        </View>
+      </View>
+    ),
+    [handleDeleteGoalItem, language, loadingGoalItemsId, t],
+  );
+
+  const renderReadingHistoryNestedItems = useCallback(
+    (item) => <FlatList keyboardShouldPersistTaps='handled' data={item.data} renderItem={renderItem} keyExtractor={getKeyExtractor} />,
+    [getKeyExtractor, renderItem],
   );
 
   const getProgressBarLabelColor = () => {
@@ -164,16 +176,33 @@ const GoalDetails = ({
 
   const disabledControls = loadingStatus === IDLE || loadingStatus === PENDING || isLoading || !!loadingGoalItemsId;
 
-  const emptyListComponent = () =>
-    loadingStatus === IDLE || loadingStatus === PENDING ? (
+  const emptyListComponent = useCallback(() => (loadingStatus === IDLE || loadingStatus === PENDING ? <ItemPlaceholder /> : null), [loadingStatus]);
+
+  const renderSectionHeader = useCallback(
+    ({ section }) => (
+      <View style={styles.stickyHeader}>
+        <View style={styles.headerTitle}>
+          <Text style={styles.headerTitleText}>{section.title}</Text>
+        </View>
+        <View style={[styles.countColumn, styles.headerTitle]}>
+          <Text style={styles.headerTitleText}>{t('common:count', { count: section.count })}</Text>
+        </View>
+      </View>
+    ),
+    [t],
+  );
+
+  const renderItemFFormSectionList = useCallback(
+    ({ item }) => (
       <>
-        <ItemPlaceholder />
-        <ItemPlaceholder />
-        <ItemPlaceholder />
-        <ItemPlaceholder />
-        <ItemPlaceholder />
+        {renderReadingHistoryItem(item)}
+        {expandedItems.includes(item.title) && renderReadingHistoryNestedItems(item)}
       </>
-    ) : null;
+    ),
+    [expandedItems, renderReadingHistoryItem, renderReadingHistoryNestedItems],
+  );
+
+  const getKeyExtractorForSectionList = useCallback((item) => item.title, []);
 
   return (
     <View style={styles.container}>
@@ -247,25 +276,11 @@ const GoalDetails = ({
         <View style={styles.sectionedList}>
           {sectionedPagesDone.length > 0 ? <Text style={styles.title}>{t('goals:achievementsJournal')}</Text> : null}
           <SectionList
-            initialNumToRender={10}
             sections={sectionedPagesDone}
+            keyExtractor={getKeyExtractorForSectionList}
             ListEmptyComponent={emptyListComponent}
-            renderItem={({ item }) => (
-              <>
-                {renderReadingHistoryItem(item)}
-                {expandedItems.includes(item.title) && renderReadingHistoryNestedItems(item)}
-              </>
-            )}
-            renderSectionHeader={({ section }) => (
-              <View style={styles.stickyHeader}>
-                <View style={styles.headerTitle}>
-                  <Text style={styles.headerTitleText}>{section.title}</Text>
-                </View>
-                <View style={[styles.countColumn, styles.headerTitle]}>
-                  <Text style={styles.headerTitleText}>{t('common:count', { count: section.count })}</Text>
-                </View>
-              </View>
-            )}
+            renderItem={renderItemFFormSectionList}
+            renderSectionHeader={renderSectionHeader}
             stickySectionHeadersEnabled
           />
         </View>

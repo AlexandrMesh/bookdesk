@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { bool, func } from 'prop-types';
 import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,18 +48,17 @@ const LanguageSettings = ({ isVisible, hideModal, triggerReloadData }) => {
     { title: t(EN), isSelected: tempLanguageValue === EN, action: () => setTempLanguageValue(EN) },
   ];
 
+  const renderItem = useCallback(({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} />, []);
+
+  const getKeyExtractor = useCallback(({ title }) => title, []);
+
   return isVisible ? (
     <SlideMenu isVisible={isVisible} title={t('appLanguage')} shouldAutoClose={shouldAutoClose} onClose={hideModal} onReset={() => undefined}>
       {isLoading ? (
         <Spinner />
       ) : (
         <>
-          <FlashList
-            data={actionTypes}
-            estimatedItemSize={actionTypes.length}
-            renderItem={({ item }) => <BookStatusItem title={item.title} isSelected={item.isSelected} action={item.action} />}
-            keyExtractor={({ title }) => title}
-          />
+          <FlashList data={actionTypes} estimatedItemSize={40} renderItem={renderItem} keyExtractor={getKeyExtractor} />
           <View style={styles.submitButtonWrapper}>
             <Button style={styles.submitButton} title={t('common:save')} onPress={handleUpdate} />
           </View>

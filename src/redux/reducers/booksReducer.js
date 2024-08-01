@@ -1,7 +1,6 @@
 import union from 'lodash/union';
 import uniqBy from 'lodash/uniqBy';
 import createReducer from '~utils/createReducer';
-import updateIn from '~utils/updateIn';
 import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
 import {
@@ -273,10 +272,9 @@ export default createReducer(initialState, (state, action) => ({
       ...state.board,
       [action.boardType]: {
         ...state.board[action.boardType],
-        data: updateIn(state.board[action.boardType].data, (book) => book.bookId === action.bookId, {
-          bookStatus: action.bookStatus,
-          added: action.added,
-        }),
+        data: state.board[action.boardType].data.map((book) =>
+          book.bookId === action.bookId ? { ...book, bookStatus: action.bookStatus, added: action.added } : book,
+        ),
       },
     },
   }),
@@ -360,13 +358,9 @@ export default createReducer(initialState, (state, action) => ({
     updatingBookStatus: SUCCEEDED,
     search: {
       ...state.search,
-      data: updateIn(state.search.data, (book) => book.bookId === action.bookId, {
-        bookStatus: action.bookStatus,
-        added: action.added,
-      }),
+      data: state.search.data.map((book) => (book.bookId === action.bookId ? { ...book, bookStatus: action.bookStatus, added: action.added } : book)),
     },
   }),
-
   [SET_BOOK_VOTES]: () => ({
     ...state,
     bookVotes: action.data,
@@ -383,9 +377,7 @@ export default createReducer(initialState, (state, action) => ({
       ...state.board,
       [action.bookStatus]: {
         ...state.board[action.bookStatus],
-        data: updateIn(state.board[action.bookStatus].data, (book) => book.bookId === action.bookId, {
-          votesCount: action.votesCount,
-        }),
+        data: state.board[action.bookStatus].data.map((book) => (book.bookId === action.bookId ? { ...book, votesCount: action.votesCount } : book)),
       },
     },
   }),
@@ -394,9 +386,7 @@ export default createReducer(initialState, (state, action) => ({
     ...state,
     search: {
       ...state.search,
-      data: updateIn(state.search.data, (book) => book.bookId === action.bookId, {
-        votesCount: action.votesCount,
-      }),
+      data: state.search.data.map((book) => (book.bookId === action.bookId ? { ...book, votesCount: action.votesCount } : book)),
     },
   }),
 

@@ -1,12 +1,19 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
+import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
 import styles from './styles';
 
 const ItemPlaceholder = () => {
+  const animatedStyle = useGetAnimatedPlaceholderStyle(true);
+
   return (
-    <View style={styles.emptyItem}>
+    <Animated.View style={{ opacity: animatedStyle }}>
       <View style={styles.item} />
-    </View>
+      <View style={styles.item} />
+      <View style={styles.item} />
+      <View style={styles.item} />
+      <View style={styles.item} />
+    </Animated.View>
   );
 };
 
