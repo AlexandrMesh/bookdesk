@@ -1223,7 +1223,7 @@ upgrade react native https://react-native-community.github.io/upgrade-helper/?fr
 19.07.2024
 + Настроить автобэкапы базы данных https://gupta-aditya333.medium.com/how-to-backup-mongodb-automatically-3b953cd2c8c8
 Подумать над рейтингом чтецов
-Нотификацию для достижения целей
+Нотификацию для достижения целей https://notifee.app/react-native/docs/displaying-a-notification
 График пирог (категории, авторы прочитанных книг)
 Сделать светлую тему
 Для конкретного пользователя - "Вы перечитали книгу N раз"
@@ -1266,3 +1266,10 @@ upgrade react native https://react-native-community.github.io/upgrade-helper/?fr
 Перевод на TS
 redux toolkit
 useQuery
+Добавить цель на день или неделю и возможность удалять трекер
+
+08.08.2024
+Сразу делать фокус в инпуте на странице поиска
+Настроить Flipper
+Замерить скорость приложения
+Настроить линтер (надо было нажать внизу vs code на иконку рядом с надписью TypeScript configure)
