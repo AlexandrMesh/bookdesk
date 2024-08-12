@@ -224,7 +224,6 @@ export const loadBookList = createAsyncThunk(
     };
 
     try {
-      console.log(1111, '1111');
       const { data } =
         boardType !== ALL && !shouldLoadMoreResults ? await DataService().getBooksCountByYear({ boardType, language }) : { data: null };
       const result = await DataService().getBookList({ ...params });
@@ -232,7 +231,6 @@ export const loadBookList = createAsyncThunk(
       if (!shouldLoadMoreResults) {
         dispatch(incrementPageIndex(boardType));
       }
-      console.log(data, 'data');
       return {
         boardType,
         data: items || [],
@@ -268,12 +266,9 @@ export const loadCategories = createAsyncThunk(`${PREFIX}/loadCategories`, async
   const categories = getCategoriesData(state);
   const shouldReloadCategories = getShouldReloadCategories(state);
   const { language } = i18n;
-  console.log('loadCategories 0');
   if (categories.length === 0 || shouldReloadCategories || shouldRewrite) {
     try {
-      console.log('loadCategories 1');
       const { data } = (await DataService().getCategories({ language })) || {};
-      console.log('loadCategories 2');
       return data;
     } catch (error) {
       console.error(error);
