@@ -49,8 +49,8 @@ const Step1 = () => {
 
     if (isEmpty(error) && !isEmpty(bookNameTemp)) {
       clearSteps();
-      setAvailableStep(1);
-      const error = await loadSuggestedBooks(bookNameTemp);
+      dispatch(setAvailableStep(1));
+      const error = await dispatch(loadSuggestedBooks(bookNameTemp)).unwrap();
       setBookNameErrorTemp(error as any);
       if (!error) {
         dispatch(setNewCustomBookName({ name: bookNameTemp, error: null }));
@@ -63,15 +63,19 @@ const Step1 = () => {
       return false;
     }
     dispatch(setNewCustomBookName({ name: '', error: null }));
-    clearSuggestedBooks();
+    dispatch(clearSuggestedBooks());
     clearSteps();
-    setAvailableStep(1);
+    dispatch(setAvailableStep(1));
     setBookNameErrorTemp(null);
     setBookNameTemp('');
     return true;
   };
 
   const handleChangeBookName = (value: string) => {
+    if (isEmpty(value)) {
+      handleClear();
+      return;
+    }
     setBookNameErrorTemp(null);
     setBookNameTemp(value);
   };
@@ -112,8 +116,7 @@ const Step1 = () => {
         {!bookNameErrorTemp && loadingDataStatus === SUCCEEDED && suggestedBooks.length === 0 ? (
           <Text style={[styles.suggestionLabel, styles.successLabel]}>{t('customBook:pressNextToAddTheBook')}</Text>
         ) : (
-          loadingDataStatus !== IDLE &&
-          !bookNameErrorTemp && <BooksList data={suggestedBooks} loadingDataStatus={loadingDataStatus} extraData={suggestedBooks} />
+          loadingDataStatus !== IDLE && <BooksList data={suggestedBooks} loadingDataStatus={loadingDataStatus} />
         )}
       </View>
 

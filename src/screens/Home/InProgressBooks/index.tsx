@@ -24,7 +24,7 @@ const InProgressBooks = () => {
       dispatch(loadBookList({ boardType, shouldLoadMoreResults })),
     [dispatch],
   );
-  const _loadMoreBooks = () => dispatch(loadMoreBooks(IN_PROGRESS));
+  const _loadMoreBooks = useCallback(() => dispatch(loadMoreBooks(IN_PROGRESS)), [dispatch]);
   const _setBoardType = useCallback(() => dispatch(setBoardType(IN_PROGRESS)), [dispatch]);
 
   const sectionedBookListData = useAppSelector(deriveSectionedBookListData(IN_PROGRESS));

@@ -24,7 +24,7 @@ const PlannedBooks = () => {
       dispatch(loadBookList({ boardType, shouldLoadMoreResults })),
     [dispatch],
   );
-  const _loadMoreBooks = () => dispatch(loadMoreBooks(PLANNED));
+  const _loadMoreBooks = useCallback(() => dispatch(loadMoreBooks(PLANNED)), [dispatch]);
   const _setBoardType = useCallback(() => dispatch(setBoardType(PLANNED)), [dispatch]);
 
   const sectionedBookListData = useAppSelector(deriveSectionedBookListData(PLANNED));

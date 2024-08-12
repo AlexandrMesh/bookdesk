@@ -111,7 +111,7 @@ const BookDetails = () => {
             </View>
           ) : null}
 
-          {bookStatus ? <Comment /> : null}
+          {bookStatus ? <Comment bookStatus={bookStatus} /> : null}
           {annotation && (
             <View style={styles.marginTop}>
               <View>

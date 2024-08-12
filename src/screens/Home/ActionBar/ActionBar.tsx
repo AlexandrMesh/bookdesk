@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { View, TouchableHighlight } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -53,4 +53,4 @@ const ActionBar: FC<Props> = ({ filterParams, totalItems, showFilters, activeFil
   );
 };
 
-export default ActionBar;
+export default memo(ActionBar);

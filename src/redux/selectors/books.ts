@@ -94,31 +94,35 @@ export const deriveCategoriesSearchResult = (status: BookStatus) =>
       : [];
   });
 
+export const deriveBoard = (status: BookStatus) => createSelector([getBoard], (board) => board[status].data);
+
 export const deriveBookListData = (status: BookStatus) =>
-  createSelector([getBoard, getCategoriesData], (board, categories) =>
-    board[status].data.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath)?.value })),
+  createSelector([deriveBoard(status), getCategoriesData], (board, categories) =>
+    board.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath)?.value })),
   );
 
 export const deriveSectionedBookListData = (status: BookStatus) =>
-  createSelector([deriveBookListData(status), deriveBooksCountByYear(status)], (books, booksCountByYear) =>
-    (
+  createSelector(
+    [deriveBookListData(status), deriveBooksCountByYear(status)],
+    (books, booksCountByYear) =>
       map(
         groupBy(
-          books.map((item) => ({
-            ...item,
-            monthAndYear: new Date((item as any).added)?.toLocaleString(i18n.language, { month: 'long', year: 'numeric' }),
-          })),
+          [...books]
+            .sort((a, b) => (b.added || 0) - (a.added || 0))
+            .map((item) => ({
+              ...item,
+              monthAndYear: new Date((item as any).added)?.toLocaleString(i18n.language, { month: 'long', year: 'numeric' }),
+            })),
           'monthAndYear',
         ),
         (value: any[], key: string) => {
           return {
             title: key,
             count: booksCountByYear.find(({ monthAndYear }) => key === monthAndYear)?.count,
-            data: value.sort((a, b) => Number(b.added) - Number(a.added)),
+            data: value.sort((a, b) => b.added - a.added),
           };
         },
-      ) as any[]
-    ).sort((a, b) => Number(b.title) - Number(a.title)),
+      ) as any[],
   );
 
 export const deriveSearchBookListData = createSelector([getSearchResults, getCategoriesData], (searchResults, categories) =>

@@ -26,7 +26,7 @@ export const loadAppInfo = createAsyncThunk(`${PREFIX}/loadAppInfo`, async (_, {
       }),
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     dispatch(loadingAppInfoFailed());
   }
 });

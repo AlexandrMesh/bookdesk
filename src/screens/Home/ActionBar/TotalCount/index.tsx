@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import { number } from 'prop-types';
+import React, { memo, FC } from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import numberFormat from '~utils/numberFormat';
@@ -19,8 +18,4 @@ const TotalCount: FC<Props> = ({ count }) => {
   );
 };
 
-TotalCount.propTypes = {
-  count: number.isRequired,
-};
-
-export default TotalCount;
+export default memo(TotalCount);

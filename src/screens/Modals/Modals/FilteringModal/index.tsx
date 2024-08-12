@@ -18,7 +18,7 @@ import {
 } from '~redux/selectors/books';
 import {
   triggerReloadBookList,
-  toggleExpandedCategory,
+  toggleExpandedCategoryBooks,
   manageFilters,
   clearFilters,
   populateFilters,
@@ -48,7 +48,7 @@ const FilteringModal = () => {
     dispatch(triggerReloadBookList(boardType));
   };
   const _toggleExpandedCategory = useCallback(
-    (path: string, boardType: BookStatus) => dispatch(toggleExpandedCategory({ path, boardType })),
+    (path: string, boardType: BookStatus) => dispatch(toggleExpandedCategoryBooks({ path, boardType })),
     [dispatch],
   );
   const _clearFilters = (boardType: BookStatus) => dispatch(clearFilters(boardType));
@@ -207,7 +207,6 @@ const FilteringModal = () => {
           <SectionList
             keyboardShouldPersistTaps='handled'
             sections={categories}
-            extraData={categories}
             keyExtractor={getKeyExtractor}
             renderItem={renderItem}
             renderSectionHeader={renderSectionHeader}

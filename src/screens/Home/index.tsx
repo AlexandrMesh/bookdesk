@@ -1,6 +1,5 @@
-import React from 'react';
-import { func } from 'prop-types';
-import { View, Text } from 'react-native';
+import React, { FC } from 'react';
+import { View, Text, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import colors from '~styles/colors';
 import { TFunction } from 'i18next';
@@ -20,9 +19,16 @@ const renderLabel = (label: string, focused: boolean) => (
   </View>
 );
 
-const HeaderTabs = ({ t }: { t: TFunction }) => (
+type Props = {
+  t: TFunction;
+};
+
+const HeaderTabs: FC<Props> = ({ t }) => (
   <Tab.Navigator
     initialRouteName={ALL_BOOKS_ROUTE}
+    initialLayout={{
+      width: Dimensions.get('window').width,
+    }}
     screenOptions={{
       tabBarItemStyle: { width: 'auto' },
       tabBarStyle: {
@@ -47,10 +53,6 @@ const HeaderTabs = ({ t }: { t: TFunction }) => (
     />
   </Tab.Navigator>
 );
-
-HeaderTabs.propTypes = {
-  t: func.isRequired,
-};
 
 const Home = () => {
   const { t } = useTranslation('books');

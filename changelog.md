@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 4.0.0
+
+###### 2024-08-08
+- [BREAKING] Reworked to use TypeScript
+- [BREAKING] Reworked to use redux toolkit
+
 ## 3.2.0
 
 ###### 2024-08-01

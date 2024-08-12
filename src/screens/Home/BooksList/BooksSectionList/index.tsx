@@ -1,8 +1,8 @@
 import React, { FC, useCallback } from 'react';
-import { SectionList, Platform, UIManager, View, Text } from 'react-native';
+import { SectionList, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from '~UI/Spinner';
-import { PENDING } from '~constants/loadingStatuses';
+import { IDLE, PENDING } from '~constants/loadingStatuses';
 import useGetImgUrl from '~hooks/useGetImgUrl';
 import { LoadingType } from '~types/loadingTypes';
 import { IBook } from '~types/books';
@@ -19,10 +19,6 @@ export type Props = {
   loadMoreBooks: () => void;
   loadingDataStatus: LoadingType;
 };
-
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 const BookList: FC<Props> = ({ data, loadMoreBooks = () => undefined, loadingDataStatus }) => {
   const { t } = useTranslation('common');
@@ -52,10 +48,10 @@ const BookList: FC<Props> = ({ data, loadMoreBooks = () => undefined, loadingDat
   const renderItem = useCallback((item: { item: IBook }) => <BookItem imgUrl={imgUrl} itemStyle={styles.bookItem} bookItem={item.item} />, [imgUrl]);
 
   const onEndReached = useCallback(() => {
-    if (loadingDataStatus !== PENDING) {
+    if (data.length > 0 && loadingDataStatus !== PENDING && loadingDataStatus !== IDLE) {
       loadMoreBooks();
     }
-  }, [loadingDataStatus, loadMoreBooks]);
+  }, [data.length, loadingDataStatus, loadMoreBooks]);
 
   const renderSectionHeader = useCallback(
     (section: { section: { title: string; count: number } }) => (

@@ -48,7 +48,9 @@ const AllBooks = () => {
   useEffect(() => {
     if (isFocused && (loadingDataStatus === IDLE || shouldReloadData)) {
       const loadData = async () => {
+        console.log('before _loadCategories');
         await _loadCategories();
+        console.log('after _loadCategories');
         _loadBookList({
           boardType: ALL,
           shouldLoadMoreResults: false,

@@ -8,7 +8,7 @@ import Input from '~UI/TextInput';
 import { FILTER_ICON } from '~constants/dimensions';
 import { getActiveModal, deriveCategories } from '~redux/selectors/books';
 import { hideModal } from '~redux/actions/booksActions';
-import { toggleExpandedCategory, setSearchQuery, selectCategory, clearCategory, submitCategory } from '~redux/actions/customBookActions';
+import { toggleExpandedCategoryCustomBooks, setSearchQuery, selectCategory, clearCategory, submitCategory } from '~redux/actions/customBookActions';
 import { deriveCategoriesSearchResult, getCategorySearchQuery, getEditableSelectedCategoryPath } from '~redux/selectors/customBook';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { CUSTOM_BOOK_CATEGORY } from '~constants/modalTypes';
@@ -21,7 +21,7 @@ const CustomBookCategoryModal = () => {
   const [shouldAutoClose, setShouldAutoClose] = useState(false);
 
   const dispatch = useAppDispatch();
-  const _toggleExpandedCategory = useCallback((path: string) => dispatch(toggleExpandedCategory(path)), [dispatch]);
+  const _toggleExpandedCategory = useCallback((path: string) => dispatch(toggleExpandedCategoryCustomBooks(path)), [dispatch]);
   const onClose = () => {
     dispatch(hideModal());
     dispatch(clearCategory());
@@ -51,8 +51,8 @@ const CustomBookCategoryModal = () => {
   );
 
   const renderCategoryItem = useCallback(
-    (item: { value: string; path: string; isExpanded?: boolean; isSearchResult?: boolean }) => {
-      const splittedPath = item.path.split('.');
+    ({ value, path, isExpanded, isSearchResult }: any) => {
+      const splittedPath = path.split('.');
       const level = splittedPath.length;
       const iconWrapperStyle = () => {
         if (level === 1) {
@@ -64,24 +64,24 @@ const CustomBookCategoryModal = () => {
       const shouldDisplayArrowIcon = level === 1 || level === 2;
 
       return (
-        <View key={item.path} style={[styles.menuItem, item.isSearchResult && styles.searchResult]}>
-          {!item.isSearchResult && (
+        <View key={path} style={[styles.menuItem, isSearchResult && styles.searchResult]}>
+          {!isSearchResult && (
             <Pressable
               disabled={!shouldDisplayArrowIcon}
-              onPress={() => _toggleExpandedCategory(item.path)}
+              onPress={() => _toggleExpandedCategory(path)}
               style={[styles.arrowIconWrapper, iconWrapperStyle()]}
             >
               {shouldDisplayArrowIcon ? (
-                <ArrowDown style={item.isExpanded ? null : styles.collapsed} width={FILTER_ICON.width} height={FILTER_ICON.height} />
+                <ArrowDown style={isExpanded ? null : styles.collapsed} width={FILTER_ICON.width} height={FILTER_ICON.height} />
               ) : null}
             </Pressable>
           )}
           <Pressable
             style={styles.labelWrapper}
-            onPress={() => (level === 3 ? _selectCategory({ label: item.value, path: item.path }) : _toggleExpandedCategory(item.path))}
+            onPress={() => (level === 3 ? _selectCategory({ label: value, path }) : _toggleExpandedCategory(path))}
           >
-            <Text style={styles.menuItemTitle}>{t(`categories:${item.value}`)}</Text>
-            {level === 3 && <RadioButton isSelected={selectedCategoryPath === item.path} />}
+            <Text style={styles.menuItemTitle}>{t(`categories:${value}`)}</Text>
+            {level === 3 && <RadioButton isSelected={selectedCategoryPath === path} />}
           </Pressable>
         </View>
       );
@@ -89,22 +89,17 @@ const CustomBookCategoryModal = () => {
     [_selectCategory, selectedCategoryPath, t, _toggleExpandedCategory],
   );
 
-  const getKeyExtractorForCategory = useCallback((item: { path: string }) => item.path, []);
+  const getKeyExtractorForCategory = useCallback((item: any) => item.path, []);
 
-  const renderItemForCategory = useCallback((item: any) => renderCategoryItem({ value: item.title, path: item.path }), [renderCategoryItem]);
+  const renderItemForCategory = useCallback(({ item }: any) => renderCategoryItem({ value: item.title, path: item.path }), [renderCategoryItem]);
 
   const renderCategory = useCallback(
-    (item: any) => {
+    ({ value, path, isExpanded, data }: any) => {
       return (
         <>
-          {renderCategoryItem({ value: item.value, path: item.path, isExpanded: item.isExpanded })}
-          {item.isExpanded && item.data.length > 0 && (
-            <FlatList
-              keyboardShouldPersistTaps='handled'
-              data={item.data}
-              renderItem={renderItemForCategory}
-              keyExtractor={getKeyExtractorForCategory}
-            />
+          {renderCategoryItem({ value, path, isExpanded })}
+          {isExpanded && data.length > 0 && (
+            <FlatList keyboardShouldPersistTaps='handled' data={data} renderItem={renderItemForCategory} keyExtractor={getKeyExtractorForCategory} />
           )}
         </>
       );
@@ -134,7 +129,7 @@ const CustomBookCategoryModal = () => {
     return null;
   };
 
-  const getKeyExtractor = useCallback((item: { path: string }) => item.path, []);
+  const getKeyExtractor = useCallback((item: any) => item.path, []);
 
   const renderItem = useCallback(
     ({ item, section }: any) =>
@@ -144,7 +139,7 @@ const CustomBookCategoryModal = () => {
   );
 
   const renderSectionHeader = useCallback(
-    ({ section }: { section: any }) => renderCategoryItem({ value: section.title, path: section.path, isExpanded: section.isExpanded }),
+    ({ section }: any) => renderCategoryItem({ value: section.title, path: section.path, isExpanded: section.isExpanded }),
     [renderCategoryItem],
   );
 
@@ -170,7 +165,6 @@ const CustomBookCategoryModal = () => {
           <SectionList
             keyboardShouldPersistTaps='handled'
             sections={categories}
-            extraData={categories}
             keyExtractor={getKeyExtractor}
             renderItem={renderItem}
             renderSectionHeader={renderSectionHeader}

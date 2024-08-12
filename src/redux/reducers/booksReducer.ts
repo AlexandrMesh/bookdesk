@@ -311,31 +311,33 @@ export default createReducer(defaultState, (builder) => {
       state.board[action.payload].shouldReloadData = true;
     })
     .addCase(
-      booksActions.bookListLoaded,
-      (state, { payload: { boardType, data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults } }) => {
+      booksActions.loadBookList.fulfilled,
+      (state, { payload: { boardType, data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults, booksCountByYear } }) => {
         state.board[boardType].loadingDataStatus = SUCCEEDED;
+        state.board[boardType].shouldReloadData = false;
         state.board[boardType].data = shouldLoadMoreResults ? uniqBy([...state.board[boardType].data, ...data], 'bookId') : data;
         state.board[boardType].pagination.pageIndex = shouldLoadMoreResults ? state.board[boardType].pagination.pageIndex : -1;
         state.board[boardType].pagination.totalItems = totalItems;
         state.board[boardType].pagination.hasNextPage = hasNextPage;
+        state.board[boardType].booksCountByYear = booksCountByYear || state.board[boardType].booksCountByYear;
       },
     )
+    .addCase(booksActions.loadBookList.rejected, (state, action) => {
+      state.board[action.meta.arg.boardType].loadingDataStatus = FAILED;
+      state.board[action.meta.arg.boardType].shouldReloadData = false;
+    })
     .addCase(booksActions.setBookCountByYear, (state, { payload: { boardType = ALL, data } }) => {
       state.board[boardType].booksCountByYear = data;
     })
-    .addCase(booksActions.loadingBookListFailed, (state, action) => {
-      state.board[action.payload].loadingDataStatus = FAILED;
-      state.board[action.payload].shouldReloadData = false;
-    })
-    .addCase(booksActions.startLoadingCategories, (state) => {
+    .addCase(booksActions.loadCategories.pending, (state) => {
       state.categories.loadingDataStatus = PENDING;
     })
-    .addCase(booksActions.categoriesLoaded, (state, action) => {
-      state.categories.data = action.payload;
+    .addCase(booksActions.loadCategories.fulfilled, (state, action) => {
+      state.categories.data = action.payload || state.categories.data;
       state.categories.shouldReloadData = false;
       state.categories.loadingDataStatus = SUCCEEDED;
     })
-    .addCase(booksActions.loadingCategoriesFailed, (state) => {
+    .addCase(booksActions.loadCategories.rejected, (state) => {
       state.categories.shouldReloadData = false;
       state.categories.loadingDataStatus = FAILED;
     })
@@ -383,6 +385,12 @@ export default createReducer(defaultState, (builder) => {
       });
     })
     .addCase(booksActions.clearFilters, (state, action) => {
+      state.board[action.payload].editableFilterParams.categoryPaths = [];
+      state.board[action.payload].editableFilterParams.indeterminated = [];
+    })
+    .addCase(booksActions.clearAllFilters, (state, action) => {
+      state.board[action.payload].filterParams.categoryPaths = [];
+      state.board[action.payload].filterParams.indeterminated = [];
       state.board[action.payload].editableFilterParams.categoryPaths = [];
       state.board[action.payload].editableFilterParams.indeterminated = [];
     })

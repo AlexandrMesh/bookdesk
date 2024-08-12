@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text } from 'react-native';
 import { useAppDispatch, useAppSelector } from '~hooks';
@@ -10,8 +10,10 @@ import { PENDING } from '~constants/loadingStatuses';
 import { SECONDARY } from '~constants/themes';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { getBookCommentUpdatingStatus, getBookCommentDeletingStatus, getBookCommentData } from '~redux/selectors/books';
-import { updateUserComment, updateUserBookCommentInBookDetails, deleteUserComment } from '~redux/actions/booksActions';
+import { updateUserComment, updateUserBookCommentInBookDetails, deleteUserComment, getBookComment } from '~redux/actions/booksActions';
 import Input from '~UI/TextInput';
+import { BookStatus } from '~types/books';
+import { ALL } from '~constants/boardType';
 import styles from '../styles';
 
 type ParamList = {
@@ -20,7 +22,11 @@ type ParamList = {
   };
 };
 
-const Comment = () => {
+type Props = {
+  bookStatus: BookStatus;
+};
+
+const Comment: FC<Props> = ({ bookStatus }) => {
   const { t, i18n } = useTranslation(['books', 'categories', 'common']);
   const { language } = i18n;
   const isFocused = useIsFocused();
@@ -99,12 +105,22 @@ const Comment = () => {
   const isUpdatingComment = bookCommentUpdatingStatus === PENDING;
   const isDeletingComment = bookCommentDeletingStatus === PENDING;
 
+  const getComment = useCallback(() => {
+    if (bookStatus !== ALL) {
+      dispatch(getBookComment(params?.bookId));
+    }
+  }, [bookStatus, params?.bookId, dispatch]);
+
+  useEffect(() => {
+    getComment();
+  }, [getComment]);
+
   return (
     <View>
       {bookCommentData?.comment || isCommentEditFormVisible ? (
         <View style={[styles.bordered, styles.marginTop]}>
           <View style={styles.blockHeader}>
-            <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
+            <Text style={[styles.item, styles.mediumColor]}>{t('noteOnTheBook')}</Text>
             {isCommentEditFormVisible ? (
               <Text style={styles.subTitle}>
                 {t('common:charactersCount', { count: editedComment.trim().length, maxCount: MAX_COUNT_CHARACTERS_FOR_COMMENT })}
@@ -115,7 +131,7 @@ const Comment = () => {
           </View>
           {isCommentEditFormVisible ? (
             <Input
-              placeholder={t('books:enterComment')}
+              placeholder={t('books:enterNote')}
               wrapperClassName={styles.commentWrapperClassName}
               className={styles.commentInput}
               onChangeText={handleChangeComment}
@@ -176,7 +192,7 @@ const Comment = () => {
       {!isCommentEditFormVisible && !bookCommentData?.comment ? (
         <View style={[styles.bordered, styles.marginTop]}>
           <View style={styles.blockHeader}>
-            <Text style={[styles.item, styles.mediumColor]}>{t('myComment')}</Text>
+            <Text style={[styles.item, styles.mediumColor]}>{t('noteOnTheBook')}</Text>
           </View>
           <View style={styles.borderedBlockFooter}>
             <Button

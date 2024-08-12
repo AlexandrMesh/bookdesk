@@ -6,7 +6,14 @@ import { useTranslation } from 'react-i18next';
 import Button from '~UI/Button';
 import { Spinner } from '~UI/Spinner';
 import { getActiveModal } from '~redux/selectors/books';
-import { clearDataForChangeLanguage, hideModal, triggerReloadBookList, loadCategories, clearSearchResults } from '~redux/actions/booksActions';
+import {
+  clearDataForChangeLanguage,
+  hideModal,
+  triggerReloadBookList,
+  loadCategories,
+  clearSearchResults,
+  clearAllFilters,
+} from '~redux/actions/booksActions';
 import { clearAddCustomBookState } from '~redux/actions/customBookActions';
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { LANGUAGE_SETTINGS } from '~constants/modalTypes';
@@ -29,6 +36,7 @@ const LanguageSettings = () => {
   const _hideModal = () => dispatch(hideModal());
   const triggerReloadData = async () => {
     dispatch(clearDataForChangeLanguage());
+    dispatch(clearAllFilters(ALL));
     dispatch(clearAddCustomBookState());
     await dispatch(loadCategories(true));
     dispatch(triggerReloadBookList(ALL));
