@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as authActions from '~redux/actions/authActions';
 import { IDLE, PENDING, FAILED, SUCCEEDED } from '~constants/loadingStatuses';
-import { IError, IProfile, IUpdateAppInfo } from '~types/auth';
+import { IError, IProfile } from '~types/auth';
 import { LoadingType } from '~types/loadingTypes';
 
 export interface ISignUpState {
@@ -35,11 +35,6 @@ const getDefaultSignInState = (): ISignInState => ({
   errors: getDefaultErrorsState(),
 });
 
-const getDefaultUpdateAppInfo = (): IUpdateAppInfo => ({
-  version: '',
-  googlePlayUrl: '',
-});
-
 const getDefaultProfileState = (): IProfile => ({
   _id: '',
   email: '',
@@ -53,7 +48,6 @@ const getDefaultProfileState = (): IProfile => ({
 
 export interface IAuthState {
   profile: IProfile;
-  updateAppInfo: IUpdateAppInfo;
   signUp: ISignUpState;
   signIn: ISignInState;
   checkingStatus: LoadingType;
@@ -61,7 +55,6 @@ export interface IAuthState {
 
 export const getDefaultState = (): IAuthState => ({
   profile: getDefaultProfileState(),
-  updateAppInfo: getDefaultUpdateAppInfo(),
   signUp: getDefaultSignUpState(),
   signIn: getDefaultSignInState(),
   checkingStatus: IDLE,
@@ -71,51 +64,53 @@ const defaultState = getDefaultState();
 
 export default createReducer(defaultState, (builder) => {
   builder
-    .addCase(authActions.startSignIn, (state) => {
+    .addCase(authActions.signIn.pending, (state) => {
       state.signIn.loadingDataStatus = PENDING;
     })
-    .addCase(authActions.singInFailed, (state) => {
-      state.signIn.loadingDataStatus = FAILED;
-    })
-    .addCase(authActions.signedIn, (state) => {
-      state.signIn.isSignedIn = true;
+    .addCase(authActions.signIn.fulfilled, (state, { payload: { profile, isGoogleAccount, isSignedIn } }) => {
+      state.signIn.isSignedIn = isSignedIn;
       state.signIn.loadingDataStatus = SUCCEEDED;
+      state.profile = profile;
+      state.signIn.isGoogleAccount = isGoogleAccount;
     })
     .addCase(authActions.setSignInError, (state, { payload: { fieldName, error } }) => {
       state.signIn.errors[fieldName] = error as string;
     })
-    .addCase(authActions.setUpdateAppInfo, (state, { payload: { version, googlePlayUrl } }) => {
-      state.updateAppInfo.version = version;
-      state.updateAppInfo.googlePlayUrl = googlePlayUrl;
+    .addCase(authActions.signInFailed.fulfilled, (state, { payload: { fieldName, error } }) => {
+      state.signIn.loadingDataStatus = FAILED;
+      state.signIn.errors[fieldName] = error as string;
     })
-    .addCase(authActions.clearSignInErrors, (state) => {
-      state.signIn.errors = getDefaultErrorsState();
-    })
-    .addCase(authActions.startSignUp, (state) => {
+    .addCase(authActions.signUp.pending, (state) => {
       state.signUp.loadingDataStatus = PENDING;
     })
-    .addCase(authActions.signUpFailed, (state) => {
+    .addCase(authActions.signUp.fulfilled, (state, { payload: { profile, isSignedIn } }) => {
+      state.signIn.isSignedIn = isSignedIn;
+      state.signIn.loadingDataStatus = SUCCEEDED;
+      state.profile = profile;
+    })
+    .addCase(authActions.signUp.rejected, (state) => {
       state.signUp.loadingDataStatus = FAILED;
     })
     .addCase(authActions.setSignUpError, (state, { payload: { fieldName, error } }) => {
       state.signUp.errors[fieldName] = error as string;
     })
-    .addCase(authActions.setIsGoogleAccount, (state, action) => {
-      state.signIn.isGoogleAccount = action.payload;
-    })
-    .addCase(authActions.setProfile, (state, action) => {
-      state.profile = action.payload;
-    })
-    .addCase(authActions.startAuthChecking, (state) => {
+    .addCase(authActions.checkAuth.pending, (state) => {
       state.checkingStatus = PENDING;
     })
-    .addCase(authActions.authChecked, (state) => {
+    .addCase(authActions.checkAuth.fulfilled, (state, { payload: { profile, isGoogleAccount, isSignedIn } }) => {
+      state.signIn.isSignedIn = isSignedIn;
+      state.signIn.loadingDataStatus = SUCCEEDED;
       state.checkingStatus = SUCCEEDED;
+      state.signIn.isGoogleAccount = isGoogleAccount;
+      state.profile = profile;
+    })
+    .addCase(authActions.checkAuth.rejected, (state) => {
+      state.checkingStatus = FAILED;
     })
     .addCase(authActions.authCheckingFailed, (state) => {
       state.checkingStatus = FAILED;
     })
-    .addCase(authActions.clearProfile, (state) => {
+    .addCase(authActions.signOut.fulfilled, (state) => {
       state.profile = getDefaultProfileState();
       state.signUp = getDefaultSignUpState();
       state.signIn = getDefaultSignInState();

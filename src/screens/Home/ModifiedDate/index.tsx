@@ -1,11 +1,11 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, memo } from 'react';
 import { View, Text, Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { getBookValuesUpdatingStatus, getBookToUpdate } from '~redux/selectors/books';
 import { PENDING } from '~constants/loadingStatuses';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
-import { setBookToUpdate, setBookValuesToUpdate, showModal } from '~redux/actions/booksActions';
+import { setBookToUpdate, showModal } from '~redux/actions/booksActions';
 import { DATE_UPDATER } from '~constants/modalTypes';
 import { BookStatus } from '~types/books';
 import styles from './styles';
@@ -26,8 +26,7 @@ const ModifiedDate: FC<Props> = ({ bookId, bookStatus, added, fontSize = 15, hei
   const bookValuesUpdatingStatus = useAppSelector(getBookValuesUpdatingStatus);
 
   const handleAddedPress = useCallback(() => {
-    dispatch(setBookToUpdate({ bookId, bookStatus }));
-    dispatch(setBookValuesToUpdate(added));
+    dispatch(setBookToUpdate({ bookId, bookStatus, added }));
     dispatch(showModal(DATE_UPDATER));
   }, [added, bookId, bookStatus, dispatch]);
 
@@ -44,4 +43,4 @@ const ModifiedDate: FC<Props> = ({ bookId, bookStatus, added, fontSize = 15, hei
   );
 };
 
-export default ModifiedDate;
+export default memo(ModifiedDate);

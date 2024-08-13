@@ -12,7 +12,11 @@ const getDefaultState = (): IDefaultState => ({
 const defaultState = getDefaultState();
 
 export default createReducer(defaultState, (builder) => {
-  builder.addCase(statisticActions.triggerReloadStat, (state) => {
-    state.shouldReloadStat = true;
-  });
+  builder
+    .addCase(statisticActions.triggerReloadStat, (state) => {
+      state.shouldReloadStat = true;
+    })
+    .addCase(statisticActions.loadStat.fulfilled, (state) => {
+      state.shouldReloadStat = false;
+    });
 });

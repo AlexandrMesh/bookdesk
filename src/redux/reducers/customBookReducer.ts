@@ -179,16 +179,16 @@ export default createReducer(defaultState, (builder) => {
       state.add.steps[1].name.value = name;
       state.add.steps[1].name.error = error;
     })
-    .addCase(customBooksActions.startAddingBook, (state) => {
+    .addCase(customBooksActions.addCustomBook.pending, (state) => {
       state.add.book.loadingDataStatus = PENDING;
     })
-    .addCase(customBooksActions.addingBookFailed, (state) => {
-      state.add.book.loadingDataStatus = FAILED;
-      state.add.book.added = false;
-    })
-    .addCase(customBooksActions.bookAdded, (state) => {
+    .addCase(customBooksActions.addCustomBook.fulfilled, (state) => {
       state.add.book.loadingDataStatus = SUCCEEDED;
       state.add.book.added = true;
+    })
+    .addCase(customBooksActions.addCustomBook.rejected, (state) => {
+      state.add.book.loadingDataStatus = FAILED;
+      state.add.book.added = false;
     })
     .addCase(customBooksActions.setCurrentStep, (state, action) => {
       state.add.currentStep = action.payload;
@@ -262,34 +262,36 @@ export default createReducer(defaultState, (builder) => {
         book.bookId === bookId ? { ...book, votesCount } : book,
       );
     })
-    .addCase(customBooksActions.startLoadingSuggestedBooks, (state) => {
+    .addCase(customBooksActions.loadSuggestedBooks.pending, (state) => {
       state.add.steps[1].suggestedBooks.data = [];
       state.add.steps[1].suggestedBooks.loadingDataStatus = PENDING;
     })
-    .addCase(customBooksActions.clearSuggestedBooks, (state) => {
-      state.add.steps[1].suggestedBooks = getDefaultSuggestedBooksState();
-    })
-    .addCase(customBooksActions.loadingSuggestedBooksFailed, (state) => {
-      state.add.steps[1].suggestedBooks.loadingDataStatus = FAILED;
-    })
-    .addCase(customBooksActions.suggestedBooksLoaded, (state, { payload: { data = [], totalItems = 0, hasNextPage = false } }) => {
+    .addCase(customBooksActions.loadSuggestedBooks.fulfilled, (state, { payload: { error, data, totalItems, hasNextPage, allowToAddBook } }) => {
+      state.add.steps[1].name.error = error;
+      state.add.steps[1].allowToAddBook = allowToAddBook;
       state.add.steps[1].suggestedBooks.loadingDataStatus = SUCCEEDED;
       state.add.steps[1].suggestedBooks.data = data;
       state.add.steps[1].suggestedBooks.pagination.totalItems = totalItems;
       state.add.steps[1].suggestedBooks.pagination.hasNextPage = hasNextPage;
     })
+    .addCase(customBooksActions.loadSuggestedBooks.rejected, (state) => {
+      state.add.steps[1].suggestedBooks.loadingDataStatus = FAILED;
+    })
+    .addCase(customBooksActions.clearSuggestedBooks, (state) => {
+      state.add.steps[1].suggestedBooks = getDefaultSuggestedBooksState();
+    })
     .addCase(customBooksActions.setShouldAddCover, (state, action) => {
       state.add.steps[2].shouldAddCover = action.payload;
     })
-    .addCase(customBooksActions.startLoadingSuggestedCovers, (state) => {
+    .addCase(customBooksActions.loadSuggestedCovers.pending, (state) => {
       state.add.steps[2].suggestedCovers.loadingDataStatus = PENDING;
     })
-    .addCase(customBooksActions.loadingSuggestedCoversFailed, (state) => {
-      state.add.steps[2].suggestedCovers.loadingDataStatus = FAILED;
-    })
-    .addCase(customBooksActions.suggestedCoversLoaded, (state, action) => {
+    .addCase(customBooksActions.loadSuggestedCovers.fulfilled, (state, action) => {
       state.add.steps[2].suggestedCovers.data = action.payload;
       state.add.steps[2].suggestedCovers.loadingDataStatus = SUCCEEDED;
+    })
+    .addCase(customBooksActions.loadSuggestedCovers.rejected, (state) => {
+      state.add.steps[2].suggestedCovers.loadingDataStatus = FAILED;
     })
     .addCase(customBooksActions.selectCover, (state, action) => {
       state.add.steps[2].selectedCover = action.payload;

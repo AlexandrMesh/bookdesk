@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { memo, FC, useState, useEffect, useCallback, useMemo } from 'react';
 import { Animated, View, Pressable, Vibration, ViewStyle, StyleProp } from 'react-native';
 import { useAppDispatch } from '~hooks';
 import useGetAnimatedPlaceholderStyle from '~hooks/useGetAnimatedPlaceholderStyle';
@@ -93,4 +93,4 @@ const Rating: FC<Props> = ({ bookId, width = 32, height = 32, wrapperStyle, rati
   );
 };
 
-export default Rating;
+export default memo(Rating);

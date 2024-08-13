@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState, useCallback, useMemo } from 'react';
+import React, { FC, useRef, useState, useCallback, useMemo, memo } from 'react';
 import { FlatList, Animated, Text, TouchableOpacity, Modal, View, useWindowDimensions, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppDispatch } from '~hooks';
@@ -143,7 +143,7 @@ const Dropdown: FC<Props> = ({ bookStatus, bookId, wrapperStyle, buttonLabelStyl
       >
         <View style={styles.status}>
           <Text style={[styles.dropdownButtonTxtStyle, buttonLabelStyle, { color: statusColor }]}>{t(bookStatus) || t('noStatus')}</Text>
-          <DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor }} />
+          <DropdownIcon width={DROPDOWN_ICON.width} height={DROPDOWN_ICON.height} style={{ fill: statusColor } as any} />
         </View>
         {renderDropdown()}
       </TouchableOpacity>
@@ -151,4 +151,4 @@ const Dropdown: FC<Props> = ({ bookStatus, bookId, wrapperStyle, buttonLabelStyl
   );
 };
 
-export default Dropdown;
+export default memo(Dropdown);

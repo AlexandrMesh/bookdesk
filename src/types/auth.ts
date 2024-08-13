@@ -8,11 +8,6 @@ export interface IProfile {
   supportApp: ISupportApp;
 }
 
-export interface IUpdateAppInfo {
-  version: string;
-  googlePlayUrl: string;
-}
-
 export interface IError {
   [x: string]: string;
 }

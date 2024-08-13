@@ -1263,8 +1263,8 @@ upgrade react native https://react-native-community.github.io/upgrade-helper/?fr
 + Убрать из BookItem useState для рейтинга
 + Вынести setImgUrl из BookItem
 + Вынести comment в book details в отдельный компонент
-Перевод на TS
-redux toolkit
++ Перевод на TS
++ redux toolkit
 useQuery
 Добавить цель на день или неделю и возможность удалять трекер
 
@@ -1275,14 +1275,14 @@ useQuery
 Настроить линтер (надо было нажать внизу vs code на иконку рядом с надписью TypeScript configure)
 
 09.08.2024
-useMemo оборачивать большие списки с вычислениями mao, reduce, filter. Аналог reselect в redux
+useMemo оборачивать большие списки с вычислениями map, reduce, filter. Аналог reselect в redux
 Написать статью про оптимизацию на vc и habr
 getItemLayout использовать
 react-native-bundle-visualizer проверить пакеты
-Добавить параметры в Фаст имадж
++ Добавить параметры в Фаст имадж (они уже по дефолту ставятся)
 Использовать react lazy
 Вручную убрать все консоль логи и консоль error + плагин так как в пакетах много их
-Заменить actions start, loaded в createAsyncThunk
++ Заменить actions start, loaded в createAsyncThunk
 Перевести все листы на FlashList
 
 баги
@@ -1302,10 +1302,14 @@ react-native-bundle-visualizer проверить пакеты
 Поработать со стилями на экране добавление своей книги
 При изменении статуса книги подумать над анимацию полета типа на доску или еще как-то
 Подумать над memo для BookList бордов компонентов, потестить как он будет ререндерится если обернуть в memo
-Переработать селекторы чтобы board[status] был в getBoard(status)
-Переписать redux на использование fulfilled, pending, failed статусов
++ Переработать селекторы чтобы board[status] был в getBoard(status)
++ Переписать redux на использование fulfilled, pending, failed статусов
 Пофиксить везде any тип
+Удалить неиспользуемые пакеты package.json
 
 12.08.2024
 + Изменить название мой комментарий -> заметка
 Вынести заметку в краткое описание книги
+Порефактоиить компоненты типа like, rating и посмотреть как они рендерятся
++ Порефакторить ModifiedDate action
++ После рефакторинга authActions пройтись на предмет неиспользуемых actions

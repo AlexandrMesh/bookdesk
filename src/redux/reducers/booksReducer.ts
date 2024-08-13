@@ -1,6 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import union from 'lodash/union';
 import uniqBy from 'lodash/uniqBy';
+import isEmpty from 'lodash/isEmpty';
 import * as booksActions from '~redux/actions/booksActions';
 import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
@@ -143,8 +144,6 @@ export interface IUpdatedBookValuesState {
   bookToUpdate: {
     bookId: string;
     bookStatus: BookStatus;
-  };
-  valuesToUpdate: {
     added: number | null;
   };
   loadingDataStatus: LoadingType;
@@ -154,8 +153,6 @@ const getUpdatedBookValuesState = (): IUpdatedBookValuesState => ({
   bookToUpdate: {
     bookId: '',
     bookStatus: 'all',
-  },
-  valuesToUpdate: {
     added: null,
   },
   loadingDataStatus: IDLE,
@@ -208,29 +205,26 @@ export default createReducer(defaultState, (builder) => {
     .addCase(booksActions.setBoardType, (state, action) => {
       state.boardType = action.payload;
     })
-    .addCase(booksActions.clearBoardType, (state) => {
-      state.boardType = null;
-    })
     .addCase(booksActions.showModal, (state, action) => {
       state.activeModal = action.payload;
     })
     .addCase(booksActions.hideModal, (state) => {
       state.activeModal = null;
     })
-    .addCase(booksActions.startDeletingBookComment, (state) => {
+    .addCase(booksActions.deleteUserComment.pending, (state) => {
       state.bookComment.deletingDataStatus = PENDING;
     })
-    .addCase(booksActions.bookCommentDeleted, (state) => {
+    .addCase(booksActions.deleteUserComment.fulfilled, (state) => {
       state.bookComment.deletingDataStatus = SUCCEEDED;
       state.bookComment.data = { bookId: '', comment: '', added: 0 };
     })
-    .addCase(booksActions.deletingBookCommentFailed, (state) => {
+    .addCase(booksActions.deleteUserComment.rejected, (state) => {
       state.bookComment.deletingDataStatus = FAILED;
     })
-    .addCase(booksActions.startUpdatingBookComment, (state) => {
+    .addCase(booksActions.updateUserComment.pending, (state) => {
       state.bookComment.updatingDataStatus = PENDING;
     })
-    .addCase(booksActions.commentUpdated, (state, action) => {
+    .addCase(booksActions.updateUserComment.fulfilled, (state, action) => {
       state.bookComment.data = action.payload;
       state.bookComment.updatingDataStatus = SUCCEEDED;
       state.bookComment.loadingDataStatus = SUCCEEDED;
@@ -238,77 +232,121 @@ export default createReducer(defaultState, (builder) => {
     .addCase(booksActions.userBookRatingsLoaded, (state, action) => {
       state.bookRatings = action.payload;
     })
+    .addCase(booksActions.updateUserBookRating.fulfilled, (state, action) => {
+      state.bookRatings = action.payload;
+    })
+    .addCase(booksActions.deleteUserBookRating.fulfilled, (state, action) => {
+      state.bookRatings = action.payload;
+    })
     .addCase(booksActions.clearBookComment, (state) => {
       state.bookComment = getDefaultBookCommentState();
     })
-    .addCase(booksActions.startLoadingBookComment, (state) => {
+    .addCase(booksActions.getBookComment.pending, (state) => {
       state.bookComment.loadingDataStatus = PENDING;
     })
-    .addCase(booksActions.loadingBookCommentFailed, (state) => {
+    .addCase(booksActions.getBookComment.fulfilled, (state, action) => {
+      state.bookComment.data = action.payload;
+      state.bookComment.updatingDataStatus = SUCCEEDED;
+      state.bookComment.loadingDataStatus = SUCCEEDED;
+    })
+    .addCase(booksActions.getBookComment.rejected, (state) => {
       state.bookComment.loadingDataStatus = FAILED;
-    })
-    .addCase(booksActions.updateBook, (state, { payload: { boardType, bookId, bookStatus, added } }) => {
-      state.updatingBookStatus = SUCCEEDED;
-      state.board[boardType].data = state.board[boardType].data.map((book) => (book.bookId === bookId ? { ...book, bookStatus, added } : book));
-    })
-    .addCase(booksActions.updateBookDetails, (state, { payload: { bookStatus, added } }) => {
-      state.bookDetails.data.bookStatus = bookStatus;
-      state.bookDetails.data.added = added;
     })
     .addCase(booksActions.updateUserBookCommentInBookDetails, (state, { payload: { comment, commentAdded } }) => {
       state.bookDetails.data.comment = comment;
       state.bookDetails.data.commentAdded = commentAdded;
     })
-    .addCase(booksActions.setBookToUpdate, (state, { payload: { bookId, bookStatus } }) => {
+    .addCase(booksActions.setBookToUpdate, (state, { payload: { bookId, bookStatus, added } }) => {
       state.updatedBookValues.bookToUpdate.bookId = bookId;
       state.updatedBookValues.bookToUpdate.bookStatus = bookStatus;
+      state.updatedBookValues.bookToUpdate.added = added;
     })
-    .addCase(booksActions.setBookValuesToUpdate, (state, action) => {
-      state.updatedBookValues.valuesToUpdate.added = action.payload;
-    })
-    .addCase(booksActions.startUpdatingBookAddedDate, (state) => {
+    .addCase(booksActions.updateUserBookAddedDate.pending, (state) => {
       state.updatedBookValues.loadingDataStatus = PENDING;
     })
-    .addCase(booksActions.updatingBookAddedDateFailed, (state) => {
-      state.updatedBookValues.loadingDataStatus = FAILED;
-    })
-    .addCase(booksActions.bookAddedDateUpdated, (state) => {
+    .addCase(booksActions.updateUserBookAddedDate.fulfilled, (state, { payload: { bookStatus, countByYear, added, bookId } }) => {
+      state.board[bookStatus].booksCountByYear = countByYear;
+      state.bookDetails.data.bookStatus = bookStatus;
+      state.bookDetails.data.added = added;
+      state.updatingBookStatus = SUCCEEDED;
+      state.board[ALL].data = state.board[ALL].data.map((book) => (book.bookId === bookId ? { ...book, added } : book));
+      state.board[bookStatus].data = state.board[bookStatus].data.map((book) => (book.bookId === bookId ? { ...book, added } : book));
+      state.search.data = state.search.data.map((book) => (book.bookId === bookId ? { ...book, added } : book));
       state.updatedBookValues.loadingDataStatus = SUCCEEDED;
+    })
+    .addCase(booksActions.updateUserBookAddedDate.rejected, (state) => {
+      state.updatedBookValues.loadingDataStatus = FAILED;
     })
     .addCase(booksActions.clearBookDetails, (state) => {
       state.bookDetails = getDefaultBookDetailsState();
     })
-    .addCase(booksActions.updateBookInSearchResults, (state, { payload: { bookId, bookStatus, added } }) => {
-      state.updatingBookStatus = SUCCEEDED;
-      state.search.data = state.search.data.map((book) => (book.bookId === bookId ? { ...book, bookStatus, added } : book));
-    })
     .addCase(booksActions.setBookVotes, (state, action) => {
       state.bookVotes = action.payload;
     })
-    .addCase(booksActions.updateBookVotesAction, (state, { payload: { bookStatus, bookId, votesCount } }) => {
-      state.board[bookStatus].data = state.board[bookStatus].data.map((book) => (book.bookId === bookId ? { ...book, votesCount } : book));
-    })
-    .addCase(booksActions.updateBookVotesInSearch, (state, { payload: { bookId, votesCount } }) => {
-      state.search.data = state.search.data.map((book) => (book.bookId === bookId ? { ...book, votesCount } : book));
-    })
-    .addCase(booksActions.updateBookVotesInBookDetails, (state, action) => {
-      state.bookDetails.data.votesCount = action.payload;
+    .addCase(booksActions.updateBookVotes.fulfilled, (state, { meta, payload: { bookStatus, userVotes, votesCount } }) => {
+      state.bookVotes = userVotes;
+      state.board[ALL].data = state.board[ALL].data.map((book) => (book.bookId === meta.arg.bookId ? { ...book, votesCount } : book));
+      state.search.data = state.search.data.map((book) => (book.bookId === meta.arg.bookId ? { ...book, votesCount } : book));
+
+      if (!isEmpty(state.bookDetails.data)) {
+        state.bookDetails.data.votesCount = votesCount;
+      }
+
+      if (bookStatus) {
+        state.board[bookStatus].data = state.board[bookStatus].data.map((book) => (book.bookId === meta.arg.bookId ? { ...book, votesCount } : book));
+      }
     })
     .addCase(booksActions.clearSearchResults, (state) => {
       state.search = { ...getDefaultSearchState(), shouldClearSearchQuery: true };
     })
-    .addCase(booksActions.incrementPageIndex, (state, action) => {
-      state.board[action.payload].pagination.pageIndex += 1;
-    })
-    .addCase(booksActions.startUpdatingUsersBook, (state) => {
+    .addCase(booksActions.updateUserBook.pending, (state) => {
       state.updatingBookStatus = PENDING;
     })
-    .addCase(booksActions.startLoadingBookList, (state, action) => {
-      state.board[action.payload].loadingDataStatus = PENDING;
-    })
+    .addCase(
+      booksActions.updateUserBook.fulfilled,
+      (state, { payload: { boardType, currentBookStatus, countByYear, bookId, bookStatus, added, newBookStatus } }) => {
+        state.board[currentBookStatus || ALL].booksCountByYear = countByYear;
+        if (!isEmpty(state.bookDetails.data)) {
+          state.bookDetails.data.bookStatus = bookStatus;
+          state.bookDetails.data.added = added;
+        }
+
+        if (boardType !== ALL) {
+          state.board[boardType].data = state.board[boardType].data.filter((book) => book.bookId !== bookId);
+          state.board[boardType].pagination.totalItems =
+            state.board[boardType].pagination.totalItems > 0 ? state.board[boardType].pagination.totalItems - 1 : 0;
+        }
+
+        if (currentBookStatus && boardType === ALL) {
+          state.board[currentBookStatus].data = state.board[currentBookStatus].data.filter((book) => book.bookId !== bookId);
+          state.board[currentBookStatus].pagination.totalItems =
+            state.board[currentBookStatus].pagination.totalItems > 0 ? state.board[currentBookStatus].pagination.totalItems - 1 : 0;
+        }
+
+        state.updatingBookStatus = SUCCEEDED;
+        state.board[ALL].data = state.board[ALL].data.map((book) => (book.bookId === bookId ? { ...book, bookStatus, added } : book));
+        state.search.data = state.search.data.map((book) => (book.bookId === bookId ? { ...book, bookStatus, added } : book));
+
+        // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
+        if (newBookStatus !== ALL) {
+          state.board[newBookStatus].data = [];
+          state.board[newBookStatus].shouldReloadData = true;
+        }
+
+        if (state.board[boardType].data.length === 0 && state.board[boardType].data.length < state.board[boardType].pagination.totalItems) {
+          state.board[boardType].data = [];
+          state.board[boardType].shouldReloadData = true;
+        }
+      },
+    )
     .addCase(booksActions.triggerReloadBookList, (state, action) => {
       state.board[action.payload].data = [];
       state.board[action.payload].shouldReloadData = true;
+    })
+    .addCase(booksActions.loadBookList.pending, (state, action) => {
+      state.board[action.meta.arg.boardType].loadingDataStatus = action.meta.arg.shouldLoadMoreResults
+        ? PENDING
+        : state.board[action.meta.arg.boardType].loadingDataStatus;
     })
     .addCase(
       booksActions.loadBookList.fulfilled,
@@ -316,7 +354,7 @@ export default createReducer(defaultState, (builder) => {
         state.board[boardType].loadingDataStatus = SUCCEEDED;
         state.board[boardType].shouldReloadData = false;
         state.board[boardType].data = shouldLoadMoreResults ? uniqBy([...state.board[boardType].data, ...data], 'bookId') : data;
-        state.board[boardType].pagination.pageIndex = shouldLoadMoreResults ? state.board[boardType].pagination.pageIndex : -1;
+        state.board[boardType].pagination.pageIndex = shouldLoadMoreResults ? state.board[boardType].pagination.pageIndex + 1 : 0;
         state.board[boardType].pagination.totalItems = totalItems;
         state.board[boardType].pagination.hasNextPage = hasNextPage;
         state.board[boardType].booksCountByYear = booksCountByYear || state.board[boardType].booksCountByYear;
@@ -325,9 +363,6 @@ export default createReducer(defaultState, (builder) => {
     .addCase(booksActions.loadBookList.rejected, (state, action) => {
       state.board[action.meta.arg.boardType].loadingDataStatus = FAILED;
       state.board[action.meta.arg.boardType].shouldReloadData = false;
-    })
-    .addCase(booksActions.setBookCountByYear, (state, { payload: { boardType = ALL, data } }) => {
-      state.board[boardType].booksCountByYear = data;
     })
     .addCase(booksActions.loadCategories.pending, (state) => {
       state.categories.loadingDataStatus = PENDING;
@@ -341,17 +376,14 @@ export default createReducer(defaultState, (builder) => {
       state.categories.shouldReloadData = false;
       state.categories.loadingDataStatus = FAILED;
     })
-    .addCase(booksActions.triggerReloadCategories, (state) => {
-      state.categories.shouldReloadData = true;
-    })
-    .addCase(booksActions.startLoadingBookDetails, (state) => {
+    .addCase(booksActions.loadBookDetails.pending, (state) => {
       state.bookDetails.loadingDataStatus = PENDING;
     })
-    .addCase(booksActions.bookDetailsLoaded, (state, action) => {
+    .addCase(booksActions.loadBookDetails.fulfilled, (state, action) => {
       state.bookDetails.data = action.payload;
       state.bookDetails.loadingDataStatus = SUCCEEDED;
     })
-    .addCase(booksActions.loadingBookDetailsFailed, (state) => {
+    .addCase(booksActions.loadBookDetails.rejected, (state) => {
       state.bookDetails.loadingDataStatus = FAILED;
     })
     .addCase(booksActions.resetCategories, (state, action) => {
@@ -407,31 +439,27 @@ export default createReducer(defaultState, (builder) => {
         ? (state.board[boardType].editableFilterParams[filterParam] as string[]).filter((param) => !value.includes(param))
         : (state.board[boardType].editableFilterParams[filterParam] as string[]).filter((param) => param !== value);
     })
-    .addCase(booksActions.removeBook, (state, { payload: { boardType, id } }) => {
-      state.board[boardType].data = state.board[boardType].data.filter((book) => book.bookId !== id);
-      state.board[boardType].pagination.totalItems =
-        state.board[boardType].pagination.totalItems > 0 ? state.board[boardType].pagination.totalItems - 1 : 0;
-    })
-    .addCase(booksActions.searchResultsLoaded, (state, { payload: { data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults } }) => {
-      state.search.data = shouldLoadMoreResults ? [...state.search.data, ...data] : data;
-      state.search.loadingDataStatus = SUCCEEDED;
-      state.search.shouldReloadData = false;
-      state.search.pagination.totalItems = totalItems;
-      state.search.pagination.hasNextPage = hasNextPage;
-    })
-    .addCase(booksActions.startLoadingSearchResults, (state) => {
+    .addCase(booksActions.loadSearchResults.pending, (state) => {
       state.search.loadingDataStatus = PENDING;
+    })
+    .addCase(
+      booksActions.loadSearchResults.fulfilled,
+      (state, { payload: { data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults } }) => {
+        state.search.data = shouldLoadMoreResults ? [...state.search.data, ...data] : data;
+        state.search.loadingDataStatus = SUCCEEDED;
+        state.search.shouldReloadData = false;
+        state.search.pagination.totalItems = totalItems;
+        state.search.pagination.hasNextPage = hasNextPage;
+        state.search.pagination.pageIndex = shouldLoadMoreResults ? state.search.pagination.pageIndex + 1 : 0;
+      },
+    )
+    .addCase(booksActions.loadSearchResults.rejected, (state) => {
+      state.search.loadingDataStatus = FAILED;
+      state.search.shouldReloadData = false;
     })
     .addCase(booksActions.triggerReloadSearchResults, (state) => {
       state.search.data = [];
       state.search.shouldReloadData = true;
-    })
-    .addCase(booksActions.loadingSearchResultsFailed, (state) => {
-      state.search.loadingDataStatus = FAILED;
-      state.search.shouldReloadData = false;
-    })
-    .addCase(booksActions.incrementSearchResultPageIndex, (state) => {
-      state.search.pagination.pageIndex += 1;
     })
     .addCase(booksActions.triggerShouldNotClearSearchQuery, (state) => {
       state.search.shouldClearSearchQuery = false;

@@ -1,38 +1,39 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ScrollView, View, Text, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import DeviceInfo from 'react-native-device-info';
 import Button from '~UI/Button';
-import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { Spinner } from '~UI/Spinner';
-import { getAppName, getAppDescription, getAppEmail, getLoadingDataStatus } from '~redux/selectors/app';
-import { loadAppInfo, clearAppInfo } from '~redux/actions/appActions';
 import { SECONDARY } from '~constants/themes';
-import { useAppDispatch, useAppSelector } from '~hooks';
 import styles from './styles';
 
 const About = () => {
   const { t } = useTranslation('app');
 
-  const dispatch = useAppDispatch();
-  const _loadAppInfo = useCallback(() => dispatch(loadAppInfo()), [dispatch]);
-  const _clearAppInfo = useCallback(() => dispatch(clearAppInfo()), [dispatch]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [description, setDescription] = useState('');
 
-  const name = useAppSelector(getAppName);
-  const description = useAppSelector(getAppDescription);
-  const email = useAppSelector(getAppEmail);
-  const loadingDataStatus = useAppSelector(getLoadingDataStatus);
+  const loadInfo = useCallback(async () => {
+    setIsLoading(true);
+    const name = await AsyncStorage.getItem('appName');
+    const email = await AsyncStorage.getItem('email');
+    const description = await AsyncStorage.getItem('description');
+    setName(name as string);
+    setEmail(email as string);
+    setDescription(description as string);
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    _loadAppInfo();
-    return () => {
-      _clearAppInfo();
-    };
-  }, [_loadAppInfo, _clearAppInfo]);
+    loadInfo();
+  }, [loadInfo]);
 
   return (
     <View style={styles.container}>
-      {loadingDataStatus === PENDING || loadingDataStatus === IDLE ? (
+      {isLoading ? (
         <View style={styles.spinnerWrapper}>
           <Spinner />
         </View>

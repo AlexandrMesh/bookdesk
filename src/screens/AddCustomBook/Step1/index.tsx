@@ -50,7 +50,7 @@ const Step1 = () => {
     if (isEmpty(error) && !isEmpty(bookNameTemp)) {
       clearSteps();
       dispatch(setAvailableStep(1));
-      const error = await dispatch(loadSuggestedBooks(bookNameTemp)).unwrap();
+      const { error } = await dispatch(loadSuggestedBooks(bookNameTemp)).unwrap();
       setBookNameErrorTemp(error as any);
       if (!error) {
         dispatch(setNewCustomBookName({ name: bookNameTemp, error: null }));

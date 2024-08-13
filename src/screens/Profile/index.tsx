@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { ScrollView, View, Text, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { ABOUT_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
-import { getUserEmail, getRegistered, getGooglePlayUrl, deriveIsTheLatestAppVersion } from '~redux/selectors/auth';
+import { getUserEmail, getRegistered } from '~redux/selectors/auth';
 import { signOut } from '~redux/actions/authActions';
 import { showModal } from '~redux/actions/booksActions';
 import { LANGUAGE_SETTINGS } from '~constants/modalTypes';
@@ -12,7 +12,12 @@ import { useAppDispatch, useAppSelector } from '~hooks';
 import Button from '~UI/Button';
 import styles from './styles';
 
-const Profile = () => {
+type Props = {
+  isTheLatestAppVersion?: boolean;
+  googlePlayUrl: string;
+};
+
+const Profile: FC<Props> = ({ isTheLatestAppVersion, googlePlayUrl }) => {
   const { t, i18n } = useTranslation(['profile', 'common', 'app']);
   const navigation = useNavigation<any>();
 
@@ -24,8 +29,6 @@ const Profile = () => {
 
   const email = useAppSelector(getUserEmail);
   const registered = useAppSelector(getRegistered);
-  const googlePlayUrl = useAppSelector(getGooglePlayUrl);
-  const isTheLatestAppVersion = useAppSelector(deriveIsTheLatestAppVersion);
 
   return (
     <View style={styles.container}>

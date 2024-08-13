@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 4.1.0
+
+###### 2024-08-13
+- [Fix] Fix redux actions, selectors, reducers for using `pending`, `fulfilled` and `rejected` statuses
+- [Fix] mmeo for `Like`, `Status`, `Rating`, `ModifiedDate` components
+
 ## 4.0.0
 
 ###### 2024-08-08

@@ -8,29 +8,14 @@ import { setGoal } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
 import i18n, { getT } from '~translations/i18n';
 import { RU } from '~constants/languages';
-import { IProfile } from '~types/auth';
 
 const PREFIX = 'AUTH';
 
-export const clearProfile = createAction(`${PREFIX}/clearProfile`);
-export const clearSignInErrors = createAction(`${PREFIX}/clearSignInErrors`);
-export const clearSignUpErrors = createAction(`${PREFIX}/clearSignUpErrors`);
-export const startAuthChecking = createAction(`${PREFIX}/startAuthChecking`);
 export const authCheckingFailed = createAction(`${PREFIX}/authCheckingFailed`);
-export const authChecked = createAction(`${PREFIX}/authChecked`);
-export const startSignIn = createAction(`${PREFIX}/startSignIn`);
-export const singInFailed = createAction(`${PREFIX}/singInFailed`);
-export const signedIn = createAction(`${PREFIX}/signedIn`);
-export const startSignUp = createAction(`${PREFIX}/startSignUp`);
-export const signUpFailed = createAction(`${PREFIX}/signUpFailed`);
-export const signedUp = createAction(`${PREFIX}/signedUp`);
-export const setUpdateAppInfo = createAction<{ version: string; googlePlayUrl: string }>(`${PREFIX}/setUpdateAppInfo`);
 export const setSignInError = createAction<{ fieldName: string; error: string | null }>(`${PREFIX}/setSignInError`);
 export const setSignUpError = createAction<{ fieldName: string; error: string | null }>(`${PREFIX}/setSignUpError`);
-export const setIsGoogleAccount = createAction<boolean>(`${PREFIX}/setIsGoogleAccount`);
-export const setProfile = createAction<IProfile>(`${PREFIX}/setProfile`);
 
-export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: string, { dispatch }) => {
+export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: string) => {
   try {
     const { data } = await axios({
       method: 'get',
@@ -53,6 +38,10 @@ export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: str
       enabledSupportAppModal,
       daysRegisteredUserFromNowToDisplaySupportAppModal,
       daysViewedSupportModalFromNowToDisplaySupportAppModal,
+      appName,
+      email,
+      description,
+      descriptionEn,
     } = data || {};
     await AsyncStorage.setItem('apiUrl', apiUrl);
     await AsyncStorage.setItem('imgUrl', imgUrl);
@@ -63,7 +52,9 @@ export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: str
     await AsyncStorage.setItem('daysViewedSupportModalFromNowToDisplaySupportAppModal', daysViewedSupportModalFromNowToDisplaySupportAppModal);
     await AsyncStorage.setItem('underConstruction', underConstruction);
     await AsyncStorage.setItem('underConstructionMessage', i18n.language === RU ? underConstructionMessage : underConstructionMessageEn);
-    dispatch(setUpdateAppInfo({ version: data?.appVersion, googlePlayUrl: data?.googlePlayUrl }));
+    await AsyncStorage.setItem('appName', appName);
+    await AsyncStorage.setItem('email', email);
+    await AsyncStorage.setItem('description', i18n.language === RU ? description : descriptionEn);
 
     return {
       apiUrl: data?.apiUrl,
@@ -71,6 +62,7 @@ export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: str
       minimumSupportedAppVersion: data?.minimumSupportedAppVersion,
       googlePlayUrl: data?.googlePlayUrl,
       underConstruction: data?.underConstruction,
+      appVersion: data?.appVersion,
     };
   } catch (error) {
     console.error(error);
@@ -78,53 +70,61 @@ export const getConfig = createAsyncThunk(`${PREFIX}/getConfig`, async (url: str
   }
 });
 
-export const signInFailed = createAsyncThunk(
-  `${PREFIX}/signInFailed`,
-  async (error: { response: { data: { fieldName: string; key: string } } }, { dispatch }) => {
-    dispatch(singInFailed());
-    const responseData = error?.response?.data;
-    if (responseData) {
-      const { fieldName, key } = responseData;
-      dispatch(setSignInError({ fieldName, error: getT('errors')(key) }));
-    } else {
-      dispatch(setSignInError({ fieldName: 'password', error: getT('errors')('serverNotAvailable') }));
-    }
-  },
-);
+export const signInFailed = createAsyncThunk(`${PREFIX}/signInFailed`, async (error: { response: { data: { fieldName: string; key: string } } }) => {
+  const responseData = error?.response?.data;
+  if (responseData) {
+    const { fieldName, key } = responseData;
+    return {
+      fieldName,
+      error: getT('errors')(key),
+    };
+  }
+  return {
+    fieldName: 'password',
+    error: getT('errors')('serverNotAvailable'),
+  };
+});
 
 export const checkAuth = createAsyncThunk(`${PREFIX}/checkAuth`, async (token: string, { dispatch }) => {
-  dispatch(startAuthChecking());
   if (!token) {
     dispatch(authCheckingFailed());
-  } else {
-    try {
-      const result = await Promise.all([GoogleSignin.isSignedIn(), AuthService().checkAuth(token)]);
-      const isGoogleSignedIn = result[0];
-      const { data } = result[1];
-      if (data.profile) {
-        const { _id, email, registered, updated, supportApp } = data.profile;
-        const { numberOfPagesForGoal } = data;
-        if (numberOfPagesForGoal) {
-          dispatch(setGoal(numberOfPagesForGoal));
-        }
-        dispatch(setProfile({ _id, email, registered, updated, supportApp }));
-        dispatch(setBookVotes(data.userVotes));
-        dispatch(userBookRatingsLoaded(data.userBookRatings));
-        dispatch(signedIn());
-        dispatch(authChecked());
-        return isGoogleSignedIn && dispatch(setIsGoogleAccount(true));
+    return {
+      profile: {},
+      isGoogleAccount: false,
+      isSignedIn: false,
+    };
+  }
+  try {
+    const result = await Promise.all([GoogleSignin.isSignedIn(), AuthService().checkAuth(token)]);
+    const isGoogleSignedIn = result[0];
+    const { data } = result[1];
+    if (data.profile) {
+      const { numberOfPagesForGoal } = data;
+      if (numberOfPagesForGoal) {
+        dispatch(setGoal(numberOfPagesForGoal));
       }
-    } catch (error) {
-      dispatch(signInFailed(error as any));
-      dispatch(authCheckingFailed());
+      dispatch(setBookVotes(data.userVotes));
+      dispatch(userBookRatingsLoaded(data.userBookRatings));
+      return {
+        profile: data.profile,
+        isGoogleAccount: isGoogleSignedIn,
+        isSignedIn: true,
+      };
     }
+    return {
+      profile: {},
+      isGoogleAccount: false,
+      isSignedIn: false,
+    };
+  } catch (error) {
+    dispatch(signInFailed(error as any));
+    throw error;
   }
 });
 
 export const signIn = createAsyncThunk(
   `${PREFIX}/signIn`,
   async ({ email, password, isGoogleAccount }: { email: string; password: string; isGoogleAccount?: boolean }, { dispatch }) => {
-    dispatch(startSignIn());
     if (isGoogleAccount) {
       try {
         await GoogleSignin.hasPlayServices();
@@ -138,32 +138,38 @@ export const signIn = createAsyncThunk(
           language: NativeModules?.I18nManager?.localeIdentifier,
         });
         if (data) {
-          dispatch(signedIn());
           if (data.numberOfPagesForGoal) {
             dispatch(setGoal(data.numberOfPagesForGoal));
           }
-          dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
           dispatch(userBookRatingsLoaded(data.userBookRatings));
-          dispatch(setIsGoogleAccount(true));
           try {
             await AsyncStorage.setItem('token', data.token);
           } catch (error) {
             console.error(error);
           }
+          return {
+            isSignedIn: true,
+            profile: data.profile,
+            isGoogleAccount: true,
+          };
         }
+        return {
+          profile: {},
+          isSignedIn: false,
+          isGoogleAccount: true,
+        };
       } catch (error) {
         dispatch(signInFailed(error as any));
+        throw error;
       }
     } else {
       try {
         const { data } = await AuthService().signIn({ email, password });
         if (data) {
-          dispatch(signedIn());
           if (data.numberOfPagesForGoal) {
             dispatch(setGoal(data.numberOfPagesForGoal));
           }
-          dispatch(setProfile(data.profile));
           dispatch(setBookVotes(data.userVotes));
           dispatch(userBookRatingsLoaded(data.userBookRatings));
           try {
@@ -171,30 +177,44 @@ export const signIn = createAsyncThunk(
           } catch (error) {
             console.error(error);
           }
+          return {
+            isSignedIn: true,
+            profile: data.profile,
+            isGoogleAccount: false,
+          };
         }
+        return {
+          profile: {},
+          isSignedIn: false,
+          isGoogleAccount: false,
+        };
       } catch (error) {
         dispatch(signInFailed(error as any));
+        throw error;
       }
     }
   },
 );
 
 export const signUp = createAsyncThunk(`${PREFIX}/signUp`, async ({ email, password }: { email: string; password: string }, { dispatch }) => {
-  dispatch(startSignUp());
   try {
     const { data } = await AuthService().signUp({ email, password, language: NativeModules?.I18nManager?.localeIdentifier });
     if (data) {
-      dispatch(signedUp());
-      dispatch(signedIn());
-      dispatch(setProfile(data.profile));
       try {
         await AsyncStorage.setItem('token', data.token);
       } catch (error) {
         console.error(error);
       }
+      return {
+        isSignedIn: true,
+        profile: data.profile,
+      };
     }
+    return {
+      isSignedIn: false,
+      profile: {},
+    };
   } catch (error) {
-    dispatch(signUpFailed());
     const responseData = (error as any)?.response?.data;
     if (responseData) {
       const { fieldName, key } = responseData;
@@ -202,28 +222,21 @@ export const signUp = createAsyncThunk(`${PREFIX}/signUp`, async ({ email, passw
     } else {
       dispatch(setSignUpError({ fieldName: 'password', error: getT('errors')('serverNotAvailable') }));
     }
+    throw error;
   }
 });
 
 export const signOut = createAsyncThunk(`${PREFIX}/signOut`, async (_, { dispatch }) => {
   try {
     await AsyncStorage.removeItem('token');
-    dispatch(clearProfile());
     dispatch(clearBooksData());
+    const isGoogleSignedIn = await GoogleSignin.isSignedIn();
+    if (isGoogleSignedIn) {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+    }
   } catch (error) {
     console.error(error);
-  } finally {
-    try {
-      const isGoogleSignedIn = await GoogleSignin.isSignedIn();
-      if (isGoogleSignedIn) {
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-        dispatch(setIsGoogleAccount(false));
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // dispatch(setSignInLoading(false));
-    }
+    throw error;
   }
 });

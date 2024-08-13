@@ -40,7 +40,6 @@ export const getLoadingBookDetailsStatus = (state: StateWithBooks) => getBookDet
 export const getBookDetailsData = (state: StateWithBooks) => getBookDetails(state).data;
 
 export const getBookToUpdate = (state: StateWithBooks) => getUpdatedBookValues(state).bookToUpdate;
-export const getBookValuesToUpdate = (state: StateWithBooks) => getUpdatedBookValues(state).valuesToUpdate;
 export const getBookValuesUpdatingStatus = (state: StateWithBooks) => getUpdatedBookValues(state).loadingDataStatus;
 
 export const getBookCommentData = (state: StateWithBooks) => getBookComment(state).data;
@@ -50,11 +49,14 @@ export const getBookCommentDeletingStatus = (state: StateWithBooks) => getBookCo
 
 export const getUserBookRatings = (state: StateWithBooks) => getBooks(state).bookRatings;
 
+export const deriveBoard = (status: BookStatus) => createSelector([getBoard], (board) => board[status]);
+
 export const deriveUserBookRating = (bookIdExternal: string) =>
   createSelector([getUserBookRatings], (bookRatings) => bookRatings.find(({ bookId }) => bookId === bookIdExternal));
 
-export const deriveBookListEditableFilterParams = (status: BookStatus) => createSelector([getBoard], (board) => board[status].editableFilterParams);
-export const deriveBookListFilterParams = (status: BookStatus) => createSelector([getBoard], (board) => board[status].filterParams);
+export const deriveBookListEditableFilterParams = (status: BookStatus) =>
+  createSelector([deriveBoard(status)], (board) => board.editableFilterParams);
+export const deriveBookListFilterParams = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.filterParams);
 
 export const deriveEditableIndeterminatedCategories = (status: BookStatus) =>
   createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.indeterminated);
@@ -79,7 +81,7 @@ export const deriveFilterBookCategoryPaths = (status: BookStatus) =>
     (filterParams.categoryPaths as string[]).filter((item) => item.split('.').length === 3),
   );
 
-export const deriveBooksCountByYear = (status: BookStatus) => createSelector([getBoard], (board) => board[status].booksCountByYear);
+export const deriveBooksCountByYear = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.booksCountByYear);
 
 export const deriveSearchQuery = createSelector([getSearchQuery], (query) => query.trim());
 
@@ -94,10 +96,10 @@ export const deriveCategoriesSearchResult = (status: BookStatus) =>
       : [];
   });
 
-export const deriveBoard = (status: BookStatus) => createSelector([getBoard], (board) => board[status].data);
+export const deriveBoardData = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.data);
 
 export const deriveBookListData = (status: BookStatus) =>
-  createSelector([deriveBoard(status), getCategoriesData], (board, categories) =>
+  createSelector([deriveBoardData(status), getCategoriesData], (board, categories) =>
     board.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath)?.value })),
   );
 
@@ -134,11 +136,11 @@ export const deriveBookDetails = createSelector([getBookDetailsData, getCategori
   categoryValue: categories.find((category) => category.path === bookDetails.categoryPath)?.value,
 }));
 
-export const deriveLoadingBookListStatus = (status: BookStatus) => createSelector([getBoard], (board) => board[status].loadingDataStatus);
+export const deriveLoadingBookListStatus = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.loadingDataStatus);
 
-export const deriveShouldReloadBookList = (status: BookStatus) => createSelector([getBoard], (board) => board[status].shouldReloadData);
+export const deriveShouldReloadBookList = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.shouldReloadData);
 
-export const deriveBookListPagination = (status: BookStatus) => createSelector([getBoard], (board) => board[status].pagination);
+export const deriveBookListPagination = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.pagination);
 
 export const deriveBookListTotalItems = (status: BookStatus) =>
   createSelector([deriveBookListPagination(status)], (pagination) => pagination.totalItems);
@@ -149,7 +151,7 @@ export const deriveBookListHasNextPage = (status: BookStatus) =>
 export const deriveBookListPageIndex = (status: BookStatus) =>
   createSelector([deriveBookListPagination(status)], (pagination) => pagination.pageIndex);
 
-export const deriveBookListSortParams = (status: BookStatus) => createSelector([getBoard], (board) => board[status].sortParams);
+export const deriveBookListSortParams = (status: BookStatus) => createSelector([deriveBoard(status)], (board) => board.sortParams);
 
 export const deriveNestedCategories = (fullPath: string) =>
   createSelector([getCategoriesData], (categories) => {

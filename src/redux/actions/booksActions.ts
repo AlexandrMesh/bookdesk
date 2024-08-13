@@ -1,7 +1,6 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
-import isEmpty from 'lodash/isEmpty';
 import { PAGE_SIZE } from '~constants/bookList';
 import DataService from '~http/services/books';
 import {
@@ -20,7 +19,6 @@ import {
   getCategoriesData,
   getSearchSortParams,
   getSearchQuery,
-  getBookDetailsData,
   getShouldReloadCategories,
   getBookToUpdate,
 } from '~redux/selectors/books';
@@ -29,85 +27,39 @@ import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/acti
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { ALL } from '~constants/boardType';
 import i18n from '~translations/i18n';
-import { BookStatus, IBook, IComment, IRating, IVote } from '~types/books';
+import { BookStatus, IBook, IRating, IVote } from '~types/books';
 import { AppThunkAPI } from '~redux/store/configureStore';
 
 const PREFIX = 'BOOKS';
 
 export const clearBookComment = createAction(`${PREFIX}/clearBookComment`);
-export const startLoadingBookComment = createAction(`${PREFIX}/startLoadingBookComment`);
-export const loadingBookCommentFailed = createAction(`${PREFIX}/loadingBookCommentFailed`);
-export const startUpdatingUserBookRating = createAction(`${PREFIX}/startUpdatingUserBookRating`);
-export const updatingUserBookRatingFailed = createAction(`${PREFIX}/updatingUserBookRatingFailed`);
-export const startUpdatingBookComment = createAction(`${PREFIX}/startUpdatingBookComment`);
-export const updatingBookCommentFailed = createAction(`${PREFIX}/updatingBookCommentFailed`);
-export const commentUpdated = createAction<IComment>(`${PREFIX}/commentUpdated`);
 export const userBookRatingsLoaded = createAction<IRating[]>(`${PREFIX}/userBookRatingsLoaded`);
-export const startDeletingBookComment = createAction(`${PREFIX}/startDeletingBookComment`);
-export const deletingBookCommentFailed = createAction(`${PREFIX}/deletingBookCommentFailed`);
-export const bookCommentDeleted = createAction(`${PREFIX}/bookCommentDeleted`);
-export const setBookToUpdate = createAction<{ bookId: string; bookStatus: BookStatus }>(`${PREFIX}/setBookToUpdate`);
-export const setBookValuesToUpdate = createAction<number>(`${PREFIX}/setBookValuesToUpdate`);
+export const setBookToUpdate = createAction<{ bookId: string; bookStatus: BookStatus; added: number }>(`${PREFIX}/setBookToUpdate`);
 export const setBoardType = createAction<BookStatus>(`${PREFIX}/setBoardType`);
-export const setBookCountByYear = createAction<{
-  boardType: BookStatus;
-  data: { monthAndYear: string; count: number; month: string; year: string }[];
-}>(`${PREFIX}/setBookCountByYear`);
 export const showModal = createAction<string>(`${PREFIX}/showModal`);
-export const clearBoardType = createAction(`${PREFIX}/clearBoardType`);
 export const hideModal = createAction(`${PREFIX}/hideModal`);
 export const searchCategory = createAction<{ boardType: BookStatus; query: string }>(`${PREFIX}/searchCategory`);
 export const clearSearchQueryForCategory = createAction<BookStatus>(`${PREFIX}/clearSearchQueryForCategory`);
 export const resetCategories = createAction<BookStatus>(`${PREFIX}/resetCategories`);
 export const triggerReloadBookList = createAction<BookStatus>(`${PREFIX}/triggerReloadBookList`);
-export const triggerReloadCategories = createAction(`${PREFIX}/triggerReloadCategories`);
-export const startUpdatingBookAddedDate = createAction(`${PREFIX}/startUpdatingBookAddedDate`);
-export const updatingBookAddedDateFailed = createAction(`${PREFIX}/updatingBookAddedDateFailed`);
-export const bookAddedDateUpdated = createAction(`${PREFIX}/bookAddedDateUpdated`);
-export const startLoadingBookDetails = createAction(`${PREFIX}/startLoadingBookDetails`);
-export const loadingBookDetailsFailed = createAction(`${PREFIX}/loadingBookDetailsFailed`);
-export const bookDetailsLoaded = createAction<IBook>(`${PREFIX}/bookDetailsLoaded`);
 export const clearBookDetails = createAction(`${PREFIX}/clearBookDetails`);
 export const toggleExpandedCategoryBooks = createAction<{ path: string; boardType: BookStatus }>(`${PREFIX}/toggleExpandedCategoryBooks`);
 export const addToIndeterminatedCategories = createAction<{ boardType: BookStatus; value: string }>(`${PREFIX}/addToIndeterminatedCategories`);
 export const clearIndeterminatedCategories = createAction<{ boardType: BookStatus; path: string }>(`${PREFIX}/toggleExpandedCategory`);
 export const setBookVotes = createAction<IVote[]>(`${PREFIX}/setBookVotes`);
-export const updateBookVotesAction = createAction<{ bookStatus: BookStatus; bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesAction`);
-export const updateBookVotesInSearch = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInSearch`);
-export const updateBookVotesInBookDetails = createAction<number>(`${PREFIX}/updateBookVotesInBookDetails`);
 export const triggerReloadSearchResults = createAction(`${PREFIX}/triggerReloadSearchResults`);
 export const clearBooksData = createAction(`${PREFIX}/clearBooksData`);
 export const clearDataForChangeLanguage = createAction(`${PREFIX}/clearDataForChangeLanguage`);
-export const startUpdatingUsersBook = createAction(`${PREFIX}/startUpdatingUsersBook`);
-export const incrementPageIndex = createAction<BookStatus>(`${PREFIX}/incrementPageIndex`);
-export const incrementSearchResultPageIndex = createAction(`${PREFIX}/incrementSearchResultPageIndex`);
 export const clearSearchResults = createAction(`${PREFIX}/clearSearchResults`);
 export const triggerShouldNotClearSearchQuery = createAction(`${PREFIX}/triggerShouldNotClearSearchQuery`);
-export const updatingUsersBookFailed = createAction(`${PREFIX}/updatingUsersBookFailed`);
 export const addFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(`${PREFIX}/addFilterValue`);
 export const removeFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(
   `${PREFIX}/removeFilterValue`,
 );
-export const loadingSearchResultsFailed = createAction(`${PREFIX}/loadingSearchResultsFailed`);
-export const startLoadingSearchResults = createAction(`${PREFIX}/startLoadingSearchResults`);
-export const removeBook = createAction<{ id: string; boardType: BookStatus }>(`${PREFIX}/removeBook`);
-export const updateBook = createAction<{ bookId: string; boardType: BookStatus; bookStatus: BookStatus; added: number }>(`${PREFIX}/updateBook`);
-export const updateBookDetails = createAction<{ bookStatus: BookStatus; added: number }>(`${PREFIX}/updateBookDetails`);
 export const updateUserBookCommentInBookDetails = createAction<{ comment: string; commentAdded: number }>(
   `${PREFIX}/updateUserBookCommentInBookDetails`,
 );
-export const updateBookInSearchResults = createAction<{ bookId: string; boardType: BookStatus; bookStatus: BookStatus; added: number }>(
-  `${PREFIX}/updateBookInSearchResults`,
-);
 export const setSearchQueryAction = createAction<string>(`${PREFIX}/setSearchQueryAction`);
-export const searchResultsLoaded = createAction<{
-  boardType: BookStatus;
-  data: IBook[];
-  totalItems: number;
-  hasNextPage: boolean;
-  shouldLoadMoreResults: boolean;
-}>(`${PREFIX}/searchResultsLoaded`);
-export const startLoadingBookList = createAction<BookStatus>(`${PREFIX}/startLoadingBookList`);
 export const clearFilters = createAction<BookStatus>(`${PREFIX}/clearFilters`);
 export const clearAllFilters = createAction<BookStatus>(`${PREFIX}/clearAllFilters`);
 export const populateFilters = createAction<BookStatus>(`${PREFIX}/populateFilters`);
@@ -165,7 +117,7 @@ export const manageFilters = (path: string, boardType: BookStatus, categoryPaths
 
 export const loadSearchResults = createAsyncThunk(
   `${PREFIX}/loadSearchResults`,
-  async (shouldLoadMoreResults: boolean, { dispatch, getState }: AppThunkAPI) => {
+  async (shouldLoadMoreResults: boolean, { getState }: AppThunkAPI) => {
     const state = getState();
     const pageIndex = getSearchResultsPageIndex(state);
     const searchText = deriveSearchQuery(state);
@@ -182,31 +134,25 @@ export const loadSearchResults = createAsyncThunk(
       language,
     };
     try {
-      dispatch(startLoadingSearchResults());
       const { data } = (await DataService().getBookList({ ...params })) || {};
       const { items, pagination } = data || {};
-      dispatch(
-        searchResultsLoaded({
-          boardType: ALL,
-          data: items || [],
-          totalItems: pagination?.totalItems || 0,
-          hasNextPage: pagination?.hasNextPage || false,
-          shouldLoadMoreResults,
-        }),
-      );
-      if (!shouldLoadMoreResults) {
-        dispatch(incrementSearchResultPageIndex());
-      }
+      return {
+        boardType: ALL,
+        data: items || [],
+        totalItems: pagination?.totalItems || 0,
+        hasNextPage: pagination?.hasNextPage || false,
+        shouldLoadMoreResults,
+      };
     } catch (error) {
       console.error(error);
-      dispatch(loadingSearchResultsFailed());
+      throw error;
     }
   },
 );
 
 export const loadBookList = createAsyncThunk(
   `${PREFIX}/loadBookList`,
-  async ({ boardType, shouldLoadMoreResults }: { boardType: BookStatus; shouldLoadMoreResults: boolean }, { dispatch, getState }: AppThunkAPI) => {
+  async ({ boardType, shouldLoadMoreResults }: { boardType: BookStatus; shouldLoadMoreResults: boolean }, { getState }: AppThunkAPI) => {
     const state = getState();
     const pageIndex = deriveBookListPageIndex(boardType)(state);
     const filterParams = deriveFilterBookCategoryPaths(boardType)(state);
@@ -228,9 +174,6 @@ export const loadBookList = createAsyncThunk(
         boardType !== ALL && !shouldLoadMoreResults ? await DataService().getBooksCountByYear({ boardType, language }) : { data: null };
       const result = await DataService().getBookList({ ...params });
       const { items, pagination } = result?.data || {};
-      if (!shouldLoadMoreResults) {
-        dispatch(incrementPageIndex(boardType));
-      }
       return {
         boardType,
         data: items || [],
@@ -252,12 +195,11 @@ export const loadMoreBooks = createAsyncThunk(`${PREFIX}/loadMoreBooks`, async (
   const bookList = deriveBookListData(boardType)(state);
   try {
     if (bookList.length >= PAGE_SIZE && hasNextPage) {
-      dispatch(startLoadingBookList(boardType));
       await dispatch(loadBookList({ boardType, shouldLoadMoreResults: true }));
-      dispatch(incrementPageIndex(boardType));
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 });
 
@@ -277,14 +219,13 @@ export const loadCategories = createAsyncThunk(`${PREFIX}/loadCategories`, async
   }
 });
 
-export const loadBookDetails = createAsyncThunk(`${PREFIX}/loadBookDetails`, async (bookId: string, { dispatch }: AppThunkAPI) => {
+export const loadBookDetails = createAsyncThunk(`${PREFIX}/loadBookDetails`, async (bookId: string) => {
   try {
-    dispatch(startLoadingBookDetails());
     const { data } = (await DataService().getBookDetails({ bookId })) || {};
-    dispatch(bookDetailsLoaded(data));
+    return data;
   } catch (error) {
     console.error(error);
-    dispatch(loadingBookDetailsFailed());
+    throw error;
   }
 });
 
@@ -295,10 +236,10 @@ export const loadMoreSearchResults = createAsyncThunk(`${PREFIX}/loadMoreSearchR
   try {
     if (bookList.length >= PAGE_SIZE && hasNextPage) {
       await dispatch(loadSearchResults(true));
-      dispatch(incrementSearchResultPageIndex());
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 });
 
@@ -321,42 +262,41 @@ export const updateUserBookAddedDate = createAsyncThunk(
   async (added: number, { dispatch, getState }: AppThunkAPI) => {
     try {
       const { language } = i18n;
-      dispatch(startUpdatingBookAddedDate());
       const { bookId, bookStatus } = getBookToUpdate(getState());
       const { data } = await DataService().updateUserBookAddedValue({ bookId, date: added, language, boardType: bookStatus });
-      dispatch(setBookCountByYear({ boardType: bookStatus, data: data.countByYear }));
 
-      dispatch(updateBookDetails({ bookStatus, added: data.added }));
-      dispatch(updateBook({ bookId, boardType: ALL, bookStatus, added: data.added }));
-      dispatch(updateBook({ bookId, boardType: bookStatus, bookStatus, added: data.added }));
-      dispatch(updateBookInSearchResults({ bookId, boardType: ALL, bookStatus, added: data.added }));
       dispatch(updateSuggestedBook({ bookId, bookStatus, added: data.added }));
-      dispatch(bookAddedDateUpdated());
       dispatch(triggerReloadStat());
+
+      return {
+        bookStatus,
+        countByYear: data.countByYear,
+        added: data.added,
+        bookId,
+      };
     } catch (error) {
       console.error(error);
-      dispatch(updatingBookAddedDateFailed());
+      throw error;
     }
   },
 );
 
-export const deleteUserComment = createAsyncThunk(`${PREFIX}/deleteUserComment`, async (bookId: string, { dispatch }: AppThunkAPI) => {
-  dispatch(startDeletingBookComment());
+export const deleteUserComment = createAsyncThunk(`${PREFIX}/deleteUserComment`, async (bookId: string) => {
   try {
     await DataService().deleteUserComment({ bookId });
-    dispatch(bookCommentDeleted());
   } catch (error) {
     console.error(error);
-    dispatch(deletingBookCommentFailed());
+    throw error;
   }
 });
 
-export const deleteUserBookRating = createAsyncThunk(`${PREFIX}/deleteUserBookRating`, async (bookId: string, { dispatch }: AppThunkAPI) => {
+export const deleteUserBookRating = createAsyncThunk(`${PREFIX}/deleteUserBookRating`, async (bookId: string) => {
   try {
     const { data } = await DataService().deleteUserBookRating({ bookId });
-    dispatch(userBookRatingsLoaded(data));
+    return data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 });
 
@@ -364,117 +304,89 @@ export const updateUserBook = createAsyncThunk(
   `${PREFIX}/updateUserBook`,
   async (
     { book, newBookStatus, added, boardType }: { book: IBook; newBookStatus: BookStatus; added: number; boardType: BookStatus },
-    { dispatch, getState }: AppThunkAPI,
+    { dispatch }: AppThunkAPI,
   ) => {
     const { language } = i18n;
-    dispatch(startUpdatingUsersBook());
     const { bookId, bookStatus } = book;
-    const state = getState();
-    const bookDetailsData = getBookDetailsData(state);
     try {
       const { data } = await DataService().updateUserBook({ bookId, added, bookStatus: newBookStatus, language, boardType: bookStatus });
-      dispatch(setBookCountByYear({ boardType: bookStatus as BookStatus, data: data.countByYear }));
 
       if (newBookStatus === ALL) {
         await dispatch(deleteUserComment(bookId));
-      }
-      if (newBookStatus === ALL) {
         await dispatch(deleteUserBookRating(bookId));
       }
-
-      if (!isEmpty(bookDetailsData)) {
-        dispatch(updateBookDetails({ bookStatus: data.bookStatus, added: data.added }));
-      }
-      if (boardType !== ALL) {
-        dispatch(removeBook({ id: bookId, boardType }));
-      }
-      if (bookStatus && boardType === ALL) {
-        dispatch(removeBook({ id: bookId, boardType: bookStatus }));
-      }
       // It's because we don't want to refresh all books list to preserve scrolling
-      dispatch(updateBook({ bookId, boardType: ALL, bookStatus: data.bookStatus, added: data.added }));
-      dispatch(updateBookInSearchResults({ bookId, boardType: ALL, bookStatus: data.bookStatus, added: data.added }));
       dispatch(updateSuggestedBook({ bookId, bookStatus: data.bookStatus, added: data.added }));
 
-      if (newBookStatus !== ALL) {
-        // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
-        dispatch(triggerReloadBookList(newBookStatus));
-      }
-
-      dispatch(reloadBookList(boardType));
       dispatch(triggerReloadStat());
+
+      return {
+        boardType,
+        currentBookStatus: bookStatus as BookStatus,
+        countByYear: data.countByYear,
+        bookId,
+        bookStatus: data.bookStatus,
+        added: data.added,
+        newBookStatus,
+      };
     } catch (error) {
       console.error(error);
-      dispatch(updatingUsersBookFailed());
+      throw error;
     }
   },
 );
 
 export const updateUserComment = createAsyncThunk(
   `${PREFIX}/updateUserComment`,
-  async ({ bookId, comment, added }: { bookId: string; comment: string; added: number }, { dispatch }: AppThunkAPI) => {
-    dispatch(startUpdatingBookComment());
+  async ({ bookId, comment, added }: { bookId: string; comment: string; added: number }) => {
     try {
       const { data } = await DataService().updateUserComment({ bookId, added, comment });
-      dispatch(commentUpdated(data));
       return data;
     } catch (error) {
       console.error(error);
-      dispatch(updatingBookCommentFailed());
-      return false;
+      throw error;
     }
   },
 );
 
-export const getBookComment = createAsyncThunk(`${PREFIX}/getBookComment`, async (bookId: string, { dispatch }: AppThunkAPI) => {
-  dispatch(startLoadingBookComment());
+export const getBookComment = createAsyncThunk(`${PREFIX}/getBookComment`, async (bookId: string) => {
   try {
     const { data } = await DataService().getBookComment({ bookId });
-    dispatch(commentUpdated(data));
     return data;
   } catch (error) {
     console.error(error);
-    dispatch(loadingBookCommentFailed());
-    return {};
+    throw error;
   }
 });
 
 export const updateUserBookRating = createAsyncThunk(
   `${PREFIX}/updateUserBookRating`,
-  async ({ bookId, rating, added }: { bookId: string; rating: number; added: number }, { dispatch }: AppThunkAPI) => {
-    dispatch(startUpdatingUserBookRating());
+  async ({ bookId, rating, added }: { bookId: string; rating: number; added: number }) => {
     try {
       const { data } = await DataService().updateUserBookRating({ bookId, added, rating });
-      dispatch(userBookRatingsLoaded(data));
       return data;
     } catch (error) {
       console.error(error);
-      dispatch(updatingUserBookRatingFailed());
-      return false;
+      throw error;
     }
   },
 );
 
 export const updateBookVotes = createAsyncThunk(
   `${PREFIX}/updateBookVotes`,
-  async ({ bookId, shouldAdd, bookStatus }: { bookId: string; shouldAdd: boolean; bookStatus: BookStatus }, { dispatch, getState }: AppThunkAPI) => {
+  async ({ bookId, shouldAdd, bookStatus }: { bookId: string; shouldAdd: boolean; bookStatus: BookStatus }, { dispatch }: AppThunkAPI) => {
     try {
-      const state = getState();
-      const bookDetailsData = getBookDetailsData(state);
       const { data } = await DataService().updateBookVotes({ bookId, shouldAdd });
 
-      dispatch(setBookVotes(data.userVotes));
-      dispatch(updateBookVotesAction({ bookStatus: ALL, bookId, votesCount: data.votesCount }));
-      dispatch(updateBookVotesInSearch({ bookId, votesCount: data.votesCount }));
       dispatch(updateBookVotesInSuggestedBook({ bookId, votesCount: data.votesCount }));
-      if (!isEmpty(bookDetailsData)) {
-        dispatch(updateBookVotesInBookDetails(data.votesCount));
-      }
-      if (bookStatus) {
-        dispatch(updateBookVotesAction({ bookStatus, bookId, votesCount: data.votesCount }));
-      }
-    } catch (e) {
-      console.error(e);
+      return {
+        userVotes: data.userVotes,
+        votesCount: data.votesCount,
+        bookStatus,
+      };
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   },
 );

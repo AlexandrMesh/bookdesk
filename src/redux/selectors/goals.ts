@@ -25,32 +25,34 @@ export const deriveTodayProgress = createSelector([getGoalNumberOfPages, deriveN
 
 export const deriveSortedgetGoalsData = createSelector([getGoalsData], (data) => [...data].sort((a, b) => b.added_at - a.added_at));
 
-export const deriveSectionedPagesDone = createSelector([deriveSortedgetGoalsData], (pages) =>
+export const deriveSectionedPagesDone = createSelector([getGoalsData], (pages) =>
   map(
     groupBy(
-      (pages || []).map((item) => ({
-        ...item,
-        monthAndYear: new Date(item?.added_at)?.toLocaleString(i18n.language, { month: 'long', year: 'numeric' }),
-      })),
+      ([...pages] || [])
+        .sort((a, b) => Number(b.added_at) - Number(a.added_at))
+        .map((item) => ({
+          ...item,
+          monthAndYear: new Date(item?.added_at)?.toLocaleString(i18n.language, { month: 'long', year: 'numeric' }),
+        })),
       'monthAndYear',
     ),
-    (value: any, key: string) => {
+    (value, key) => {
       return {
         title: key,
-        count: sum(value.map(({ pages: pages1 }: { pages: number }) => Number(pages1))),
+        count: sum(value.map(({ pages }) => Number(pages))),
         data: map(
           groupBy(
-            (value || []).map((item: { added_at: number }) => ({
+            (value || []).map((item) => ({
               ...item,
               dayMonthAndYear: new Date(item?.added_at)?.toLocaleString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }),
             })),
             'dayMonthAndYear',
           ),
-          (value2: any, key2: string) => {
+          (value, key) => {
             return {
-              title: key2,
-              count: sum(value2.map(({ pages: pages2 }: { pages: number }) => Number(pages2))),
-              data: (value as any[]).sort((a, b) => b.added_at - a.added_at),
+              title: key,
+              count: sum(value.map(({ pages }) => Number(pages))),
+              data: value.sort((a, b) => Number(b.added_at) - Number(a.added_at)),
             };
           },
         ),

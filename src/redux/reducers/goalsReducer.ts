@@ -24,7 +24,19 @@ const defaultState = getDefaultState();
 
 export default createReducer(defaultState, (builder) => {
   builder
-    .addCase(goalsActions.setGoalItems, (state, action) => {
+    .addCase(goalsActions.deleteUserGoalItem.fulfilled, (state, action) => {
+      state.goal.data = action.payload;
+    })
+    .addCase(goalsActions.addGoal.fulfilled, (state, action) => {
+      state.goal.numberOfPages = action.payload;
+    })
+    .addCase(goalsActions.updateGoal.fulfilled, (state, action) => {
+      state.goal.numberOfPages = action.payload;
+    })
+    .addCase(goalsActions.getGoalItems.fulfilled, (state, action) => {
+      state.goal.data = action.payload;
+    })
+    .addCase(goalsActions.addGoalItem.fulfilled, (state, action) => {
       state.goal.data = action.payload;
     })
     .addCase(goalsActions.setGoal, (state, action) => {

@@ -53,7 +53,7 @@ import About from '~screens/Profile/About';
 import DateUpdater from '~screens/Home/DateUpdater';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { checkAuth, getConfig } from '~redux/actions/authActions';
-import { getCheckingStatus, getIsSignedIn, deriveIsTheLatestAppVersion } from '~redux/selectors/auth';
+import { getCheckingStatus, getIsSignedIn } from '~redux/selectors/auth';
 import { getGoalNumberOfPages } from '~redux/selectors/goals';
 import { getNewCustomBookNameValue } from '~redux/selectors/customBook';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
@@ -179,7 +179,12 @@ const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookNam
   );
 };
 
-const ProfileNavigator = () => {
+type ProfileNavigatorProps = {
+  isTheLatestAppVersion: boolean;
+  googlePlayUrl: string;
+};
+
+const ProfileNavigator: FC<ProfileNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl }) => {
   const { t } = useTranslation('profile');
 
   return (
@@ -195,7 +200,9 @@ const ProfileNavigator = () => {
         headerTintColor: colors.neutral_light,
       }}
     >
-      <Stack.Screen name={PROFILE_ROUTE} component={Profile} options={{ title: t('profile') }} />
+      <Stack.Screen name={PROFILE_ROUTE} options={{ title: t('profile') }}>
+        {() => <Profile isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} />}
+      </Stack.Screen>
       <Stack.Screen name={ABOUT_ROUTE} component={About} options={{ title: t('about') }} />
     </Stack.Navigator>
   );
@@ -203,6 +210,7 @@ const ProfileNavigator = () => {
 
 type MainNavigatorProps = {
   isTheLatestAppVersion: boolean;
+  googlePlayUrl: string;
   hasGoal: boolean;
   customBookName: string;
 };
@@ -234,7 +242,7 @@ const getIcon = (focused: boolean, route: any) => {
   return (icon as any)[route.name];
 };
 
-const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, hasGoal, customBookName }) => {
+const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl, hasGoal, customBookName }) => {
   const { t } = useTranslation(['common', 'books']);
 
   return (
@@ -254,12 +262,13 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, hasGoal,
       <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
       <Tab.Screen
         name={PROFILE_NAVIGATOR_ROUTE}
-        component={ProfileNavigator}
         options={{
           tabBarBadge: !isTheLatestAppVersion ? t('common:alert') : undefined,
           tabBarBadgeStyle: { backgroundColor: colors.success, color: colors.primary_dark },
         }}
-      />
+      >
+        {() => <ProfileNavigator isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} />}
+      </Tab.Screen>
       <Tab.Screen
         name={BOOK_DETAILS_ROUTE}
         component={BookDetails}
@@ -284,6 +293,8 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, hasGoal,
 const Main = () => {
   const [shouldDisplayUpdateView, setShouldDisplayUpdateView] = useState(false);
   const [shouldDisplayUnderConstructionView, setShouldDisplayUnderConstructionView] = useState(false);
+  const [isTheLatestAppVersion, setIsTheLatestAppVersion] = useState(true);
+  const [googlePlayUrl, setGooglePlayUrl] = useState('');
   const { isConnected } = useNetInfo();
 
   const dispatch = useAppDispatch();
@@ -293,7 +304,6 @@ const Main = () => {
   const checkingStatus = useAppSelector(getCheckingStatus);
   const hasGoal = !!useAppSelector(getGoalNumberOfPages);
   const isSignedIn = useAppSelector(getIsSignedIn);
-  const isTheLatestAppVersion = useAppSelector(deriveIsTheLatestAppVersion);
   const customBookName = useAppSelector(getNewCustomBookNameValue);
 
   const checkAuthentication = useCallback(async () => {
@@ -308,7 +318,9 @@ const Main = () => {
   const getConfiguration = useCallback(
     async (url: string) => {
       try {
-        const { minimumSupportedAppVersion, underConstruction } = await _getConfig(url).unwrap();
+        const { minimumSupportedAppVersion, underConstruction, appVersion, googlePlayUrl } = await _getConfig(url).unwrap();
+        setIsTheLatestAppVersion(appVersion === DeviceInfo.getVersion());
+        setGooglePlayUrl(googlePlayUrl);
         if (minimumSupportedAppVersion && lt(DeviceInfo.getVersion(), minimumSupportedAppVersion)) {
           setShouldDisplayUpdateView(true);
         } else if (underConstruction) {
@@ -349,7 +361,12 @@ const Main = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         {isSignedIn ? (
-          <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} hasGoal={hasGoal} customBookName={customBookName} />
+          <MainNavigator
+            isTheLatestAppVersion={isTheLatestAppVersion}
+            googlePlayUrl={googlePlayUrl}
+            hasGoal={hasGoal}
+            customBookName={customBookName}
+          />
         ) : (
           <Stack.Navigator screenOptions={{ animationEnabled: false }}>
             <Stack.Screen name={SIGN_IN_ROUTE} component={SignIn} options={{ headerShown: false }} />

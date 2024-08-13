@@ -1,4 +1,4 @@
-import React, { useState, useCallback, FC } from 'react';
+import React, { useState, useCallback, FC, memo } from 'react';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { Animated, Pressable, Text, Vibration } from 'react-native';
 import { deriveBookVotes } from '~redux/selectors/books';
@@ -52,4 +52,4 @@ const Like: FC<Props> = ({ bookId, votesCount, bookStatus }) => {
   );
 };
 
-export default Like;
+export default memo(Like);

@@ -6,15 +6,11 @@ import { ALL } from '~constants/boardType';
 import DataService from '~http/services/books';
 import CustomBooksService from '~http/services/customBooks';
 import i18n, { getT } from '~translations/i18n';
-import { BookStatus, IBook } from '~types/books';
-import { ICover } from '~types/customBooks';
+import { BookStatus } from '~types/books';
 import { AppThunkAPI } from '~redux/store/configureStore';
 
 const PREFIX = 'CUSTOM_BOOKS';
 
-export const bookAdded = createAction(`${PREFIX}/bookAdded`);
-export const startAddingBook = createAction(`${PREFIX}/startAddingBook`);
-export const addingBookFailed = createAction(`${PREFIX}/addingBookFailed`);
 export const submitCategory = createAction(`${PREFIX}/submitCategory`);
 export const clearCategory = createAction(`${PREFIX}/clearCategory`);
 export const clearAddCustomBookState = createAction(`${PREFIX}/clearAddCustomBookState`);
@@ -35,74 +31,54 @@ export const setNewCustomBookName = createAction<{ name: string; error: string |
 export const allowToAddBook = createAction<boolean>(`${PREFIX}/allowToAddBook`);
 export const setNewCustomBookError = createAction<string>(`${PREFIX}/setNewCustomBookError`);
 export const clearSuggestedBooks = createAction(`${PREFIX}/clearSuggestedBooks`);
-export const startLoadingSuggestedBooks = createAction(`${PREFIX}/startLoadingSuggestedBooks`);
-export const loadingSuggestedBooksFailed = createAction(`${PREFIX}/loadingSuggestedBooksFailed`);
-export const suggestedBooksLoaded = createAction<{ data: IBook[]; totalItems: number; hasNextPage: boolean; allowToAddBook: boolean }>(
-  `${PREFIX}/suggestedBooksLoaded`,
-);
-export const startLoadingSuggestedCovers = createAction(`${PREFIX}/startLoadingSuggestedCovers`);
-export const loadingSuggestedCoversFailed = createAction(`${PREFIX}/loadingSuggestedCoversFailed`);
-export const suggestedCoversLoaded = createAction<ICover[]>(`${PREFIX}/suggestedCoversLoaded`);
 export const toggleExpandedCategoryCustomBooks = createAction<string>(`${PREFIX}/toggleExpandedCategoryCustomBooks`);
 export const selectCategory = createAction<{ path: string; label: string }>(`${PREFIX}/selectCategory`);
 export const setStatus = createAction<BookStatus>(`${PREFIX}/setStatus`);
 export const updateSuggestedBook = createAction<{ bookId: string; bookStatus: BookStatus; added: number }>(`${PREFIX}/updateSuggestedBook`);
 export const updateBookVotesInSuggestedBook = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInSuggestedBook`);
 
-export const loadSuggestedBooks = createAsyncThunk(
-  `${PREFIX}/loadSuggestedBooks`,
-  async (bookName: string, { dispatch, getState }: AppThunkAPI): Promise<string | null> => {
-    const state = getState();
-    const sortParams = getSuggestedBooksSortParams(state);
-    const { language } = i18n;
+export const loadSuggestedBooks = createAsyncThunk(`${PREFIX}/loadSuggestedBooks`, async (bookName: string, { getState }: AppThunkAPI) => {
+  const state = getState();
+  const sortParams = getSuggestedBooksSortParams(state);
+  const { language } = i18n;
 
-    const params = {
-      limit: 10,
-      pageIndex: 0,
-      boardType: ALL,
-      title: bookName,
-      sortType: sortParams.type,
-      sortDirection: sortParams.direction,
-      language,
-    };
+  const params = {
+    limit: 10,
+    pageIndex: 0,
+    boardType: ALL,
+    title: bookName,
+    sortType: sortParams.type,
+    sortDirection: sortParams.direction,
+    language,
+  };
 
-    try {
-      dispatch(startLoadingSuggestedBooks());
-      const { data } = (await DataService().getBookList({ ...params, exact: true })) || {};
-      const { items, pagination } = data || {};
-      if (data && items?.length > 0) {
-        dispatch(setNewCustomBookError(getT('errors')('bookExists')));
-        dispatch(allowToAddBook(false));
-        dispatch(
-          suggestedBooksLoaded({
-            data: items || [],
-            totalItems: pagination?.totalItems || 0,
-            hasNextPage: pagination?.hasNextPage || false,
-            allowToAddBook: false,
-          }),
-        );
-        return getT('errors')('bookExists');
-      }
-      const { data: dataBookList } = (await DataService().getBookList({ ...params })) || {};
-      dispatch(allowToAddBook(true));
-      dispatch(
-        suggestedBooksLoaded({
-          data: dataBookList.items || [],
-          totalItems: dataBookList.pagination?.totalItems || 0,
-          hasNextPage: dataBookList.pagination?.hasNextPage || false,
-          allowToAddBook: true,
-        }),
-      );
-      return null;
-    } catch (error) {
-      console.error(error);
-      dispatch(loadingSuggestedBooksFailed());
-      return null;
+  try {
+    const { data } = (await DataService().getBookList({ ...params, exact: true })) || {};
+    const { items, pagination } = data || {};
+    if (data && items?.length > 0) {
+      return {
+        error: getT('errors')('bookExists'),
+        data: items || [],
+        totalItems: pagination?.totalItems || 0,
+        hasNextPage: pagination?.hasNextPage || false,
+        allowToAddBook: false,
+      };
     }
-  },
-);
+    const { data: dataBookList } = (await DataService().getBookList({ ...params })) || {};
+    return {
+      error: null,
+      data: dataBookList.items || [],
+      totalItems: dataBookList.pagination?.totalItems || 0,
+      hasNextPage: dataBookList.pagination?.hasNextPage || false,
+      allowToAddBook: true,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
 
-export const loadSuggestedCovers = createAsyncThunk(`${PREFIX}/loadSuggestedCovers`, async (_, { dispatch, getState }: AppThunkAPI) => {
+export const loadSuggestedCovers = createAsyncThunk(`${PREFIX}/loadSuggestedCovers`, async (_, { getState }: AppThunkAPI) => {
   const state = getState();
   const bookName = getNewCustomBookNameValue(state);
   const { language } = i18n;
@@ -113,13 +89,12 @@ export const loadSuggestedCovers = createAsyncThunk(`${PREFIX}/loadSuggestedCove
   };
 
   try {
-    dispatch(startLoadingSuggestedCovers());
     const { data } = (await CustomBooksService().getSuggestCoversList({ ...params })) || {};
     const { items } = data || {};
-    dispatch(suggestedCoversLoaded(items || []));
+    return items || [];
   } catch (error) {
     console.error(error);
-    dispatch(loadingSuggestedCoversFailed());
+    throw error;
   }
 });
 
@@ -130,15 +105,13 @@ export const addCustomBook = createAsyncThunk(`${PREFIX}/addCustomBook`, async (
   const customBookParams = deriveCustomBookParams(state);
   const params = { ...customBookParams, language };
   try {
-    dispatch(startAddingBook());
     await CustomBooksService().addCustomBook({ ...params });
-    dispatch(bookAdded());
     if (bookStatus !== ALL) {
       // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
       dispatch(triggerReloadBookList(bookStatus));
     }
   } catch (error) {
     console.error(error);
-    dispatch(addingBookFailed());
+    throw error;
   }
 });

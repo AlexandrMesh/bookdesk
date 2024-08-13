@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-native-date-picker';
 import { useAppDispatch, useAppSelector } from '~hooks';
-import { getActiveModal, getBookValuesToUpdate } from '~redux/selectors/books';
+import { getActiveModal, getBookToUpdate } from '~redux/selectors/books';
 import { hideModal, updateUserBookAddedDate } from '~redux/actions/booksActions';
 import { DATE_UPDATER } from '~constants/modalTypes';
 
@@ -14,7 +14,7 @@ const DateUpdater = () => {
   const _updateUserBookAddedDate = (added: number) => dispatch(updateUserBookAddedDate(added));
 
   const isVisible = useAppSelector(getActiveModal) === DATE_UPDATER;
-  const added = useAppSelector(getBookValuesToUpdate)?.added;
+  const added = useAppSelector(getBookToUpdate)?.added;
 
   const handleConfirm = (selectedDate: Date) => {
     const date = selectedDate.getTime();

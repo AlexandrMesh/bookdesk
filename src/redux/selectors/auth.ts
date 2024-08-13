@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect';
-import DeviceInfo from 'react-native-device-info';
 import { RootState } from '~redux/store/configureStore';
 
 type StateWithAuth = Pick<RootState, 'auth'>;
@@ -8,7 +6,6 @@ const getAuth = (state: StateWithAuth) => state.auth;
 const getSignIn = (state: StateWithAuth) => getAuth(state).signIn;
 const getSignUp = (state: StateWithAuth) => getAuth(state).signUp;
 const getProfile = (state: StateWithAuth) => getAuth(state).profile;
-const getUpdateAppInfo = (state: StateWithAuth) => getAuth(state).updateAppInfo;
 
 export const getUserId = (state: StateWithAuth) => getProfile(state)._id;
 export const getUserEmail = (state: StateWithAuth) => getProfile(state).email;
@@ -24,8 +21,3 @@ export const getSignUpLoadingDataStatus = (state: StateWithAuth) => getSignUp(st
 export const getSignUpErrors = (state: StateWithAuth) => getSignUp(state).errors;
 
 export const getCheckingStatus = (state: StateWithAuth) => getAuth(state).checkingStatus;
-
-export const getAppVersion = (state: StateWithAuth) => getUpdateAppInfo(state).version;
-export const getGooglePlayUrl = (state: StateWithAuth) => getUpdateAppInfo(state).googlePlayUrl;
-
-export const deriveIsTheLatestAppVersion = createSelector([getAppVersion], (appVersion) => appVersion === DeviceInfo.getVersion());
