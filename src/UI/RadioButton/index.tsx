@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { RADIO_BUTTON_ICON } from '~constants/dimensions';
 import RadioButtonOn from '~assets/radio-button-on.svg';
 import RadioButtonOff from '~assets/radio-button-off.svg';
@@ -17,4 +17,4 @@ const RadioButton: FC<Props> = ({ isSelected, color, style }) =>
     <RadioButtonOff style={style} width={RADIO_BUTTON_ICON.width} height={RADIO_BUTTON_ICON.height} fill={color || colors.neutral_light} />
   );
 
-export default RadioButton;
+export default memo(RadioButton);

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { ActivityIndicator, View, Text } from 'react-native';
 import colors from '~styles/colors';
 import styles from '../styles';
@@ -33,4 +33,4 @@ const Spinner: FC<Props> = ({
   );
 };
 
-export default Spinner;
+export default memo(Spinner);

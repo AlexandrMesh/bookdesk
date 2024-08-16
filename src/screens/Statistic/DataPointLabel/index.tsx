@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { View, Text } from 'react-native';
 import styles from './styles';
 
@@ -14,4 +14,4 @@ const DataPointLabel: FC<Props> = ({ value }) => {
   ) : null;
 };
 
-export default DataPointLabel;
+export default memo(DataPointLabel);

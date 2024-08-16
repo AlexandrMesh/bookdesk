@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -13,10 +13,12 @@ import { BookStatus } from '~types/books';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { getAvailableStep, getCurrentStep, getAddedCustomBook, getSavingCustomBookStatus, getStatus } from '~redux/selectors/customBook';
 import { setCurrentStep, clearAddCustomBookState } from '~redux/actions/customBookActions';
-import Step1 from './Step1';
-import Step2 from './Step2';
-import Step3 from './Step3';
+import InSuspense from '~screens/Main/InSuspense';
 import styles from './styles';
+
+const Step1 = lazy(() => import('./Step1'));
+const Step2 = lazy(() => import('./Step2'));
+const Step3 = lazy(() => import('./Step3'));
 
 const getBoardRoute = (bookStatus: BookStatus) =>
   ({
@@ -40,15 +42,27 @@ const AddCustomBook = () => {
   const steps = [
     {
       step: 1,
-      component: <Step1 />,
+      component: (
+        <InSuspense>
+          <Step1 />
+        </InSuspense>
+      ),
     },
     {
       step: 2,
-      component: <Step2 />,
+      component: (
+        <InSuspense>
+          <Step2 />
+        </InSuspense>
+      ),
     },
     {
       step: 3,
-      component: <Step3 />,
+      component: (
+        <InSuspense>
+          <Step3 />
+        </InSuspense>
+      ),
     },
   ];
 

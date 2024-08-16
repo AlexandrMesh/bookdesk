@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import { View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import {
   deriveBookListData,
@@ -17,6 +18,7 @@ import EmptyResults from '~screens/Home/EmptyResults';
 import { BookStatus } from '~types/books';
 import ActionBar from '../ActionBar/ActionBar';
 import BooksList from '../BooksList';
+import styles from './styles';
 
 const AllBooks = () => {
   const isFocused = useIsFocused();
@@ -63,12 +65,12 @@ const AllBooks = () => {
   }
 
   return (
-    <>
+    <View style={styles.wrapper}>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
         <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={_showFilters} />
       ) : null}
       <BooksList data={bookList} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
-    </>
+    </View>
   );
 };
 

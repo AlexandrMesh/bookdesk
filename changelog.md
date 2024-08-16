@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 4.2.0
+
+###### 2024-08-16
+- [Fix] Wrap components to `memo`
+- [Fix] Rework `BookSectionList` for boards to `FlashList`
+
 ## 4.1.0
 
 ###### 2024-08-13

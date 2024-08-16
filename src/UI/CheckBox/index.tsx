@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { CHECKBOX_ICON } from '~constants/dimensions';
 import CheckBoxChecked from '~assets/checkbox-checked.svg';
 import CheckBoxBlank from '~assets/checkbox-blank.svg';
@@ -21,4 +21,4 @@ const CheckBox: FC<Props> = ({ isChecked, indeterminate }) => {
   );
 };
 
-export default CheckBox;
+export default memo(CheckBox);

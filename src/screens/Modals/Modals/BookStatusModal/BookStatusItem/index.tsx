@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { Text, Pressable } from 'react-native';
 import RadioButton from '~UI/RadioButton';
 import styles from './styles';
@@ -25,4 +25,4 @@ const Item: FC<Props> = ({ title, isSelected, action, isLoading }) => {
   );
 };
 
-export default Item;
+export default memo(Item);

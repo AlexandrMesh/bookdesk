@@ -1,4 +1,4 @@
-import React, { JSX, FC, Fragment } from 'react';
+import React, { memo, JSX, FC, Fragment } from 'react';
 import { View, Pressable, Text } from 'react-native';
 import styles from './styles';
 
@@ -42,4 +42,4 @@ const Stepper: FC<Props> = ({ steps, currentStep, lastAvailableStep, onStepPress
   );
 };
 
-export default Stepper;
+export default memo(Stepper);

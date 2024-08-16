@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, memo, useState } from 'react';
 import { View, TextInput, Text, Pressable, ViewStyle, StyleProp, TextStyle } from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 import { CLOSE_ICON } from '~constants/dimensions';
@@ -100,4 +100,4 @@ const Input: FC<Props> = ({
   );
 };
 
-export default Input;
+export default memo(Input);

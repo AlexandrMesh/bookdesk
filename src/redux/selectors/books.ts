@@ -118,13 +118,13 @@ export const deriveSectionedBookListData = (status: BookStatus) =>
           'monthAndYear',
         ),
         (value: any[], key: string) => {
-          return {
-            title: key,
-            count: booksCountByYear.find(({ monthAndYear }) => key === monthAndYear)?.count,
-            data: value.sort((a, b) => b.added - a.added),
-          };
+          const data = [
+            `${key}/${booksCountByYear.find(({ monthAndYear }) => key === monthAndYear)?.count}`,
+            value.sort((a, b) => b.added - a.added),
+          ].flat();
+          return data;
         },
-      ) as any[],
+      ).flat() as any[],
   );
 
 export const deriveSearchBookListData = createSelector([getSearchResults, getCategoriesData], (searchResults, categories) =>

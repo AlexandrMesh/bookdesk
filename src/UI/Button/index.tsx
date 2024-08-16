@@ -1,4 +1,4 @@
-import React, { FC, JSX } from 'react';
+import React, { memo, FC, JSX } from 'react';
 import { TouchableHighlight, View, Text, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { PRIMARY, SECONDARY } from '~constants/themes';
 import styles from './styles';
@@ -41,4 +41,4 @@ const Button: FC<Props> = ({ icon, iconPosition = 'left', title, titleStyle, onP
   );
 };
 
-export default Button;
+export default memo(Button);

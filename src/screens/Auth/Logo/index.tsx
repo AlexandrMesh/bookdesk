@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { memo, FC } from 'react';
 import { View, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useTranslation } from 'react-i18next';
@@ -20,4 +20,4 @@ const Logo: FC<Props> = ({ className }) => {
   );
 };
 
-export default Logo;
+export default memo(Logo);

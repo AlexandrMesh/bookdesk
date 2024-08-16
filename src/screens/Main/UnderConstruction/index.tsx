@@ -7,7 +7,7 @@ const UnderConstruction = () => {
   const [underConstructionMessage, setUnderConstructionMessage] = useState('');
 
   const getUnderConstructionMessage = async () => {
-    const underConstructionMessage = await AsyncStorage.getItem('underConstructionMessage') as string;
+    const underConstructionMessage = (await AsyncStorage.getItem('underConstructionMessage')) as string;
     setUnderConstructionMessage(underConstructionMessage);
   };
 

@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, useEffect } from 'react';
+import React, { FC, useState, useCallback, useEffect, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import DeviceInfo from 'react-native-device-info';
 import { useNetInfo } from '@react-native-community/netinfo';
@@ -38,19 +38,6 @@ import AddCustomBookIcon from '~assets/add.svg';
 import colors from '~styles/colors';
 import Splash from '~screens/Splash';
 import Home from '~screens/Home';
-import AddCustomBook from '~screens/AddCustomBook';
-import BookDetails from '~screens/Home/BookDetails';
-import SignIn from '~screens/Auth/SignIn';
-import SignUp from '~screens/Auth/SignUp';
-import Search from '~screens/Search';
-import Statistic from '~screens/Statistic';
-import Profile from '~screens/Profile';
-import Modals from '~screens/Modals/Modals';
-import Goals from '~screens/Goals/Goals';
-import AddGoal from '~screens/Goals/AddGoal';
-import GoalDetails from '~screens/Goals/GoalDetails';
-import About from '~screens/Profile/About';
-import DateUpdater from '~screens/Home/DateUpdater';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { checkAuth, getConfig } from '~redux/actions/authActions';
 import { getCheckingStatus, getIsSignedIn } from '~redux/selectors/auth';
@@ -59,9 +46,25 @@ import { getNewCustomBookNameValue } from '~redux/selectors/customBook';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
-import UnderConstruction from './UnderConstruction';
-import UpdateApp from './UpdateApp';
-import NoConnection from './NoConnection';
+import InSuspense from './InSuspense';
+
+const Search = lazy(() => import('~screens/Search'));
+const AddCustomBook = lazy(() => import('~screens/AddCustomBook'));
+const Statistic = lazy(() => import('~screens/Statistic'));
+const Goals = lazy(() => import('~screens/Goals/Goals'));
+const AddGoal = lazy(() => import('~screens/Goals/AddGoal'));
+const GoalDetails = lazy(() => import('~screens/Goals/GoalDetails'));
+const About = lazy(() => import('~screens/Profile/About'));
+const Profile = lazy(() => import('~screens/Profile'));
+const BookDetails = lazy(() => import('~screens/Home/BookDetails'));
+const Modals = lazy(() => import('~screens/Modals/Modals'));
+const DateUpdater = lazy(() => import('~screens/Home/DateUpdater'));
+const SignIn = lazy(() => import('~screens/Auth/SignIn'));
+const SignUp = lazy(() => import('~screens/Auth/SignUp'));
+
+const UnderConstruction = lazy(() => import('./UnderConstruction'));
+const UpdateApp = lazy(() => import('./UpdateApp'));
+const NoConnection = lazy(() => import('./NoConnection'));
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -82,7 +85,13 @@ const StatNavigator = () => {
         headerTintColor: colors.neutral_light,
       }}
     >
-      <Stack.Screen name={STAT_ROUTE} component={Statistic} options={{ title: t('statistic') }} />
+      <Stack.Screen name={STAT_ROUTE} options={{ title: t('statistic') }}>
+        {() => (
+          <InSuspense>
+            <Statistic />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -110,21 +119,37 @@ const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
     >
       <Stack.Screen
         name={GOALS_ROUTE}
-        component={Goals}
         options={{
           title: t('readingTracker'),
         }}
-      />
-      <Stack.Screen name={ADD_GOAL} component={AddGoal} options={{ title: t('addGoal') }} />
+      >
+        {() => (
+          <InSuspense>
+            <Goals />
+          </InSuspense>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name={ADD_GOAL} options={{ title: t('addGoal') }}>
+        {() => (
+          <InSuspense>
+            <AddGoal />
+          </InSuspense>
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name={GOAL_DETAILS}
-        component={GoalDetails}
         options={{
           title: t('goalForToday', { date: new Date().toLocaleString(i18n.language, { day: 'numeric', month: 'long' }) }),
           headerLeft: undefined,
           headerRight: EditComponent,
         }}
-      />
+      >
+        {() => (
+          <InSuspense>
+            <GoalDetails />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -146,7 +171,13 @@ const HomeNavigator = () => {
       }}
     >
       <Stack.Screen name={HOME_ROUTE} component={Home} options={{ headerShown: false }} />
-      <Stack.Screen name={SEARCH_ROUTE} component={Search} options={{ title: t('search') }} />
+      <Stack.Screen name={SEARCH_ROUTE} options={{ title: t('search') }}>
+        {() => (
+          <InSuspense>
+            <Search />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -170,11 +201,13 @@ const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookNam
         headerTintColor: colors.neutral_light,
       }}
     >
-      <Stack.Screen
-        name={ADD_CUSTOM_BOOK_ROUTE}
-        component={AddCustomBook}
-        options={{ title: customBookName ? `${t('addBook')} - ${customBookName}` : t('addBook') }}
-      />
+      <Stack.Screen name={ADD_CUSTOM_BOOK_ROUTE} options={{ title: customBookName ? `${t('addBook')} - ${customBookName}` : t('addBook') }}>
+        {() => (
+          <InSuspense>
+            <AddCustomBook />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -201,9 +234,19 @@ const ProfileNavigator: FC<ProfileNavigatorProps> = ({ isTheLatestAppVersion, go
       }}
     >
       <Stack.Screen name={PROFILE_ROUTE} options={{ title: t('profile') }}>
-        {() => <Profile isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} />}
+        {() => (
+          <InSuspense>
+            <Profile isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} />
+          </InSuspense>
+        )}
       </Stack.Screen>
-      <Stack.Screen name={ABOUT_ROUTE} component={About} options={{ title: t('about') }} />
+      <Stack.Screen name={ABOUT_ROUTE} options={{ title: t('about') }}>
+        {() => (
+          <InSuspense>
+            <About />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -342,15 +385,27 @@ const Main = () => {
   }, [getConfiguration]);
 
   if (shouldDisplayUnderConstructionView) {
-    return <UnderConstruction />;
+    return (
+      <InSuspense>
+        <UnderConstruction />
+      </InSuspense>
+    );
   }
 
   if (shouldDisplayUpdateView) {
-    return <UpdateApp />;
+    return (
+      <InSuspense>
+        <UpdateApp />
+      </InSuspense>
+    );
   }
 
   if (isConnected === false) {
-    return <NoConnection />;
+    return (
+      <InSuspense>
+        <NoConnection />
+      </InSuspense>
+    );
   }
 
   if (checkingStatus === IDLE || checkingStatus === PENDING) {
@@ -361,21 +416,39 @@ const Main = () => {
     <SafeAreaProvider>
       <NavigationContainer>
         {isSignedIn ? (
-          <MainNavigator
-            isTheLatestAppVersion={isTheLatestAppVersion}
-            googlePlayUrl={googlePlayUrl}
-            hasGoal={hasGoal}
-            customBookName={customBookName}
-          />
+          <>
+            <MainNavigator
+              isTheLatestAppVersion={isTheLatestAppVersion}
+              googlePlayUrl={googlePlayUrl}
+              hasGoal={hasGoal}
+              customBookName={customBookName}
+            />
+            <InSuspense>
+              <>
+                <Modals />
+                <DateUpdater />
+              </>
+            </InSuspense>
+          </>
         ) : (
           <Stack.Navigator screenOptions={{ animationEnabled: false }}>
-            <Stack.Screen name={SIGN_IN_ROUTE} component={SignIn} options={{ headerShown: false }} />
-            <Stack.Screen name={SIGN_UP_ROUTE} component={SignUp} options={{ headerShown: false }} />
+            <Stack.Screen name={SIGN_IN_ROUTE} options={{ headerShown: false }}>
+              {() => (
+                <InSuspense>
+                  <SignIn />
+                </InSuspense>
+              )}
+            </Stack.Screen>
+            <Stack.Screen name={SIGN_UP_ROUTE} options={{ headerShown: false }}>
+              {() => (
+                <InSuspense>
+                  <SignUp />
+                </InSuspense>
+              )}
+            </Stack.Screen>
           </Stack.Navigator>
         )}
       </NavigationContainer>
-      <Modals />
-      <DateUpdater />
     </SafeAreaProvider>
   );
 };

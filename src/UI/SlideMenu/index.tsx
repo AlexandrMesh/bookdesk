@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState, useEffect, useLayoutEffect, ReactNode } from 'react';
+import React, { memo, FC, useCallback, useMemo, useState, useEffect, useLayoutEffect, ReactNode } from 'react';
 import { Animated, Text, View, Pressable, Dimensions } from 'react-native';
 import { useKeyboard, useBackHandler } from '@react-native-community/hooks';
 import Button from '~UI/Button';
@@ -156,4 +156,4 @@ const SlideMenu: FC<Props> = ({
   );
 };
 
-export default SlideMenu;
+export default memo(SlideMenu);

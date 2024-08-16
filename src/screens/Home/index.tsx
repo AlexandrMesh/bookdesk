@@ -23,6 +23,8 @@ type Props = {
   t: TFunction;
 };
 
+const renderLazyPlaceholder = () => <View style={{ width: '100%', height: '100%', backgroundColor: colors.primary_dark }} />;
+
 const HeaderTabs: FC<Props> = ({ t }) => (
   <Tab.Navigator
     initialRouteName={ALL_BOOKS_ROUTE}
@@ -31,6 +33,8 @@ const HeaderTabs: FC<Props> = ({ t }) => (
     }}
     screenOptions={{
       tabBarItemStyle: { width: 'auto' },
+      lazy: true,
+      lazyPlaceholder: renderLazyPlaceholder,
       tabBarStyle: {
         backgroundColor: colors.primary_dark,
         borderBottomWidth: 1,

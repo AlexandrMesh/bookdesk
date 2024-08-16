@@ -9,7 +9,7 @@ const UpdateApp = () => {
   const { t } = useTranslation(['app', 'common']);
 
   const handleUpdate = async () => {
-    const googlePlayUrl = await AsyncStorage.getItem('googlePlayUrl') as string;
+    const googlePlayUrl = (await AsyncStorage.getItem('googlePlayUrl')) as string;
     Linking.openURL(googlePlayUrl);
   };
 

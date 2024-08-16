@@ -3,15 +3,15 @@
   "include": ["src", "src/custom.d.ts"],
   "compilerOptions": {
     "strict": true,
+    "target": "esnext",
+    "module": "esnext",
     "paths": {
       "~*": [
         "./src/*"
       ]
     }
   },
-  "target": "esnext",
-  "module": "commonjs",
-  "lib": ["es6"],
+  "lib": ["esnext"],
   "allowJs": true,
   "jsx": "react-native",
   "noEmit": true,

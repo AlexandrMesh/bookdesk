@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import EmptyBoard from '~screens/Home/EmptyBoard';
@@ -13,7 +14,8 @@ import { loadBookList, loadMoreBooks, setBoardType } from '~redux/actions/booksA
 import { COMPLETED } from '~constants/boardType';
 import { BookStatus } from '~types/books';
 import { useAppDispatch, useAppSelector } from '~hooks';
-import BooksSectionList from '../BooksList/BooksSectionList';
+import BooksList from '../BooksList';
+import styles from './styles';
 
 const CompletedBooks = () => {
   const isFocused = useIsFocused();
@@ -52,10 +54,10 @@ const CompletedBooks = () => {
   }
 
   return (
-    <>
+    <View style={styles.wrapper}>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
-      <BooksSectionList data={sectionedBookListData} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
-    </>
+      <BooksList data={sectionedBookListData} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
+    </View>
   );
 };
 
