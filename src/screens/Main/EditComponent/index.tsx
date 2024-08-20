@@ -1,25 +1,25 @@
 import React from 'react';
 import { Pressable } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { showModal } from '~redux/actions/booksActions';
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { EDIT_GOAL } from '~constants/routes';
 import { getGoalNumberOfPages } from '~redux/selectors/goals';
-import { EDIT_GOAL } from '~constants/modalTypes';
 import colors from '~styles/colors';
 import EditIcon from '~assets/edit.svg';
 import styles from './styles';
 
 const EditComponent = () => {
   const hasGoal = useSelector(getGoalNumberOfPages);
-  const dispatch = useDispatch();
+  const navigation = useNavigation<any>();
 
-  const handleShowEditModal = () => {
+  const handleGoToEditGoal = () => {
     if (hasGoal) {
-      dispatch(showModal(EDIT_GOAL));
+      navigation.navigate(EDIT_GOAL);
     }
   };
 
   return (
-    <Pressable style={styles.wrapper} onPress={handleShowEditModal}>
+    <Pressable style={styles.wrapper} onPress={handleGoToEditGoal}>
       <EditIcon width={32} height={32} stroke={colors.neutral_medium} />
     </Pressable>
   );

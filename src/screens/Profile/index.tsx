@@ -6,10 +6,9 @@ import { ABOUT_ROUTE } from '~constants/routes';
 import { SECONDARY } from '~constants/themes';
 import { getUserEmail, getRegistered } from '~redux/selectors/auth';
 import { signOut } from '~redux/actions/authActions';
-import { showModal } from '~redux/actions/booksActions';
-import { LANGUAGE_SETTINGS } from '~constants/modalTypes';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import Button from '~UI/Button';
+import LanguageSettings from './LanguageSettings';
 import styles from './styles';
 
 type Props = {
@@ -25,7 +24,6 @@ const Profile: FC<Props> = ({ isTheLatestAppVersion, googlePlayUrl }) => {
 
   const dispatch = useAppDispatch();
   const _signOut = () => dispatch(signOut());
-  const _showModal = () => dispatch(showModal(LANGUAGE_SETTINGS));
 
   const email = useAppSelector(getUserEmail);
   const registered = useAppSelector(getRegistered);
@@ -39,10 +37,10 @@ const Profile: FC<Props> = ({ isTheLatestAppVersion, googlePlayUrl }) => {
         <Text style={styles.label}>
           {t('registered')} <Text style={styles.value}>{new Date(Number(registered)).toLocaleDateString(language)}</Text>
         </Text>
-        <Text style={[styles.label, styles.mTop]}>
-          {t('app:appLanguage')}
-          <Button theme={SECONDARY} style={styles.languageButton} titleStyle={styles.titleStyle} title={t(`app:${language}`)} onPress={_showModal} />
-        </Text>
+        <View>
+          <Text style={[styles.label, styles.mTop]}>{t('app:appLanguage')}</Text>
+          <LanguageSettings />
+        </View>
       </View>
       <View style={styles.buttonsWrapper}>
         <View style={styles.buttons}>

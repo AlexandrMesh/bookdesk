@@ -10,10 +10,9 @@ import {
   deriveBookListTotalItems,
   deriveFilterBookCategoryPaths,
 } from '~redux/selectors/books';
-import { loadBookList, loadMoreBooks, loadCategories, setBoardType, showModal } from '~redux/actions/booksActions';
+import { loadBookList, loadMoreBooks, loadCategories, setBoardType } from '~redux/actions/booksActions';
 import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
-import { FILTERING } from '~constants/modalTypes';
 import EmptyResults from '~screens/Home/EmptyResults';
 import { BookStatus } from '~types/books';
 import ActionBar from '../ActionBar/ActionBar';
@@ -32,7 +31,6 @@ const AllBooks = () => {
   const _loadMoreBooks = useCallback(() => dispatch(loadMoreBooks(ALL)), [dispatch]);
   const _loadCategories = useCallback(() => dispatch(loadCategories(false)), [dispatch]);
   const _setBoardType = useCallback(() => dispatch(setBoardType(ALL)), [dispatch]);
-  const _showFilters = useCallback(() => dispatch(showModal(FILTERING)), [dispatch]);
 
   const bookList = useAppSelector(deriveBookListData(ALL));
   const loadingDataStatus = useAppSelector(deriveLoadingBookListStatus(ALL));
@@ -67,7 +65,7 @@ const AllBooks = () => {
   return (
     <View style={styles.wrapper}>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
-        <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} showFilters={_showFilters} />
+        <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} />
       ) : null}
       <BooksList data={bookList} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </View>

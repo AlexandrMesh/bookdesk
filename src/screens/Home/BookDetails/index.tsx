@@ -6,9 +6,9 @@ import { useRoute, useIsFocused, RouteProp } from '@react-navigation/native';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { getLoadingBookDetailsStatus, deriveBookDetails, deriveUserBookRating } from '~redux/selectors/books';
 import { loadBookDetails, clearBookDetails } from '~redux/actions/booksActions';
-import Rating from '~UI/Rating';
-import Like from '~UI/Like';
-import Dropdown from '~UI/Dropdown';
+import Rating from '~screens/Home/Rating';
+import Like from '~screens/Home/Like';
+import BookStatusDropdown from '~screens/Home/BookStatusDropdown';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { BookStatus } from '~types/books';
 import useGetImgUrl from '~hooks/useGetImgUrl';
@@ -73,10 +73,9 @@ const BookDetails = () => {
         </View>
         <View>
           <View style={styles.bookStatusWrapper}>
-            <Dropdown
+            <BookStatusDropdown
               bookStatus={bookStatus as BookStatus}
               bookId={params?.bookId}
-              dropdownHeight={150}
               wrapperStyle={styles.statusButton}
               buttonLabelStyle={styles.buttonTitle}
             />

@@ -5,7 +5,7 @@
   "pagesCount": "Pages count",
   "add": "Add",
   "goalForToday": "Goal for today {{date}}",
-  "changeGoal": "Change Goal",
+  "editGoal": "Edit Goal",
   "goalsDescription": "Want to develop a regular reading habit? Add a goal and the tracker will help you monitor your progress.",
   "howManyPagesDoYouWantReadDescription": "How many pages do you want to read every day?",
   "pagesDone": "Have read (pages)",

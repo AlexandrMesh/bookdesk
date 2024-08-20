@@ -1,4 +1,5 @@
 export const SEARCH_ROUTE = 'Search';
+export const FITLERING_ROUTE = 'Fitlering';
 export const GOALS_ROUTE = 'Goals';
 export const HOME_ROUTE = 'Home';
 export const PROFILE_ROUTE = 'Profile';
@@ -16,6 +17,8 @@ export const IN_PROGRESS_BOOKS_ROUTE = 'InProgressBooks';
 export const COMPLETED_BOOKS_ROUTE = 'CompletedBooks';
 export const BOOK_DETAILS_ROUTE = 'BookDetails';
 export const ADD_CUSTOM_BOOK_ROUTE = 'AddCustomBook';
+export const CUSTOM_CATEGORY_CHOOSER_ROUTE = 'CustomCategoryChooser';
 export const ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE = 'AddCustomBookNavigator';
 export const ADD_GOAL = 'AddGoal';
+export const EDIT_GOAL = 'EditGoal';
 export const GOAL_DETAILS = 'GoalDetails';

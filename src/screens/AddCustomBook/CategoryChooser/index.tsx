@@ -1,45 +1,38 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { View, Text, Pressable, SectionList, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 import RadioButton from '~UI/RadioButton';
-import SlideMenu from '~UI/SlideMenu';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { FILTER_ICON } from '~constants/dimensions';
-import { getActiveModal, deriveCategories } from '~redux/selectors/books';
-import { hideModal } from '~redux/actions/booksActions';
+import { deriveCategories } from '~redux/selectors/books';
 import { toggleExpandedCategoryCustomBooks, setSearchQuery, selectCategory, clearCategory, submitCategory } from '~redux/actions/customBookActions';
 import { deriveCategoriesSearchResult, getCategorySearchQuery, getEditableSelectedCategoryPath } from '~redux/selectors/customBook';
 import { useAppDispatch, useAppSelector } from '~hooks';
-import { CUSTOM_BOOK_CATEGORY } from '~constants/modalTypes';
 import { ALL } from '~constants/boardType';
 import ArrowDown from '~assets/arrow-down.svg';
 import styles from './styles';
 
-const CustomBookCategoryModal = () => {
+const CategoryChooser = () => {
   const { t } = useTranslation(['common', 'categories']);
-  const [shouldAutoClose, setShouldAutoClose] = useState(false);
+  const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
   const _toggleExpandedCategory = useCallback((path: string) => dispatch(toggleExpandedCategoryCustomBooks(path)), [dispatch]);
-  const onClose = () => {
-    dispatch(hideModal());
-    dispatch(clearCategory());
-  };
   const _selectCategory = useCallback((category: { path: string; label: string }) => dispatch(selectCategory(category)), [dispatch]);
   const _setSearchQuery = (query: string) => dispatch(setSearchQuery(query));
   const clearSearchQueryForCategory = () => dispatch(setSearchQuery(''));
   const _submitCategory = () => dispatch(submitCategory());
 
-  const isVisible = useAppSelector(getActiveModal) === CUSTOM_BOOK_CATEGORY;
   const categories = useAppSelector(deriveCategories(ALL, true));
   const searchQuery = useAppSelector(getCategorySearchQuery);
   const categoriesSearchResult = useAppSelector(deriveCategoriesSearchResult);
   const selectedCategoryPath = useAppSelector(getEditableSelectedCategoryPath);
 
-  const handleSave = () => {
-    setShouldAutoClose(true);
+  const handleChoose = () => {
     _submitCategory();
+    navigation.goBack();
   };
 
   const shouldDisplaySearchResults = searchQuery;
@@ -144,13 +137,11 @@ const CustomBookCategoryModal = () => {
   );
 
   useEffect(() => {
-    if (shouldAutoClose) {
-      setShouldAutoClose(false);
-    }
-  }, [shouldAutoClose]);
+    dispatch(clearCategory());
+  }, [dispatch]);
 
-  return isVisible ? (
-    <SlideMenu isVisible={isVisible} shouldAutoClose={shouldAutoClose} title={t('categoriesTitle')} onClose={onClose} menuHeight={500}>
+  return (
+    <View style={styles.container}>
       <Input
         placeholder={t('searchCategory')}
         onChangeText={_setSearchQuery}
@@ -172,10 +163,10 @@ const CustomBookCategoryModal = () => {
         )}
       </View>
       <View style={styles.submitButtonWrapper}>
-        <Button style={styles.submitButton} title={t('save')} onPress={handleSave} />
+        <Button style={styles.submitButton} title={t('choose')} onPress={handleChoose} />
       </View>
-    </SlideMenu>
-  ) : null;
+    </View>
+  );
 };
 
-export default CustomBookCategoryModal;
+export default CategoryChooser;

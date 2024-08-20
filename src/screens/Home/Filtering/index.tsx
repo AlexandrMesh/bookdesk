@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, Text, Pressable, SectionList, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 import CheckBox from '~UI/CheckBox';
-import SlideMenu from '~UI/SlideMenu';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { FILTER_ICON } from '~constants/dimensions';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import {
-  getActiveModal,
   deriveCategories,
   deriveEditableIndeterminatedCategories,
   getBoardType,
@@ -20,22 +19,19 @@ import {
   triggerReloadBookList,
   toggleExpandedCategoryBooks,
   manageFilters,
-  clearFilters,
   populateFilters,
-  hideModal,
   resetCategories,
   searchCategory,
   clearSearchQueryForCategory,
 } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
-import { FILTERING } from '~constants/modalTypes';
 import { BookStatus } from '~types/books';
 import ArrowDown from '~assets/arrow-down.svg';
 import styles from './styles';
 
-const FilteringModal = () => {
+const Filtering = () => {
   const { t } = useTranslation(['common', 'categories']);
-  const [shouldAutoClose, setShouldAutoClose] = useState(false);
+  const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
 
@@ -51,15 +47,9 @@ const FilteringModal = () => {
     (path: string, boardType: BookStatus) => dispatch(toggleExpandedCategoryBooks({ path, boardType })),
     [dispatch],
   );
-  const _clearFilters = (boardType: BookStatus) => dispatch(clearFilters(boardType));
-  const onClose = () => {
-    dispatch(hideModal());
-    dispatch(resetCategories(ALL));
-  };
-  const _searchCategory = (query: string) => dispatch(searchCategory({ boardType: ALL, query }));
-  const _clearSearchQueryForCategory = () => dispatch(clearSearchQueryForCategory(ALL));
+  const _searchCategory = useCallback((query: string) => dispatch(searchCategory({ boardType: ALL, query })), [dispatch]);
+  const _clearSearchQueryForCategory = useCallback(() => dispatch(clearSearchQueryForCategory(ALL)), [dispatch]);
 
-  const isVisible = useAppSelector(getActiveModal) === FILTERING;
   const boardType = useAppSelector(getBoardType) as BookStatus;
   const categories = useAppSelector(deriveCategories(ALL));
   const indeterminatedCategories = useAppSelector(deriveEditableIndeterminatedCategories(ALL));
@@ -69,11 +59,7 @@ const FilteringModal = () => {
 
   const handleFilter = () => {
     applyFilters(boardType);
-    setShouldAutoClose(true);
-  };
-
-  const handleClearFilters = () => {
-    _clearFilters(boardType);
+    navigation.goBack();
   };
 
   const { categoryPaths } = filterParams;
@@ -178,21 +164,11 @@ const FilteringModal = () => {
   );
 
   useEffect(() => {
-    if (shouldAutoClose) {
-      setShouldAutoClose(false);
-    }
-  }, [shouldAutoClose]);
+    dispatch(resetCategories(ALL));
+  }, [dispatch]);
 
-  return isVisible ? (
-    <SlideMenu
-      isVisible={isVisible}
-      shouldAutoClose={shouldAutoClose}
-      title={t('categoriesTitle')}
-      onClose={onClose}
-      menuHeight={500}
-      titleReset={categoryPaths.length > 0 ? t('clear') : ''}
-      onReset={handleClearFilters}
-    >
+  return (
+    <View style={styles.container}>
       <Input
         placeholder={t('searchCategory')}
         onChangeText={_searchCategory}
@@ -216,8 +192,8 @@ const FilteringModal = () => {
       <View style={styles.submitButtonWrapper}>
         <Button style={styles.submitButton} title={t('toFilter')} onPress={handleFilter} />
       </View>
-    </SlideMenu>
-  ) : null;
+    </View>
+  );
 };
 
-export default FilteringModal;
+export default Filtering;

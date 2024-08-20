@@ -37,9 +37,10 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dropdownButtonTxtStyle: {
+  dropdownButtonLabelStyle: {
     fontSize: 15,
     marginRight: 5,
+    color: colors.neutral_light,
   },
   dropdownItemStyle: {
     width: '100%',
@@ -52,10 +53,13 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.neutral_medium,
   },
-  dropdownItemTxtStyle: {
+  dropdownItemTextStyle: {
     flex: 1,
     fontSize: 17,
     fontWeight: '500',
     color: colors.neutral_light,
+  },
+  icon: {
+    fill: colors.neutral_light,
   },
 });

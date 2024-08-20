@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Input from '~UI/TextInput';
@@ -14,8 +14,8 @@ const SearchBar = () => {
   const dispatch = useAppDispatch();
 
   const _setSearchQuery = (query: string) => dispatch(setSearchQuery(query));
-  const _clearSearchResults = () => dispatch(clearSearchResults());
-  const _triggerShouldNotClearSearchQuery = () => dispatch(triggerShouldNotClearSearchQuery());
+  const _clearSearchResults = useCallback(() => dispatch(clearSearchResults()), [dispatch]);
+  const _triggerShouldNotClearSearchQuery = useCallback(() => dispatch(triggerShouldNotClearSearchQuery()), [dispatch]);
 
   const searchQuery = useAppSelector(deriveSearchQuery);
   const shouldClearSearchQuery = useAppSelector(getShouldClearSearchQuery);
@@ -23,14 +23,22 @@ const SearchBar = () => {
 
   const [searchQueryValue, handleChangeQuery, clearSearchText, isBusy] = useDebouncedSearch(_setSearchQuery, searchQuery, 600);
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     if (loadingDataStatus === PENDING || loadingDataStatus === IDLE || isBusy) {
       return false;
     }
     (clearSearchText as any)();
     _clearSearchResults();
     return true;
-  };
+  }, [_clearSearchResults, clearSearchText, isBusy, loadingDataStatus]);
+
+  const onChangeText = useCallback(
+    (value: string) => {
+      _triggerShouldNotClearSearchQuery();
+      (handleChangeQuery as any)(value);
+    },
+    [_triggerShouldNotClearSearchQuery, handleChangeQuery],
+  );
 
   useEffect(() => {
     if (shouldClearSearchQuery) {
@@ -42,10 +50,8 @@ const SearchBar = () => {
     <View style={styles.wrapper}>
       <Input
         placeholder={t('search:enterSearchQuery')}
-        onChangeText={(value) => {
-          _triggerShouldNotClearSearchQuery();
-          (handleChangeQuery as any)(value);
-        }}
+        onChangeText={onChangeText}
+        autoFocus={!searchQueryValue}
         value={searchQueryValue as string}
         shouldDisplayClearButton={!!searchQueryValue && !isBusy && loadingDataStatus !== PENDING && loadingDataStatus !== IDLE}
         validateable={false}

@@ -90,7 +90,7 @@ const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadi
     <View style={styles.container}>
       <FlashList
         horizontal={horizontal}
-        estimatedItemSize={210}
+        estimatedItemSize={331}
         data={data}
         renderItem={renderItem}
         getItemType={getItemType}

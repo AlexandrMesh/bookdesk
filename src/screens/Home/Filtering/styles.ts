@@ -2,11 +2,18 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
+  container: {
+    backgroundColor: colors.primary_dark,
+    display: 'flex',
+    flex: 1,
+    height: '100%',
+  },
   wrapper: {
     height: 300,
     width: '100%',
     display: 'flex',
     flex: 1,
+    backgroundColor: colors.primary_dark,
   },
   menuItem: {
     height: 50,

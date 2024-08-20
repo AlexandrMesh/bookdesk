@@ -6,7 +6,7 @@ import colors from '~styles/colors';
 import Button from '~UI/Button';
 import { SECONDARY } from '~constants/themes';
 import { FILTER_ICON } from '~constants/dimensions';
-import { SEARCH_ROUTE } from '~constants/routes';
+import { SEARCH_ROUTE, FITLERING_ROUTE } from '~constants/routes';
 import FilterIcon from '~assets/filter.svg';
 import SearchIcon from '~assets/search.svg';
 import TotalCount from './TotalCount';
@@ -16,12 +16,11 @@ export type Props = {
   filterParams: {
     categoryPaths: string[];
   };
-  showFilters: () => void;
   totalItems: number;
   activeFiltersCount?: number;
 };
 
-const ActionBar: FC<Props> = ({ filterParams, totalItems, showFilters, activeFiltersCount }) => {
+const ActionBar: FC<Props> = ({ filterParams, totalItems, activeFiltersCount }) => {
   const { t } = useTranslation('common');
   const navigation = useNavigation<any>();
 
@@ -38,7 +37,7 @@ const ActionBar: FC<Props> = ({ filterParams, totalItems, showFilters, activeFil
             titleStyle={[styles.titleStyle, isActiveFilter && { color: colors.success }]}
             iconClassName={styles.icon}
             icon={<FilterIcon width={FILTER_ICON.width} height={FILTER_ICON.height} fill={isActiveFilter ? colors.success : colors.neutral_light} />}
-            onPress={showFilters}
+            onPress={() => navigation.navigate(FITLERING_ROUTE)}
             title={isActiveFilter ? t('categoriesCount', { count: activeFiltersCount }) : t('categoriesTitle')}
           />
         </View>

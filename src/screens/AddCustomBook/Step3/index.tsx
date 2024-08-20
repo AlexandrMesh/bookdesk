@@ -2,11 +2,10 @@ import React from 'react';
 import { ScrollView, View, Pressable, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import uniqueId from 'lodash/uniqueId';
+import { useNavigation } from '@react-navigation/native';
 import { SECONDARY } from '~constants/themes';
 import { CLOSE_ICON } from '~constants/dimensions';
-import { ALL } from '~constants/boardType';
-import { getSelectedCategoryLabel, getStatus, getPages, getAuthorsList, getAnnotation, deriveIsValidFullForm } from '~redux/selectors/customBook';
-import { showModal } from '~redux/actions/booksActions';
+import { getSelectedCategoryLabel, getPages, getAuthorsList, getAnnotation, deriveIsValidFullForm } from '~redux/selectors/customBook';
 import {
   setPages,
   addAuthor,
@@ -17,21 +16,22 @@ import {
   setCurrentStep,
   addCustomBook,
 } from '~redux/actions/customBookActions';
-import { CUSTOM_BOOK_CATEGORY, CUSTOM_BOOK_STATUS } from '~constants/modalTypes';
 import { useAppDispatch, useAppSelector } from '~hooks';
+import { CUSTOM_CATEGORY_CHOOSER_ROUTE } from '~constants/routes';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import Input from '~UI/TextInput';
 import Button from '~UI/Button';
 import CloseIcon from '~assets/close.svg';
 import colors from '~styles/colors';
+import CustomBookStatusDropdown from '../CustomBookStatusDropdown';
 import styles from './styles';
 
 const Step3 = () => {
   const { t } = useTranslation(['customBook, common, books, categories, errors']);
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<any>();
   const onPressBack = () => dispatch(setCurrentStep(2));
-  const showCategoryChooser = () => dispatch(showModal(CUSTOM_BOOK_CATEGORY));
-  const showCustomBookStatusChooser = () => dispatch(showModal(CUSTOM_BOOK_STATUS));
+  const showCategoryChooser = () => navigation.navigate(CUSTOM_CATEGORY_CHOOSER_ROUTE);
   const _setPages = (pages: string | null, error?: string | null) => dispatch(setPages({ pages, error }));
   const _addAuthor = (id: string) => dispatch(addAuthor(id));
   const _removeAuthor = (id: string) => dispatch(removeAuthor(id));
@@ -41,7 +41,6 @@ const Step3 = () => {
   const _addCustomBook = () => dispatch(addCustomBook());
 
   const selectedCategoryLabel = useAppSelector(getSelectedCategoryLabel);
-  const status = useAppSelector(getStatus);
   const pages = useAppSelector(getPages);
   const authorsList = useAppSelector(getAuthorsList);
   const annotation = useAppSelector(getAnnotation);
@@ -124,12 +123,7 @@ const Step3 = () => {
         <View style={styles.block}>
           <Text style={styles.subTitle}>{t('customBook:status')}</Text>
           <View style={styles.blockWrapper}>
-            <Pressable style={[styles.inputBlockWrapper, status !== ALL && styles.activeInputWrapper]} onPress={showCustomBookStatusChooser}>
-              <Text numberOfLines={1} style={[styles.inputLabel, status !== ALL && styles.activeInputLabel]}>
-                {status === ALL ? t(`books:noStatus`) : t(`books:${status}`)}
-              </Text>
-            </Pressable>
-            <Button style={styles.mainButton} onPress={showCustomBookStatusChooser} title={t('common:choose')} />
+            <CustomBookStatusDropdown />
           </View>
         </View>
 

@@ -8,9 +8,9 @@ import FastImage from 'react-native-fast-image';
 import Button from '~UI/Button';
 import { BOOK_DETAILS_ROUTE } from '~constants/routes';
 import { deriveUserBookRating } from '~redux/selectors/books';
-import Rating from '~UI/Rating';
-import Like from '~UI/Like';
-import Dropdown from '~UI/Dropdown';
+import Rating from '~screens/Home/Rating';
+import Like from '~screens/Home/Like';
+import BookStatusDropdown from '~screens/Home/BookStatusDropdown';
 import { BookStatus, IBook } from '~types/books';
 import ModifiedDate from '../../ModifiedDate';
 import styles from './styles';
@@ -48,7 +48,7 @@ const BookItem: FC<Props> = memo(
             </View>
             <View>
               <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
-              <Dropdown bookStatus={bookStatus as BookStatus} bookId={bookId} dropdownHeight={150} dropdownLeftPosition={16} />
+              <BookStatusDropdown bookStatus={bookStatus as BookStatus} bookId={bookId} dropdownLeftPosition={16} />
             </View>
           </View>
           <View style={styles.rightSide}>

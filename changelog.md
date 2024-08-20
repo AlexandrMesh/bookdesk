@@ -2,10 +2,18 @@
 
 ## bookdesk
 
+## 4.3.0
+
+###### 2024-08-20
+- [Fix] Reworked `SlideMenu` to screen or Modal
+- [Fix] Fixed `estimatedItemSize` in FlashList
+- [Fix] Autofocus for Search book input
+
 ## 4.2.0
 
 ###### 2024-08-16
 - [Fix] Wrap components to `memo`
+- [Fix] Use lazy-loading for components
 - [Fix] Rework `BookSectionList` for boards to `FlashList`
 
 ## 4.1.0

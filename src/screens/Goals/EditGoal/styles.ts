@@ -3,11 +3,12 @@ import colors from '~styles/colors';
 
 export default StyleSheet.create({
   wrapper: {
-    padding: 15,
+    width: '100%',
+    height: '100%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.primary_dark,
   },
   content: {
     maxWidth: 800,

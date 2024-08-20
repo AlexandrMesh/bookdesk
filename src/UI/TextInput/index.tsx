@@ -23,6 +23,7 @@ export type Props = {
   multiline?: boolean;
   validateable?: boolean;
   inputMode?: 'decimal' | 'email' | 'none' | 'numeric' | 'search' | 'tel' | 'text' | 'url';
+  autoFocus?: boolean;
 };
 
 const Input: FC<Props> = ({
@@ -41,6 +42,7 @@ const Input: FC<Props> = ({
   numberOfLines = 1,
   multiline,
   errorWrapperClassName,
+  autoFocus,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -66,6 +68,7 @@ const Input: FC<Props> = ({
     <View style={[validateable ? styles.validateableWrapper : styles.wrapper, wrapperClassName]}>
       <View>
         <TextInput
+          autoFocus={autoFocus}
           onFocus={onFocus}
           onBlur={onBlur}
           placeholder={placeholder}

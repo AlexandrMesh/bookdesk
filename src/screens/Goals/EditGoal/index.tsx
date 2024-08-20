@@ -1,32 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { useAppDispatch, useAppSelector } from '~hooks';
-import { getActiveModal } from '~redux/selectors/books';
-import { hideModal } from '~redux/actions/booksActions';
 import { getGoalNumberOfPages } from '~redux/selectors/goals';
 import { updateGoal } from '~redux/actions/goalsActions';
-import { EDIT_GOAL } from '~constants/modalTypes';
 import { Spinner } from '~UI/Spinner';
-import SlideMenu from '~UI/SlideMenu';
 import styles from './styles';
 
-const LanguageSettings = () => {
+const EditGoal = () => {
   const { t } = useTranslation(['goals', 'common']);
   const [pages, setPages] = useState<string>('');
   const [errorForPage, setErrorForPages] = useState('');
-  const [shouldAutoClose, setShouldAutoClose] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
 
   const dispatch = useAppDispatch();
 
-  const _hideModal = () => dispatch(hideModal());
   const _updateGoal = (numberOfPages: string) => dispatch(updateGoal(numberOfPages));
 
-  const isVisible = useAppSelector(getActiveModal) === EDIT_GOAL;
   const goalNumberOfPages = useAppSelector(getGoalNumberOfPages) || 0;
 
   const validateForm = () => {
@@ -46,7 +41,7 @@ const LanguageSettings = () => {
     try {
       setIsLoading(true);
       await _updateGoal(pages);
-      setShouldAutoClose(true);
+      navigation.goBack();
     } catch (error) {
       console.error(error);
     } finally {
@@ -78,51 +73,35 @@ const LanguageSettings = () => {
   };
 
   useEffect(() => {
-    if (shouldAutoClose) {
-      setShouldAutoClose(false);
-    }
-  }, [shouldAutoClose]);
-
-  useEffect(() => {
-    if (!isVisible) {
+    setPages(goalNumberOfPages.toString());
+    return () => {
       clearPages();
-    } else {
-      setPages(goalNumberOfPages.toString());
-    }
-  }, [isVisible, setPages, goalNumberOfPages]);
+    };
+  }, [setPages, goalNumberOfPages]);
 
-  return isVisible ? (
-    <SlideMenu
-      isVisible={isVisible}
-      menuHeight={270}
-      title={t('changeGoal')}
-      shouldAutoClose={shouldAutoClose}
-      onClose={_hideModal}
-      onReset={() => undefined}
-    >
+  return (
+    <View style={styles.wrapper}>
       {isLoading ? (
         <Spinner />
       ) : (
-        <View style={styles.wrapper}>
-          <View style={styles.content}>
-            <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
-            <Input
-              placeholder={t('enterPagesCount')}
-              error={errorForPage}
-              onChangeText={handleChangePages}
-              shouldDisplayClearButton={!!pages}
-              onClear={handleClearPages}
-              inputMode='numeric'
-              value={pages}
-            />
-            <View style={styles.submitButtonWrapper}>
-              <Button title={t('common:save')} onPress={submitForm} />
-            </View>
+        <View style={styles.content}>
+          <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
+          <Input
+            placeholder={t('enterPagesCount')}
+            error={errorForPage}
+            onChangeText={handleChangePages}
+            shouldDisplayClearButton={!!pages}
+            onClear={handleClearPages}
+            inputMode='numeric'
+            value={pages}
+          />
+          <View style={styles.submitButtonWrapper}>
+            <Button title={t('common:save')} onPress={submitForm} />
           </View>
         </View>
       )}
-    </SlideMenu>
-  ) : null;
+    </View>
+  );
 };
 
-export default LanguageSettings;
+export default EditGoal;

@@ -13,6 +13,7 @@ import { BOTTOM_BAR_ICON, BOTTOM_BAR_ADD_ICON } from '~constants/dimensions';
 import i18n from '~translations/i18n';
 import {
   SEARCH_ROUTE,
+  FITLERING_ROUTE,
   GOALS_ROUTE,
   GOAL_DETAILS,
   ADD_GOAL,
@@ -29,6 +30,8 @@ import {
   STAT_ROUTE,
   ADD_CUSTOM_BOOK_ROUTE,
   ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE,
+  CUSTOM_CATEGORY_CHOOSER_ROUTE,
+  EDIT_GOAL,
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import StatIcon from '~assets/stat.svg';
@@ -46,18 +49,22 @@ import { getNewCustomBookNameValue } from '~redux/selectors/customBook';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
+import ClearFilters from './ClearFilters';
 import InSuspense from './InSuspense';
 
 const Search = lazy(() => import('~screens/Search'));
+const Filtering = lazy(() => import('~screens/Home/Filtering'));
+const CategoryChooser = lazy(() => import('~screens/AddCustomBook/CategoryChooser'));
 const AddCustomBook = lazy(() => import('~screens/AddCustomBook'));
 const Statistic = lazy(() => import('~screens/Statistic'));
 const Goals = lazy(() => import('~screens/Goals/Goals'));
 const AddGoal = lazy(() => import('~screens/Goals/AddGoal'));
+const EditGoal = lazy(() => import('~screens/Goals/EditGoal'));
 const GoalDetails = lazy(() => import('~screens/Goals/GoalDetails'));
 const About = lazy(() => import('~screens/Profile/About'));
 const Profile = lazy(() => import('~screens/Profile'));
 const BookDetails = lazy(() => import('~screens/Home/BookDetails'));
-const Modals = lazy(() => import('~screens/Modals/Modals'));
+const Modals = lazy(() => import('~screens/Modals'));
 const DateUpdater = lazy(() => import('~screens/Home/DateUpdater'));
 const SignIn = lazy(() => import('~screens/Auth/SignIn'));
 const SignUp = lazy(() => import('~screens/Auth/SignUp'));
@@ -107,7 +114,6 @@ const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
     <Stack.Navigator
       initialRouteName={hasGoal ? GOAL_DETAILS : GOALS_ROUTE}
       screenOptions={{
-        animationEnabled: false,
         headerStyle: {
           backgroundColor: colors.primary_dark,
           shadowColor: 'transparent',
@@ -136,6 +142,13 @@ const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
           </InSuspense>
         )}
       </Stack.Screen>
+      <Stack.Screen name={EDIT_GOAL} options={{ presentation: 'modal', title: t('editGoal') }}>
+        {() => (
+          <InSuspense>
+            <EditGoal />
+          </InSuspense>
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name={GOAL_DETAILS}
         options={{
@@ -155,7 +168,7 @@ const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
 };
 
 const HomeNavigator = () => {
-  const { t } = useTranslation('search');
+  const { t } = useTranslation(['search', 'common']);
 
   return (
     <Stack.Navigator
@@ -178,6 +191,19 @@ const HomeNavigator = () => {
           </InSuspense>
         )}
       </Stack.Screen>
+      <Stack.Screen
+        name={FITLERING_ROUTE}
+        options={{
+          headerRight: ClearFilters,
+          title: t('common:categoriesTitle'),
+        }}
+      >
+        {() => (
+          <InSuspense>
+            <Filtering />
+          </InSuspense>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -187,7 +213,7 @@ type AddCustomBookNavigatorProps = {
 };
 
 const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookName }) => {
-  const { t } = useTranslation('customBook');
+  const { t } = useTranslation(['customBook', 'common']);
 
   return (
     <Stack.Navigator
@@ -205,6 +231,13 @@ const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookNam
         {() => (
           <InSuspense>
             <AddCustomBook />
+          </InSuspense>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name={CUSTOM_CATEGORY_CHOOSER_ROUTE} options={{ presentation: 'modal', title: t('common:categoriesTitle') }}>
+        {() => (
+          <InSuspense>
+            <CategoryChooser />
           </InSuspense>
         )}
       </Stack.Screen>
@@ -314,7 +347,6 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
       </Tab.Screen>
       <Tab.Screen
         name={BOOK_DETAILS_ROUTE}
-        component={BookDetails}
         options={{
           headerShown: true,
           headerRight: CloseComponent,
@@ -328,7 +360,13 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
           },
           headerTintColor: colors.neutral_light,
         }}
-      />
+      >
+        {() => (
+          <InSuspense>
+            <BookDetails />
+          </InSuspense>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
