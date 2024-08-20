@@ -30,6 +30,9 @@ const LanguageSettings = () => {
   }, [dispatch]);
 
   const handleUpdate = async (value: string) => {
+    if (isLoading || language === value) {
+      return;
+    }
     seIstLoading(true);
     i18n.changeLanguage(value);
     try {
