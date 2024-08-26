@@ -18,5 +18,6 @@
   "dateAdded": "Date added",
   "bookNote": "My note",
   "enterNote": "Enter your book note (only you see)",
-  "rating": "My rating"
+  "rating": "My rating",
+  "noBookNote": "No book note"
 }

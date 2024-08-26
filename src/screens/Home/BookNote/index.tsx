@@ -26,7 +26,7 @@ type ParamList = {
 };
 
 const BookNote: FC = () => {
-  const { t, i18n } = useTranslation('common');
+  const { t, i18n } = useTranslation(['common', 'books']);
   const { language } = i18n;
   const { params } = useRoute<RouteProp<ParamList, 'BookNote'>>();
 
@@ -148,7 +148,7 @@ const BookNote: FC = () => {
               renderCommentForm()
             ) : (
               <View style={[styles.info, styles.noNoteWrapper]}>
-                <Text style={[styles.title, styles.lightColor, styles.noNoteLabel]}>Нет заметки</Text>
+                <Text style={[styles.title, styles.lightColor, styles.noNoteLabel]}>{t('books:noBookNote')}</Text>
                 <Button style={styles.primaryButton} onPress={toggleEditableMode} title={t('common:add')} />
               </View>
             )}
