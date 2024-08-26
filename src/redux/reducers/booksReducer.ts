@@ -5,7 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 import * as booksActions from '~redux/actions/booksActions';
 import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
 import { ALL } from '~constants/boardType';
-import { BookStatus, IBook, ICategory, IComment, IRating, IVote } from '~types/books';
+import { BookStatus, IBook, ICategory, IBookNote, IRating, IVote } from '~types/books';
 import { LoadingType } from '~types/loadingTypes';
 
 export interface ICategoriesState {
@@ -123,22 +123,11 @@ const getDefaultBoardState = ({ sortType = '', sortDirection = null }: { sortTyp
 });
 
 export interface IBookCommentState {
-  data: IComment;
+  data: IBookNote;
   loadingDataStatus: LoadingType;
   updatingDataStatus: LoadingType;
   deletingDataStatus: LoadingType;
 }
-
-const getDefaultBookCommentState = (): IBookCommentState => ({
-  data: {
-    bookId: '',
-    comment: '',
-    added: 0,
-  },
-  loadingDataStatus: IDLE,
-  updatingDataStatus: IDLE,
-  deletingDataStatus: IDLE,
-});
 
 export interface IUpdatedBookValuesState {
   bookToUpdate: {
@@ -165,7 +154,7 @@ export interface IBooksState {
   activeAlert: string | null;
   updatedBookValues: IUpdatedBookValuesState;
   bookVotes: IVote[];
-  bookComment: IBookCommentState;
+  bookNotes: IBookNote[];
   bookRatings: IRating[];
   bookDetails: IBookDetailsState;
   board: {
@@ -185,7 +174,7 @@ const getDefaultState = (): IBooksState => ({
   activeAlert: null,
   updatedBookValues: getUpdatedBookValuesState(),
   bookVotes: [],
-  bookComment: getDefaultBookCommentState(),
+  bookNotes: [],
   bookRatings: [],
   bookDetails: getDefaultBookDetailsState(),
   board: {
@@ -211,23 +200,13 @@ export default createReducer(defaultState, (builder) => {
     .addCase(booksActions.hideModal, (state) => {
       state.activeModal = null;
     })
-    .addCase(booksActions.deleteUserComment.pending, (state) => {
-      state.bookComment.deletingDataStatus = PENDING;
+    .addCase(booksActions.deleteUserComment.fulfilled, (state, action) => {
+      state.bookNotes = state.bookNotes.filter((note) => note.bookId !== action.payload);
     })
-    .addCase(booksActions.deleteUserComment.fulfilled, (state) => {
-      state.bookComment.deletingDataStatus = SUCCEEDED;
-      state.bookComment.data = { bookId: '', comment: '', added: 0 };
-    })
-    .addCase(booksActions.deleteUserComment.rejected, (state) => {
-      state.bookComment.deletingDataStatus = FAILED;
-    })
-    .addCase(booksActions.updateUserComment.pending, (state) => {
-      state.bookComment.updatingDataStatus = PENDING;
-    })
-    .addCase(booksActions.updateUserComment.fulfilled, (state, action) => {
-      state.bookComment.data = action.payload;
-      state.bookComment.updatingDataStatus = SUCCEEDED;
-      state.bookComment.loadingDataStatus = SUCCEEDED;
+    .addCase(booksActions.updateUserComment.fulfilled, (state, { payload: { bookId, comment, added } }) => {
+      state.bookNotes = state.bookNotes.some((note) => note.bookId === bookId)
+        ? state.bookNotes.map((note) => (note.bookId === bookId ? { ...note, comment, added } : note))
+        : [...state.bookNotes, { bookId, comment, added }];
     })
     .addCase(booksActions.userBookRatingsLoaded, (state, action) => {
       state.bookRatings = action.payload;
@@ -237,24 +216,6 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(booksActions.deleteUserBookRating.fulfilled, (state, action) => {
       state.bookRatings = action.payload;
-    })
-    .addCase(booksActions.clearBookComment, (state) => {
-      state.bookComment = getDefaultBookCommentState();
-    })
-    .addCase(booksActions.getBookComment.pending, (state) => {
-      state.bookComment.loadingDataStatus = PENDING;
-    })
-    .addCase(booksActions.getBookComment.fulfilled, (state, action) => {
-      state.bookComment.data = action.payload;
-      state.bookComment.updatingDataStatus = SUCCEEDED;
-      state.bookComment.loadingDataStatus = SUCCEEDED;
-    })
-    .addCase(booksActions.getBookComment.rejected, (state) => {
-      state.bookComment.loadingDataStatus = FAILED;
-    })
-    .addCase(booksActions.updateUserBookCommentInBookDetails, (state, { payload: { comment, commentAdded } }) => {
-      state.bookDetails.data.comment = comment;
-      state.bookDetails.data.commentAdded = commentAdded;
     })
     .addCase(booksActions.setBookToUpdate, (state, { payload: { bookId, bookStatus, added } }) => {
       state.updatedBookValues.bookToUpdate.bookId = bookId;
@@ -282,6 +243,9 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(booksActions.setBookVotes, (state, action) => {
       state.bookVotes = action.payload;
+    })
+    .addCase(booksActions.setBookNotes, (state, action) => {
+      state.bookNotes = action.payload;
     })
     .addCase(booksActions.updateBookVotes.fulfilled, (state, { meta, payload: { bookStatus, userVotes, votesCount } }) => {
       state.bookVotes = userVotes;

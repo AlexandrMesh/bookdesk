@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.4.0
+
+###### 2024-08-26
+- [Fix] Reworked `BookNote` component
+
 ## 4.3.0
 
 ###### 2024-08-20

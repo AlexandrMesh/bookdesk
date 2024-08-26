@@ -14,10 +14,10 @@ const getCategories = (state: StateWithBooks) => getBooks(state).categories;
 const getBoard = (state: StateWithBooks) => getBooks(state).board;
 const getBookDetails = (state: StateWithBooks) => getBooks(state).bookDetails;
 const getUpdatedBookValues = (state: StateWithBooks) => getBooks(state).updatedBookValues;
-const getBookComment = (state: StateWithBooks) => getBooks(state).bookComment;
 
 export const getBoardType = (state: StateWithBooks) => getBooks(state).boardType;
 export const getBookVotes = (state: StateWithBooks) => getBooks(state).bookVotes;
+export const getBookNotes = (state: StateWithBooks) => getBooks(state).bookNotes;
 export const getActiveModal = (state: StateWithBooks) => getBooks(state).activeModal;
 export const getSearchQuery = (state: StateWithBooks) => getSearch(state).query;
 export const getSearchResults = (state: StateWithBooks) => getSearch(state).data;
@@ -41,11 +41,6 @@ export const getBookDetailsData = (state: StateWithBooks) => getBookDetails(stat
 
 export const getBookToUpdate = (state: StateWithBooks) => getUpdatedBookValues(state).bookToUpdate;
 export const getBookValuesUpdatingStatus = (state: StateWithBooks) => getUpdatedBookValues(state).loadingDataStatus;
-
-export const getBookCommentData = (state: StateWithBooks) => getBookComment(state).data;
-export const getBookCommentUpdatingStatus = (state: StateWithBooks) => getBookComment(state).updatingDataStatus;
-export const getBookCommentLoadingStatus = (state: StateWithBooks) => getBookComment(state).loadingDataStatus;
-export const getBookCommentDeletingStatus = (state: StateWithBooks) => getBookComment(state).deletingDataStatus;
 
 export const getUserBookRatings = (state: StateWithBooks) => getBooks(state).bookRatings;
 
@@ -72,6 +67,9 @@ export const deriveExpandedCategories = (status: BookStatus) =>
 
 export const deriveBookVotes = (bookIdExternal: string) =>
   createSelector([getBookVotes], (bookVotes) => bookVotes.some(({ bookId }) => bookId === bookIdExternal));
+
+export const deriveBookNote = (bookIdExternal: string) =>
+  createSelector([getBookNotes], (bookNotes) => bookNotes.find(({ bookId }) => bookId === bookIdExternal));
 
 export const deriveCategorySearchQuery = (status: BookStatus) =>
   createSelector([deriveBookListEditableFilterParams(status)], (editableFilterParams) => editableFilterParams.categorySearchQuery);

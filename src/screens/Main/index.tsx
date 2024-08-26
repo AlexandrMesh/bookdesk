@@ -32,6 +32,7 @@ import {
   ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE,
   CUSTOM_CATEGORY_CHOOSER_ROUTE,
   EDIT_GOAL,
+  BOOK_NOTE_ROUTE,
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import StatIcon from '~assets/stat.svg';
@@ -53,6 +54,7 @@ import ClearFilters from './ClearFilters';
 import InSuspense from './InSuspense';
 
 const Search = lazy(() => import('~screens/Search'));
+const BookNote = lazy(() => import('~screens/Home/BookNote'));
 const Filtering = lazy(() => import('~screens/Home/Filtering'));
 const CategoryChooser = lazy(() => import('~screens/AddCustomBook/CategoryChooser'));
 const AddCustomBook = lazy(() => import('~screens/AddCustomBook'));
@@ -364,6 +366,29 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
         {() => (
           <InSuspense>
             <BookDetails />
+          </InSuspense>
+        )}
+      </Tab.Screen>
+      <Tab.Screen
+        name={BOOK_NOTE_ROUTE}
+        options={{
+          headerShown: true,
+          unmountOnBlur: true,
+          headerRight: CloseComponent,
+          title: t('books:bookNote'),
+          tabBarButton: () => null,
+          headerStyle: {
+            backgroundColor: colors.primary_dark,
+            shadowColor: 'transparent',
+            borderBottomWidth: 1,
+            borderColor: colors.neutral_medium,
+          },
+          headerTintColor: colors.neutral_light,
+        }}
+      >
+        {() => (
+          <InSuspense>
+            <BookNote />
           </InSuspense>
         )}
       </Tab.Screen>

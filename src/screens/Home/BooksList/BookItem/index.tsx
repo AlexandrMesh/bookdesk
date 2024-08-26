@@ -11,6 +11,7 @@ import { deriveUserBookRating } from '~redux/selectors/books';
 import Rating from '~screens/Home/Rating';
 import Like from '~screens/Home/Like';
 import BookStatusDropdown from '~screens/Home/BookStatusDropdown';
+import BookNotePreview from '~screens/Home/BookNotePreview';
 import { BookStatus, IBook } from '~types/books';
 import ModifiedDate from '../../ModifiedDate';
 import styles from './styles';
@@ -81,6 +82,7 @@ const BookItem: FC<Props> = memo(
                 </>
               )}
             </View>
+            {bookStatus ? <BookNotePreview bookId={bookId} bookTitle={title} /> : null}
           </View>
         </View>
         <View style={styles.bottom}>

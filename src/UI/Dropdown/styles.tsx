@@ -28,7 +28,7 @@ export default StyleSheet.create({
     width: 126,
     height: 30,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: colors.neutral_light,
     borderRadius: 5,
   },
   status: {

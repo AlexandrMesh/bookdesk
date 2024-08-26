@@ -27,12 +27,11 @@ import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/acti
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { ALL } from '~constants/boardType';
 import i18n from '~translations/i18n';
-import { BookStatus, IBook, IRating, IVote } from '~types/books';
+import { BookStatus, IBook, IBookNote, IRating, IVote } from '~types/books';
 import { AppThunkAPI } from '~redux/store/configureStore';
 
 const PREFIX = 'BOOKS';
 
-export const clearBookComment = createAction(`${PREFIX}/clearBookComment`);
 export const userBookRatingsLoaded = createAction<IRating[]>(`${PREFIX}/userBookRatingsLoaded`);
 export const setBookToUpdate = createAction<{ bookId: string; bookStatus: BookStatus; added: number }>(`${PREFIX}/setBookToUpdate`);
 export const setBoardType = createAction<BookStatus>(`${PREFIX}/setBoardType`);
@@ -47,6 +46,7 @@ export const toggleExpandedCategoryBooks = createAction<{ path: string; boardTyp
 export const addToIndeterminatedCategories = createAction<{ boardType: BookStatus; value: string }>(`${PREFIX}/addToIndeterminatedCategories`);
 export const clearIndeterminatedCategories = createAction<{ boardType: BookStatus; path: string }>(`${PREFIX}/toggleExpandedCategory`);
 export const setBookVotes = createAction<IVote[]>(`${PREFIX}/setBookVotes`);
+export const setBookNotes = createAction<IBookNote[]>(`${PREFIX}/setBookNotes`);
 export const triggerReloadSearchResults = createAction(`${PREFIX}/triggerReloadSearchResults`);
 export const clearBooksData = createAction(`${PREFIX}/clearBooksData`);
 export const clearDataForChangeLanguage = createAction(`${PREFIX}/clearDataForChangeLanguage`);
@@ -55,9 +55,6 @@ export const triggerShouldNotClearSearchQuery = createAction(`${PREFIX}/triggerS
 export const addFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(`${PREFIX}/addFilterValue`);
 export const removeFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(
   `${PREFIX}/removeFilterValue`,
-);
-export const updateUserBookCommentInBookDetails = createAction<{ comment: string; commentAdded: number }>(
-  `${PREFIX}/updateUserBookCommentInBookDetails`,
 );
 export const setSearchQueryAction = createAction<string>(`${PREFIX}/setSearchQueryAction`);
 export const clearFilters = createAction<BookStatus>(`${PREFIX}/clearFilters`);
@@ -284,6 +281,7 @@ export const updateUserBookAddedDate = createAsyncThunk(
 export const deleteUserComment = createAsyncThunk(`${PREFIX}/deleteUserComment`, async (bookId: string) => {
   try {
     await DataService().deleteUserComment({ bookId });
+    return bookId;
   } catch (error) {
     console.error(error);
     throw error;
@@ -341,23 +339,17 @@ export const updateUserComment = createAsyncThunk(
   async ({ bookId, comment, added }: { bookId: string; comment: string; added: number }) => {
     try {
       const { data } = await DataService().updateUserComment({ bookId, added, comment });
-      return data;
+      return {
+        bookId,
+        comment: data.comment,
+        added: data.added,
+      };
     } catch (error) {
       console.error(error);
       throw error;
     }
   },
 );
-
-export const getBookComment = createAsyncThunk(`${PREFIX}/getBookComment`, async (bookId: string) => {
-  try {
-    const { data } = await DataService().getBookComment({ bookId });
-    return data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-});
 
 export const updateUserBookRating = createAsyncThunk(
   `${PREFIX}/updateUserBookRating`,

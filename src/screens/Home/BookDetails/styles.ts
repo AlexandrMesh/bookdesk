@@ -26,10 +26,6 @@ export default StyleSheet.create({
     fontSize: 21,
     textAlign: 'center',
   },
-  subTitle: {
-    fontSize: 16,
-    color: colors.neutral_light,
-  },
   lightColor: {
     color: colors.neutral_light,
   },
@@ -68,18 +64,6 @@ export default StyleSheet.create({
   mediumColor: {
     color: colors.neutral_medium,
   },
-  bordered: {
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: colors.neutral_light,
-  },
-  borderedBlockFooter: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
-  },
   commentWrapperClassName: {
     marginTop: 10,
     height: 240,
@@ -97,6 +81,7 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   blockHeader: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

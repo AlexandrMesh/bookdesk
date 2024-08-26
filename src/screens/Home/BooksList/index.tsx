@@ -1,9 +1,9 @@
-import React, { memo, FC, useCallback } from 'react';
+import React, { memo, FC, useCallback, useEffect, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from '~UI/Spinner';
-import { IDLE, PENDING } from '~constants/loadingStatuses';
+import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import useGetImgUrl from '~hooks/useGetImgUrl';
 import { IBook } from '~types/books';
 import { LoadingType } from '~types/loadingTypes';
@@ -20,6 +20,7 @@ export type Props = {
 
 const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadingDataStatus, horizontal }) => {
   const { t } = useTranslation('common');
+  const listRef = useRef<any>(null);
   const imgUrl = useGetImgUrl();
   const getSpinner = useCallback(
     () =>
@@ -86,11 +87,18 @@ const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadi
     return typeof item === 'string' ? 'sectionHeader' : 'row';
   }, []);
 
+  useEffect(() => {
+    if (data?.length === 0 && loadingDataStatus === SUCCEEDED) {
+      listRef?.current?.scrollToOffset({ offset: 0 });
+    }
+  }, [data?.length, loadingDataStatus]);
+
   return (
     <View style={styles.container}>
       <FlashList
+        ref={listRef}
         horizontal={horizontal}
-        estimatedItemSize={331}
+        estimatedItemSize={351}
         data={data}
         renderItem={renderItem}
         getItemType={getItemType}

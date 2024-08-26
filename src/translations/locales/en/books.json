@@ -16,7 +16,7 @@
   "bookStatusUpdated": "Status udated!",
   "bookDetails": "Book details",
   "dateAdded": "Date added",
-  "noteOnTheBook": "My note",
-  "enterNote": "Enter your note for the book (only you see)",
+  "bookNote": "My note",
+  "enterNote": "Enter your book note (only you see)",
   "rating": "My rating"
 }

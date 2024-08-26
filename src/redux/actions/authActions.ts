@@ -3,7 +3,7 @@ import { NativeModules } from 'react-native';
 import axios from 'axios';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { clearBooksData, setBookVotes, userBookRatingsLoaded } from '~redux/actions/booksActions';
+import { clearBooksData, setBookNotes, setBookVotes, userBookRatingsLoaded } from '~redux/actions/booksActions';
 import { setGoal } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
 import i18n, { getT } from '~translations/i18n';
@@ -104,6 +104,7 @@ export const checkAuth = createAsyncThunk(`${PREFIX}/checkAuth`, async (token: s
         dispatch(setGoal(numberOfPagesForGoal));
       }
       dispatch(setBookVotes(data.userVotes));
+      dispatch(setBookNotes(data.userComments));
       dispatch(userBookRatingsLoaded(data.userBookRatings));
       return {
         profile: data.profile,
@@ -142,6 +143,7 @@ export const signIn = createAsyncThunk(
             dispatch(setGoal(data.numberOfPagesForGoal));
           }
           dispatch(setBookVotes(data.userVotes));
+          dispatch(setBookNotes(data.userComments));
           dispatch(userBookRatingsLoaded(data.userBookRatings));
           try {
             await AsyncStorage.setItem('token', data.token);
@@ -171,6 +173,7 @@ export const signIn = createAsyncThunk(
             dispatch(setGoal(data.numberOfPagesForGoal));
           }
           dispatch(setBookVotes(data.userVotes));
+          dispatch(setBookNotes(data.userComments));
           dispatch(userBookRatingsLoaded(data.userBookRatings));
           try {
             await AsyncStorage.setItem('token', data.token);

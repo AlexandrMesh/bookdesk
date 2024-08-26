@@ -34,7 +34,7 @@ export interface IVote {
   count: number;
 }
 
-export interface IComment {
+export interface IBookNote {
   bookId: string;
   comment: string;
   added: number;
