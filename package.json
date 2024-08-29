@@ -1,6 +1,6 @@
 {
   "name": "bookdesk",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -28,7 +28,6 @@
     "react": "18.2.0",
     "react-i18next": "^11.18.6",
     "react-native": "0.74.3",
-    "react-native-actions-sheet": "^0.9.6",
     "react-native-date-picker": "^4.4.2",
     "react-native-device-info": "^10.14.0",
     "react-native-devsettings": "^1.0.5",
@@ -46,7 +45,6 @@
     "react-redux": "^8.1.3",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.2",
     "reselect": "^4.1.8",
     "semver": "^7.6.3"
   },
