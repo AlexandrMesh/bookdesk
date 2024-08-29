@@ -18,6 +18,7 @@ export default StyleSheet.create({
   },
   info: {
     display: 'flex',
+    width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginTop: 10,
@@ -39,6 +40,15 @@ export default StyleSheet.create({
   },
   italic: {
     fontStyle: 'italic',
+  },
+  textWrapper: {
+    maxWidth: '90%',
+  },
+  arrowWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 26,
   },
   arrowIcon: {
     transform: [{ rotate: '-90deg' }],

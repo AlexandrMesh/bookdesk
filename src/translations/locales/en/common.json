@@ -30,5 +30,7 @@
   "count": "{{count}} pcs",
   "charactersCount": "Characters: {{count}}/{{maxCount}}",
   "moreDetails": "More details",
-  "retry": "Retry"
+  "retry": "Retry",
+  "confirmationDeleteTitle": "Confirm the action",
+  "confirmationDeleteDescription": "Are you sure you want to delete?"
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { ScrollView, View, Text, SectionList, FlatList, Pressable } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, Text, SectionList, FlatList, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { addGoalItem, getGoalItems, deleteUserGoalItem } from '~redux/actions/goalsActions';
@@ -13,6 +13,7 @@ import colors from '~styles/colors';
 import ArrowDown from '~assets/arrow-down.svg';
 import MedalIcon from '~assets/medal-star.svg';
 import RemoveIcon from '~assets/remove.svg';
+import useDisplayAlert from '~hooks/useDisplayAlert';
 import ItemPlaceholder from './ItemPlaceholder';
 import styles from './styles';
 
@@ -23,6 +24,7 @@ const GoalDetails = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [loadingStatus, setLoadingStatus] = useState(IDLE);
   const [isLoading, setIsLoading] = useState(false);
+  const deletedId = useRef<string>('');
   const [loadingGoalItemsId, setLoadingGoalItemsId] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
@@ -93,18 +95,25 @@ const GoalDetails = () => {
     setPages('');
   };
 
-  const handleDeleteGoalItem = useCallback(
-    async (id: string) => {
-      setLoadingGoalItemsId(id);
-      try {
-        await _deleteUserGoalItem(id);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoadingGoalItemsId(null);
-      }
+  const handleDeleteGoalItem = useCallback(async () => {
+    setLoadingGoalItemsId(deletedId.current);
+    try {
+      await _deleteUserGoalItem(deletedId.current);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingGoalItemsId(null);
+    }
+  }, [deletedId, _deleteUserGoalItem]);
+
+  const displayConfirmationAlert = useDisplayAlert(handleDeleteGoalItem);
+
+  const onDelete = useCallback(
+    (id: string) => {
+      deletedId.current = id;
+      displayConfirmationAlert();
     },
-    [_deleteUserGoalItem],
+    [deletedId, displayConfirmationAlert],
   );
 
   useEffect(() => {
@@ -157,13 +166,13 @@ const GoalDetails = () => {
         </View>
         <View style={styles.countColumn}>
           <Text style={styles.countItem}>{t('common:count', { count: item.pages })}</Text>
-          <Pressable style={styles.removeIcon} onPress={() => !loadingGoalItemsId && handleDeleteGoalItem(item._id)}>
+          <Pressable style={styles.removeIcon} onPress={() => !loadingGoalItemsId && onDelete(item._id)}>
             {loadingGoalItemsId === item._id ? <Spinner size='small' /> : <RemoveIcon fill={colors.neutral_medium} width={20} height={20} />}
           </Pressable>
         </View>
       </View>
     ),
-    [handleDeleteGoalItem, language, loadingGoalItemsId, t],
+    [onDelete, language, loadingGoalItemsId, t],
   );
 
   const renderReadingHistoryNestedItems = useCallback(
@@ -214,7 +223,7 @@ const GoalDetails = () => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <ScrollView keyboardShouldPersistTaps='handled' style={styles.topBlock}>
+        <View style={styles.topBlock}>
           <View>
             <View style={styles.info}>
               <View style={styles.blockLeft}>
@@ -278,7 +287,7 @@ const GoalDetails = () => {
               </View>
             </View>
           </View>
-        </ScrollView>
+        </View>
 
         <View style={styles.sectionedList}>
           {sectionedPagesDone.length > 0 ? <Text style={styles.title}>{t('goals:achievementsJournal')}</Text> : null}

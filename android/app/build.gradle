@@ -79,8 +79,8 @@ android {
         applicationId "com.bookdesk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 52
-        versionName "4.4.0"
+        versionCode 53
+        versionName "4.4.1"
     }
     signingConfigs {
         release {

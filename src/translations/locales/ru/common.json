@@ -30,5 +30,7 @@
   "count": "{{count}} шт.",
   "charactersCount": "Символов: {{count}}/{{maxCount}}",
   "moreDetails": "Подробнее",
-  "retry": "Проверить"
+  "retry": "Проверить",
+  "confirmationDeleteTitle": "Подтвердите действие",
+  "confirmationDeleteDescription": "Вы действительно хотите удалить?"
 }

@@ -36,10 +36,14 @@ const BookNotePreview: FC<Props> = ({ bookId, bookTitle, numberOfLines = 2, font
             <Text style={[styles.lightColor, { fontSize }]}>{bookNoteAdded}</Text>
           </View>
           <View style={styles.noteWrapper}>
-            <Text numberOfLines={numberOfLines} style={[styles.lightColor, styles.italic, { fontSize }]}>
-              {bookNoteContent}
-            </Text>
-            <ArrowDown style={styles.arrowIcon} width={16} height={16} />
+            <View style={styles.textWrapper}>
+              <Text numberOfLines={numberOfLines} style={[styles.lightColor, styles.italic, { fontSize }]}>
+                {bookNoteContent}
+              </Text>
+            </View>
+            <View style={styles.arrowWrapper}>
+              <ArrowDown style={styles.arrowIcon} width={16} height={16} />
+            </View>
           </View>
         </View>
       ) : (

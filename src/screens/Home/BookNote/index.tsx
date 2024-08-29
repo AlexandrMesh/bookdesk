@@ -8,6 +8,7 @@ import { MAX_COUNT_CHARACTERS_FOR_COMMENT, MIN_COUNT_CHARACTERS_FOR_COMMENT } fr
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { deleteUserComment, updateUserComment } from '~redux/actions/booksActions';
 import { deriveBookNote } from '~redux/selectors/books';
+import useDisplayAlert from '~hooks/useDisplayAlert';
 import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { Spinner } from '~UI/Spinner';
@@ -49,6 +50,8 @@ const BookNote: FC = () => {
       setIsEditing(false);
     }
   };
+
+  const displayConfirmationAlert = useDisplayAlert(deleteComment);
 
   const turnOffEditableMode = () => setEditableMode(false);
   const toggleEditableMode = () => {
@@ -164,7 +167,7 @@ const BookNote: FC = () => {
                 <TouchableHighlight disabled={isEditing} style={styles.editIcon} onPress={toggleEditableMode}>
                   <EditIcon width={26} height={26} stroke={colors.neutral_medium} />
                 </TouchableHighlight>
-                <TouchableHighlight disabled={isEditing} onPress={deleteComment}>
+                <TouchableHighlight disabled={isEditing} onPress={displayConfirmationAlert}>
                   <RemoveIcon fill={colors.neutral_medium} width={26} height={26} />
                 </TouchableHighlight>
               </View>

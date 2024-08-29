@@ -19,8 +19,6 @@ export default StyleSheet.create({
     color: colors.neutral_light,
   },
   topBlock: {
-    flex: 0.7,
-    minHeight: 100,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
