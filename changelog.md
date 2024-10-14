@@ -2,6 +2,19 @@
 
 ## bookdesk
 
+## 4.4.2
+
+###### 2024-10-14
+- [Fix] Back button functionality on the Add custom book view
+- [Fix] Added autoFocus on the add custom book text input
+- [Fix] Fixes for book details view
+
+## 4.4.1
+
+###### 2024-08-29
+- [New] Added confirmation alert for deleting goal items and book notes
+- [Fix] Small UI fixes
+
 ## 4.4.0
 
 ###### 2024-08-26

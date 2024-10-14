@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FlashList } from '@shopify/flash-list';
 import FastImage from 'react-native-fast-image';
 import useGetImgUrl from '~hooks/useGetImgUrl';
+import { useBackHandler } from '@react-native-community/hooks';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import {
   getShouldAddCover,
@@ -69,6 +70,11 @@ const Step2 = () => {
     },
     [dispatch],
   );
+
+  useBackHandler(() => {
+    onPressBack();
+    return true;
+  });
 
   useEffect(() => {
     if (bookName.value && shouldAddCover && !suggestedCoversExist) {

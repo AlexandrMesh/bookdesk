@@ -86,7 +86,7 @@ export default StyleSheet.create({
     backgroundColor: colors.primary_medium,
   },
   button: {
-    maxWidth: 180,
+    maxWidth: 220,
   },
   annotationWrapperClassName: {
     height: 230,

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useIsFocused } from '@react-navigation/native';
 import isEmpty from 'lodash/isEmpty';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import BooksList from '~screens/Home/BooksList';
@@ -27,6 +28,8 @@ const Step1 = () => {
   const suggestedBooks = useAppSelector(deriveSuggestBooksData);
   const loadingDataStatus = useAppSelector(getSuggestedBooksLoadingStatus);
   const allowsNextAction = useAppSelector(deriveIsValidStep1);
+  const [shouldFocus, setIsShouldFocus] = useState(true);
+  const isFocused = useIsFocused();
 
   const [bookNameTemp, setBookNameTemp] = useState<string>(bookName.value);
   const [bookNameErrorTemp, setBookNameErrorTemp] = useState<string | null>(bookName.error);
@@ -87,28 +90,40 @@ const Step1 = () => {
 
   const shouldDisplayError = !!bookNameErrorTemp;
 
+  useEffect(() => {
+    if (isFocused) {
+      setIsShouldFocus(true);
+    } else {
+      setIsShouldFocus(false);
+    }
+  }, [isFocused, setIsShouldFocus, bookNameTemp]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.inputWrapper}>
-        <Input
-          placeholder={t('customBook:enterBookName')}
-          onChangeText={handleChangeBookName}
-          value={bookNameTemp}
-          wrapperClassName={[styles.bookNameInputWrapper, shouldDisplayError && styles.bookNameInputWithErrorWrapper]}
-          errorWrapperClassName={styles.errorWrapperClassName}
-          shouldDisplayClearButton={!!bookNameTemp && loadingDataStatus !== PENDING}
-          error={bookNameErrorTemp}
-          disabled={loadingDataStatus === PENDING}
-          validateable={shouldDisplayError}
-          onClear={handleClear}
-        />
-        <Button
-          disabled={!!(!bookNameTemp || !!bookNameErrorTemp || loadingDataStatus === PENDING || (bookNameTemp && bookNameTemp === bookName.value))}
-          style={styles.addButton}
-          onPress={handleAddBook}
-          title={t('common:add')}
-        />
-      </View>
+      {shouldFocus ? (
+        <View style={styles.inputWrapper}>
+          <Input
+            placeholder={t('customBook:enterBookName')}
+            onChangeText={handleChangeBookName}
+            autoFocus={!bookNameTemp}
+            value={bookNameTemp}
+            wrapperClassName={[styles.bookNameInputWrapper, shouldDisplayError && styles.bookNameInputWithErrorWrapper]}
+            errorWrapperClassName={styles.errorWrapperClassName}
+            shouldDisplayClearButton={!!bookNameTemp && loadingDataStatus !== PENDING}
+            error={bookNameErrorTemp}
+            disabled={loadingDataStatus === PENDING}
+            validateable={shouldDisplayError}
+            onClear={handleClear}
+          />
+
+          <Button
+            disabled={!!(!bookNameTemp || !!bookNameErrorTemp || loadingDataStatus === PENDING || (bookNameTemp && bookNameTemp === bookName.value))}
+            style={styles.addButton}
+            onPress={handleAddBook}
+            title={t('common:add')}
+          />
+        </View>
+      ) : null}
       <View style={styles.bookListWrapper}>
         {loadingDataStatus !== PENDING && suggestedBooks.length > 0 && bookNameTemp === bookName.value && !bookNameErrorTemp && (
           <Text style={styles.suggestionLabel}>{t('customBook:weHaveTheSimilarBooks')}</Text>

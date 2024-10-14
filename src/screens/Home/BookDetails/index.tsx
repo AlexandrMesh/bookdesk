@@ -2,10 +2,10 @@ import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, SafeAreaView, Text, ScrollView } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useIsFocused } from '@react-navigation/native';
 import { IDLE, PENDING } from '~constants/loadingStatuses';
 import { getLoadingBookDetailsStatus, deriveBookDetails, deriveUserBookRating } from '~redux/selectors/books';
-import { loadBookDetails } from '~redux/actions/booksActions';
+import { clearBookDetails, loadBookDetails } from '~redux/actions/booksActions';
 import Rating from '~screens/Home/Rating';
 import Like from '~screens/Home/Like';
 import BookStatusDropdown from '~screens/Home/BookStatusDropdown';
@@ -24,6 +24,7 @@ type ParamList = {
 };
 
 const BookDetails = () => {
+  const isFocused = useIsFocused();
   const { params } = useRoute<RouteProp<ParamList, 'BookDetails'>>();
 
   const bookRating = useAppSelector(deriveUserBookRating(params?.bookId))?.rating;
@@ -36,10 +37,17 @@ const BookDetails = () => {
 
   const dispatch = useAppDispatch();
   const _loadBookDetails = useCallback((bookId: string) => dispatch(loadBookDetails(bookId)), [dispatch]);
+  const _clearBookDetails = useCallback(() => dispatch(clearBookDetails()), [dispatch]);
 
   useEffect(() => {
     _loadBookDetails(params?.bookId);
   }, [_loadBookDetails, params]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      _clearBookDetails();
+    }
+  }, [isFocused, _clearBookDetails]);
 
   return loadingDataStatus === IDLE || loadingDataStatus === PENDING ? (
     <Placeholder />

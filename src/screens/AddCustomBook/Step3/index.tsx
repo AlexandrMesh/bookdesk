@@ -5,6 +5,7 @@ import uniqueId from 'lodash/uniqueId';
 import { useNavigation } from '@react-navigation/native';
 import { SECONDARY } from '~constants/themes';
 import { CLOSE_ICON } from '~constants/dimensions';
+import { useBackHandler } from '@react-native-community/hooks';
 import { getSelectedCategoryLabel, getPages, getAuthorsList, getAnnotation, deriveIsValidFullForm } from '~redux/selectors/customBook';
 import {
   setPages,
@@ -102,6 +103,11 @@ const Step3 = () => {
     }
   };
 
+  useBackHandler(() => {
+    onPressBack();
+    return true;
+  });
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.inputWrapper} keyboardShouldPersistTaps='handled'>
@@ -169,7 +175,7 @@ const Step3 = () => {
             disabled={authorsList.length > 2}
             style={[styles.button, styles.addAuthorButton]}
             onPress={handleAddAuthor}
-            title={t('customBook:addAuthor')}
+            title={t(authorsList.length > 0 ? 'customBook:addAnotherAuthor' : 'customBook:addAuthor')}
           />
         </View>
 
