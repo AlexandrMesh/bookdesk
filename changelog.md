@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.4.3
+
+###### 2024-12-26
+- [Fix] Removed validator for checking existing book for adding custom book
+
 ## 4.4.2
 
 ###### 2024-10-14

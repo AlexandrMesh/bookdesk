@@ -17,7 +17,6 @@
   "mustContainOnlyLetters": "Only letters can be used",
   "mustContainOnlyNumbers": "Only integers can be used",
   "containsSpecialCharacters": "Unacceptable symbols @^&/#+$~%;~`*<>=%[]{}_|",
-  "bookExists": "This book is already in our database",
   "isMoreThan": "Shouldn't be more than {{moreComparedValue}}",
   "isLessThan": "Shouldn't be less than {{lessComparedValue}}"
 }

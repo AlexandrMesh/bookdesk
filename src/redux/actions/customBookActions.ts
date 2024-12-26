@@ -5,7 +5,7 @@ import { triggerReloadBookList } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import DataService from '~http/services/books';
 import CustomBooksService from '~http/services/customBooks';
-import i18n, { getT } from '~translations/i18n';
+import i18n from '~translations/i18n';
 import { BookStatus } from '~types/books';
 import { AppThunkAPI } from '~redux/store/configureStore';
 
@@ -53,17 +53,6 @@ export const loadSuggestedBooks = createAsyncThunk(`${PREFIX}/loadSuggestedBooks
   };
 
   try {
-    const { data } = (await DataService().getBookList({ ...params, exact: true })) || {};
-    const { items, pagination } = data || {};
-    if (data && items?.length > 0) {
-      return {
-        error: getT('errors')('bookExists'),
-        data: items || [],
-        totalItems: pagination?.totalItems || 0,
-        hasNextPage: pagination?.hasNextPage || false,
-        allowToAddBook: false,
-      };
-    }
     const { data: dataBookList } = (await DataService().getBookList({ ...params })) || {};
     return {
       error: null,
