@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.5.0
+
+###### 2024-12-30
+- [New] Added `Similar books` block into BookDetails component
+
 ## 4.4.3
 
 ###### 2024-12-26

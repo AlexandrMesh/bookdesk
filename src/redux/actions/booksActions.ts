@@ -147,6 +147,26 @@ export const loadSearchResults = createAsyncThunk(
   },
 );
 
+export const getSimilarBooks = createAsyncThunk(
+  `${PREFIX}/getSimilarBooks`,
+  async ({ bookId, categoryPath }: { bookId: string; categoryPath: string | undefined }) => {
+    const { language } = i18n;
+
+    const params = {
+      bookId,
+      categoryPath,
+      language,
+    };
+    try {
+      const { data } = (await DataService().getSimilarBooks({ ...params })) || {};
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+);
+
 export const loadBookList = createAsyncThunk(
   `${PREFIX}/loadBookList`,
   async ({ boardType, shouldLoadMoreResults }: { boardType: BookStatus; shouldLoadMoreResults: boolean }, { getState }: AppThunkAPI) => {

@@ -15,6 +15,7 @@ import useGetImgUrl from '~hooks/useGetImgUrl';
 import ModifiedDate from '../ModifiedDate';
 import Placeholder from './Placeholder';
 import BookNotePreview from '../BookNotePreview';
+import SimilarBooks from './SimilarBooks';
 import styles from './styles';
 
 type ParamList = {
@@ -31,7 +32,7 @@ const BookDetails = () => {
   const loadingDataStatus = useAppSelector(getLoadingBookDetailsStatus);
   const bookDetailsData = useAppSelector(deriveBookDetails);
 
-  const { title, coverPath, authorsList, pages, categoryValue, bookStatus, added, votesCount, annotation } = bookDetailsData || {};
+  const { title, coverPath, authorsList, pages, categoryValue, categoryPath, bookStatus, added, votesCount, annotation } = bookDetailsData || {};
   const { t } = useTranslation(['books', 'categories', 'common']);
   const imgUrl = useGetImgUrl();
 
@@ -111,8 +112,9 @@ const BookDetails = () => {
           ) : null}
 
           {bookStatus ? <BookNotePreview bookId={params?.bookId} bookTitle={title} numberOfLines={5} fontSize={18} /> : null}
+          <SimilarBooks bookId={params?.bookId} imgUrl={imgUrl} categoryPath={categoryPath} />
           {annotation && (
-            <View style={styles.marginTop}>
+            <View>
               <View>
                 <Text style={[styles.item, styles.mediumColor]}>{t('annotation')}</Text>
               </View>

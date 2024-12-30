@@ -39,3 +39,9 @@ export interface IBookNote {
   comment: string;
   added: number;
 }
+
+export interface ISimilarBook {
+  _id: string;
+  coverPath: string;
+  title: string;
+}
