@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { FlashList } from '@shopify/flash-list';
 import { ISimilarBook } from '~types/books';
 import FastImage from 'react-native-fast-image';
@@ -17,6 +18,7 @@ export type Props = {
 };
 
 const SimilarBooks: FC<Props> = ({ bookId, categoryPath, imgUrl }) => {
+  const { t } = useTranslation('books');
   const [data, setData] = useState([]);
   const getKeyExtractor = useCallback(({ _id }: { _id: string }) => _id, []);
   const dispatch = useAppDispatch();
@@ -68,7 +70,7 @@ const SimilarBooks: FC<Props> = ({ bookId, categoryPath, imgUrl }) => {
 
   return (
     <View style={styles.listWrapper}>
-      <Text style={[styles.blockTitle, styles.lightColor]}>Рекомендуем</Text>
+      <Text style={[styles.blockTitle, styles.lightColor]}>{t('similarBooks')}</Text>
       <FlashList
         data={data}
         estimatedItemSize={120}

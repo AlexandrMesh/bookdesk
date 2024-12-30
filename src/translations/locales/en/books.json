@@ -19,5 +19,6 @@
   "bookNote": "My note",
   "enterNote": "Enter your book note (only you see)",
   "rating": "My rating",
-  "noBookNote": "No book note"
+  "noBookNote": "No book note",
+  "similarBooks": "Similar Books"
 }
