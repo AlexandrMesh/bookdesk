@@ -13,8 +13,15 @@
   "november": "Нояб.",
   "december": "Дек.",
   "completedBooks": "Книг прочитано:",
-  "averageReadingSpeed": "Вы читаете книг в месяц:",
+  "completedPages": "Страниц прочитано:",
+  "averageReadingSpeed": "Скорость чтения (в месяц):",
   "noData": "Недостаточно данных для отображения статистики по прочитанным книгам.",
   "topReaders": "Топ-100 читателей",
-  "placeInTheRating": "Ваше место в рейтинге:"
+  "placeInTheRating": "Ваше место в рейтинге:",
+  "books": "Книги",
+  "pages": "Страницы",
+  "rating": "Рейтинг",
+  "readPerMonth": "Прочитано за месяц: ",
+  "readPerYear": "Прочитано за год: ",
+  "topReadersDescription": "По количество прочитанных книг за все время"
 }

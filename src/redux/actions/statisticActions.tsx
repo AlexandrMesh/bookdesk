@@ -7,6 +7,7 @@ import DataPointLabel from '~screens/Statistic/DataPointLabel';
 import colors from '~styles/colors';
 import { IStat } from '~types/stat';
 import { BookStatus } from '~types/books';
+import GoalsService from '~http/services/goals';
 
 const PREFIX = 'STATISTIC';
 
@@ -17,15 +18,48 @@ export const loadStat = createAsyncThunk(`${PREFIX}/loadStat`, async (boardType:
   const { language } = i18n;
   try {
     const { data } = (await DataService().getBooksCountByYear({ boardType, language })) || {};
-    const chartData = generateBarChartData(data);
-    return chartData;
+    const chartData = generateBarChartData(data.items);
+    return {
+      data: chartData,
+      booksReadPerMonth: data.booksReadPerMonth,
+      booksReadPerYear: data.booksReadPerYear,
+    };
   } catch (error) {
     console.error(error);
     return {
-      data: [],
-      totalCount: 0,
-      averageReadingSpeed: 0,
-      maxValue: 10,
+      data: {
+        data: [],
+        totalCount: 0,
+        averageReadingSpeed: 0,
+        maxValue: 10,
+      },
+      booksReadPerMonth: 0,
+      booksReadPerYear: 0,
+    };
+  }
+});
+
+export const loadPagesStat = createAsyncThunk(`${PREFIX}/loadPagesStat`, async () => {
+  const { language } = i18n;
+  try {
+    const { data } = (await GoalsService().getUserGoalItemsByYear({ language })) || {};
+    const chartData = generateBarChartData(data.items, 20);
+    return {
+      data: chartData,
+      pagesReadPerMonth: data.pagesReadPerMonth,
+      pagesReadPerYear: data.pagesReadPerYear,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      data: {
+        data: [],
+        totalCount: 0,
+        averageReadingSpeed: 0,
+        maxValue: 10,
+      },
+      pagesReadPerMonth: 0,
+      pagesReadPerYear: 0,
     };
   }
 });

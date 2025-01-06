@@ -2,6 +2,15 @@ import { StyleSheet } from 'react-native';
 import colors from '~styles/colors';
 
 export default StyleSheet.create({
+  container: {
+    height: '100%',
+    backgroundColor: colors.primary_dark,
+  },
+  tabBarLabel: {
+    fontWeight: 'bold',
+    fontSize: 13,
+    textTransform: 'uppercase',
+  },
   wrapper: {
     display: 'flex',
     flex: 1,
@@ -28,10 +37,16 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    marginVertical: 15,
+    marginTop: 15,
     color: colors.neutral_light,
     backgroundColor: colors.primary_darkest,
     borderRadius: 5,
+  },
+  subTitle: {
+    fontSize: 16,
+    marginHorizontal: 5,
+    marginBottom: 15,
+    color: colors.neutral_light,
   },
   info: {
     marginTop: 10,

@@ -15,7 +15,7 @@ const getYearItem = (label: number) => ({
   topLabelComponent: () => <DataPointLabel />,
 });
 
-export default (data: { year: number; month: number; count: number }[]) => {
+export default (data: { year: number; month: number; count: number }[], maxValue: number = 5) => {
   if (!data || data.length === 0) {
     return {
       data: [],
@@ -67,6 +67,6 @@ export default (data: { year: number; month: number; count: number }[]) => {
     totalCount,
     averageReadingSpeed,
     // + 10 for have top space for visibility of the label on the chart (for the linechart)
-    maxValue: Math.max(...finalResult.data.map(({ value }) => value)) + 5 || 10,
+    maxValue: Math.max(...finalResult.data.map(({ value }) => value)) + maxValue || 10,
   };
 };

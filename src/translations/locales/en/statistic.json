@@ -13,8 +13,15 @@
   "november": "Nov.",
   "december": "Dec.",
   "completedBooks": "Read books:",
-  "averageReadingSpeed": "Books you read per month:",
+  "completedPages": "Read pages:",
+  "averageReadingSpeed": "Reading speed (per month)",
   "noData": "There is not enough data to display statistics on books read.",
   "topReaders": "Top-100 readers",
-  "placeInTheRating": "Your place in the rating:"
+  "placeInTheRating": "Your place in the rating:",
+  "books": "Books",
+  "pages": "Pages",
+  "rating": "Rating",
+  "readPerMonth": "Read in a month: ",
+  "readPerYear": "Read in a year: ",
+  "topReadersDescription": "By the number of books read over all time"
   }

@@ -2,6 +2,12 @@
 
 ## bookdesk
 
+## 4.6.0
+
+###### 2025-01-06
+- [New] Separated statistic views (Books, Pages, Rating)
+- [Fix] Added limit to display user goal items (max 300 items)
+
 ## 4.5.0
 
 ###### 2024-12-30

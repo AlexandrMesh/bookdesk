@@ -23,3 +23,6 @@ export const ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE = 'AddCustomBookNavigator';
 export const ADD_GOAL = 'AddGoal';
 export const EDIT_GOAL = 'EditGoal';
 export const GOAL_DETAILS = 'GoalDetails';
+export const BOOKS_STATISTIC_ROUTE = 'Books';
+export const PAGES_STATISTIC_ROUTE = 'Pages';
+export const RATING_STATISTIC_ROUTE = 'Rating';
