@@ -14,6 +14,7 @@ const DataService = () => ({
   getCategories: async (params: any) => http.get(`${await getApiUrl()}/categories`, { params }),
   getBookDetails: async (params: any) => http.get(`${await getApiUrl()}/book`, { params }),
   getBooksCountByYear: async (params: any) => http.get(`${await getApiUrl()}/booksCountByYearV2`, { params }),
+  getBooksCountByYearForStat: async (params: any) => http.get(`${await getApiUrl()}/booksCountByYearV3`, { params }),
   updateUserBookAddedValue: async (params: any) => http.post(`${await getApiUrl()}/updateUserBookAddedValue`, params),
   deleteUserBookRating: async (params: any) => http.post(`${await getApiUrl()}/deleteUserBookRating`, params),
   deleteUserComment: async (params: any) => http.post(`${await getApiUrl()}/deleteUserComment`, params),

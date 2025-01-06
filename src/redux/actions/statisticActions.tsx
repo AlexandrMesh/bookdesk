@@ -17,7 +17,7 @@ export const triggerReloadStat = createAction(`${PREFIX}/triggerReloadStat`);
 export const loadStat = createAsyncThunk(`${PREFIX}/loadStat`, async (boardType: BookStatus) => {
   const { language } = i18n;
   try {
-    const { data } = (await DataService().getBooksCountByYear({ boardType, language })) || {};
+    const { data } = (await DataService().getBooksCountByYearForStat({ boardType, language })) || {};
     const chartData = generateBarChartData(data.items);
     return {
       data: chartData,
