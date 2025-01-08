@@ -64,19 +64,21 @@ const Rating = () => {
                 <Text style={styles.title}>{t('topReaders')}</Text>
               </View>
               <Text style={styles.subTitle}>{t('topReadersDescription')}</Text>
-              <BarChart
-                barWidth={32}
-                noOfSections={3}
-                barBorderRadius={4}
-                maxValue={maxValueForRating}
-                width={usersStat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
-                scrollToIndex={currentUserPlace - 1}
-                yAxisTextStyle={{ color: colors.neutral_light }}
-                xAxisColor={colors.neutral_light}
-                yAxisColor={colors.neutral_light}
-                xAxisLabelTextStyle={{ color: colors.neutral_light }}
-                data={usersStat}
-              />
+              <View style={styles.chartWrapper}>
+                <BarChart
+                  barWidth={32}
+                  noOfSections={3}
+                  barBorderRadius={4}
+                  maxValue={maxValueForRating}
+                  width={usersStat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
+                  scrollToIndex={currentUserPlace - 1}
+                  yAxisTextStyle={{ color: colors.neutral_light }}
+                  xAxisColor={colors.neutral_light}
+                  yAxisColor={colors.neutral_light}
+                  xAxisLabelTextStyle={{ color: colors.neutral_light }}
+                  data={usersStat}
+                />
+              </View>
               <View style={styles.info}>
                 <Text style={styles.label}>
                   {t('placeInTheRating')} <Text style={styles.highlightedCount}>{currentUserPlace}</Text>

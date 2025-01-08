@@ -45,8 +45,10 @@ export default StyleSheet.create({
   subTitle: {
     fontSize: 16,
     marginHorizontal: 5,
-    marginBottom: 15,
     color: colors.neutral_light,
+  },
+  chartWrapper: {
+    marginTop: 15,
   },
   info: {
     marginTop: 10,

@@ -70,19 +70,21 @@ const Pages = () => {
                   {t('completedPages')} <Text style={styles.highlightedCount}>{t('common:count', { count: totalPagesCount })}</Text>
                 </Text>
               </View>
-              <BarChart
-                barWidth={32}
-                width={pagesStat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
-                noOfSections={3}
-                scrollToEnd
-                maxValue={maxValueForPagesStat}
-                barBorderRadius={4}
-                yAxisTextStyle={{ color: colors.neutral_light }}
-                xAxisColor={colors.neutral_light}
-                yAxisColor={colors.neutral_light}
-                xAxisLabelTextStyle={{ color: colors.neutral_light }}
-                data={pagesStat}
-              />
+              <View style={styles.chartWrapper}>
+                <BarChart
+                  barWidth={32}
+                  width={pagesStat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
+                  noOfSections={3}
+                  scrollToEnd
+                  maxValue={maxValueForPagesStat}
+                  barBorderRadius={4}
+                  yAxisTextStyle={{ color: colors.neutral_light }}
+                  xAxisColor={colors.neutral_light}
+                  yAxisColor={colors.neutral_light}
+                  xAxisLabelTextStyle={{ color: colors.neutral_light }}
+                  data={pagesStat}
+                />
+              </View>
               <View style={styles.info}>
                 <Text style={styles.label}>
                   {t('readPerMonth')} <Text style={styles.highlightedCount}>{t('common:count', { count: pagesReadPerMonth })}</Text>

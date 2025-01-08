@@ -71,19 +71,21 @@ const Books = () => {
                   {t('completedBooks')} <Text style={styles.highlightedCount}>{t('common:count', { count: totalCount })}</Text>
                 </Text>
               </View>
-              <BarChart
-                barWidth={32}
-                width={stat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
-                noOfSections={3}
-                scrollToEnd
-                maxValue={maxValueForStat}
-                barBorderRadius={4}
-                yAxisTextStyle={{ color: colors.neutral_light }}
-                xAxisColor={colors.neutral_light}
-                yAxisColor={colors.neutral_light}
-                xAxisLabelTextStyle={{ color: colors.neutral_light }}
-                data={stat}
-              />
+              <View style={styles.chartWrapper}>
+                <BarChart
+                  barWidth={32}
+                  width={stat?.length <= maxValueToLimitBarChartMaxWidth ? barChartMaxWidth : undefined}
+                  noOfSections={3}
+                  scrollToEnd
+                  maxValue={maxValueForStat}
+                  barBorderRadius={4}
+                  yAxisTextStyle={{ color: colors.neutral_light }}
+                  xAxisColor={colors.neutral_light}
+                  yAxisColor={colors.neutral_light}
+                  xAxisLabelTextStyle={{ color: colors.neutral_light }}
+                  data={stat}
+                />
+              </View>
               <View style={styles.info}>
                 <Text style={styles.label}>
                   {t('readPerMonth')} <Text style={styles.highlightedCount}>{t('common:count', { count: booksReadPerMonth })}</Text>
