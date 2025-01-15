@@ -5,6 +5,7 @@ import { ALL } from '~constants/boardType';
 import { BookStatus, IBook } from '~types/books';
 import { LoadingType } from '~types/loadingTypes';
 import { ICover } from '~types/customBooks';
+import uniqBy from 'lodash/uniqBy';
 
 export interface IPaginationState {
   pageIndex: number;
@@ -30,6 +31,7 @@ const getDefaultSortParamsState = (): ISortParamsState => ({
 
 export interface ISuggestedBooksState {
   data: IBook[];
+  shouldReloadData: boolean;
   pagination: IPaginationState;
   sortParams: ISortParamsState;
   loadingDataStatus: LoadingType;
@@ -37,6 +39,7 @@ export interface ISuggestedBooksState {
 
 const getDefaultSuggestedBooksState = (): ISuggestedBooksState => ({
   data: [],
+  shouldReloadData: false,
   pagination: getDefaultPaginationState(),
   sortParams: getDefaultSortParamsState(),
   loadingDataStatus: IDLE,
@@ -152,6 +155,13 @@ export interface IAddState {
   };
 }
 
+const getDefaultBooksDatatState = () => ({
+  data: [],
+  loadingDataStatus: IDLE as LoadingType,
+  shouldReloadData: false,
+  pagination: getDefaultPaginationState(),
+});
+
 const getDefaultAddState = (): IAddState => ({
   currentStep: 1,
   availableStep: 1,
@@ -163,18 +173,45 @@ const getDefaultAddState = (): IAddState => ({
   },
 });
 
+export interface IBooksDataState {
+  data: IBook[];
+  loadingDataStatus: LoadingType;
+  shouldReloadData: boolean;
+  pagination: IPaginationState;
+}
+
 export interface IDefaultState {
   add: IAddState;
+  booksData: IBooksDataState;
 }
 
 const getDefaultState = (): IDefaultState => ({
   add: getDefaultAddState(),
+  booksData: getDefaultBooksDatatState(),
 });
 
 const defaultState = getDefaultState();
 
 export default createReducer(defaultState, (builder) => {
   builder
+    .addCase(customBooksActions.loadCustomBookList.pending, (state, action) => {
+      state.booksData.loadingDataStatus = action.meta.arg.shouldLoadMoreResults ? PENDING : state.booksData.loadingDataStatus;
+    })
+    .addCase(
+      customBooksActions.loadCustomBookList.fulfilled,
+      (state, { payload: { data = [], totalItems = 0, hasNextPage = false, shouldLoadMoreResults } }) => {
+        state.booksData.loadingDataStatus = SUCCEEDED;
+        state.booksData.shouldReloadData = false;
+        state.booksData.data = shouldLoadMoreResults ? uniqBy([...state.booksData.data, ...data], 'bookId') : data;
+        state.booksData.pagination.pageIndex = shouldLoadMoreResults ? state.booksData.pagination.pageIndex + 1 : 0;
+        state.booksData.pagination.totalItems = totalItems;
+        state.booksData.pagination.hasNextPage = hasNextPage;
+      },
+    )
+    .addCase(customBooksActions.loadCustomBookList.rejected, (state) => {
+      state.booksData.loadingDataStatus = FAILED;
+      state.booksData.shouldReloadData = false;
+    })
     .addCase(customBooksActions.setNewCustomBookName, (state, { payload: { name, error } }) => {
       state.add.steps[1].name.value = name;
       state.add.steps[1].name.error = error;
@@ -257,9 +294,24 @@ export default createReducer(defaultState, (builder) => {
         book.bookId === bookId ? { ...book, bookStatus, added } : book,
       );
     })
+    .addCase(customBooksActions.updateCustomBook, (state, { payload: { bookId, bookStatus, added } }) => {
+      state.booksData.data = state.booksData.data.map((book) => (book.bookId === bookId ? { ...book, bookStatus, added } : book));
+    })
+    .addCase(customBooksActions.triggerReloadCustomBookList, (state) => {
+      state.booksData.shouldReloadData = true;
+    })
     .addCase(customBooksActions.updateBookVotesInSuggestedBook, (state, { payload: { bookId, votesCount } }) => {
       state.add.steps[1].suggestedBooks.data = state.add.steps[1].suggestedBooks.data.map((book) =>
         book.bookId === bookId ? { ...book, votesCount } : book,
+      );
+    })
+    .addCase(customBooksActions.updateBookVotesInCustomBook, (state, { payload: { bookId, votesCount } }) => {
+      state.booksData.data = state.booksData.data.map((book) => (book.bookId === bookId ? { ...book, votesCount } : book));
+    })
+    .addCase(customBooksActions.updateUserCustomBook.fulfilled, (state, { payload: { bookId, title, pages, authorsList, annotation } }) => {
+      state.booksData.data = state.booksData.data.map((book) => (book.bookId === bookId ? { ...book, title, pages, authorsList, annotation } : book));
+      state.add.steps[1].suggestedBooks.data = state.add.steps[1].suggestedBooks.data.map((book) =>
+        book.bookId === bookId ? { ...book, title, pages, authorsList } : book,
       );
     })
     .addCase(customBooksActions.loadSuggestedBooks.pending, (state) => {

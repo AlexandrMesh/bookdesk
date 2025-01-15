@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.7.0
+
+###### 2025-01-15
+- [New] Added displaying User Custom Book List and ability to edit user custom book
+
 ## 4.6.0
 
 ###### 2025-01-06

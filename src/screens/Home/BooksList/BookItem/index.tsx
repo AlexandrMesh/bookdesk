@@ -6,13 +6,14 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import Button from '~UI/Button';
-import { BOOK_DETAILS_ROUTE } from '~constants/routes';
+import { BOOK_DETAILS_ROUTE, EDIT_CUSTOM_BOOK_ROUTE } from '~constants/routes';
 import { deriveUserBookRating } from '~redux/selectors/books';
 import Rating from '~screens/Home/Rating';
 import Like from '~screens/Home/Like';
 import BookStatusDropdown from '~screens/Home/BookStatusDropdown';
 import BookNotePreview from '~screens/Home/BookNotePreview';
 import { BookStatus, IBook } from '~types/books';
+import { SECONDARY } from '~constants/themes';
 import ModifiedDate from '../../ModifiedDate';
 import styles from './styles';
 
@@ -20,16 +21,22 @@ export type Props = {
   imgUrl: string;
   bookItem: IBook;
   itemStyle?: StyleProp<ViewStyle>;
+  isEditable?: boolean;
 };
 
 const BookItem: FC<Props> = memo(
   (book) => {
-    const { bookId, title, coverPath, pages, categoryValue, authorsList, added, votesCount, bookStatus } = book.bookItem;
+    const { bookId, title, coverPath, pages, categoryValue, authorsList, added, votesCount, bookStatus, annotation } = book.bookItem;
     const { t } = useTranslation(['books', 'categories', 'common']);
     const navigation = useNavigation<any>();
     const bookRating = useSelector(deriveUserBookRating(bookId))?.rating;
 
     const navigateToBookDetails = useCallback(() => navigation.navigate(BOOK_DETAILS_ROUTE, { bookId }), [bookId, navigation]);
+
+    const navigateToEditCustomBook = useCallback(
+      () => navigation.navigate(EDIT_CUSTOM_BOOK_ROUTE, { bookId, title, pages, authorsList, annotation, bookStatus }),
+      [bookId, title, pages, authorsList, annotation, bookStatus, navigation],
+    );
 
     const getFullImgUrl = useCallback(() => `${book.imgUrl}/${coverPath}.webp`, [coverPath, book.imgUrl]);
 
@@ -49,6 +56,15 @@ const BookItem: FC<Props> = memo(
             </View>
             <View>
               <Button style={styles.more} titleStyle={styles.moreTitle} title={t('common:moreDetails')} onPress={navigateToBookDetails} />
+              {book.isEditable ? (
+                <Button
+                  style={[styles.more, styles.editButton]}
+                  theme={SECONDARY}
+                  titleStyle={styles.moreTitle}
+                  title={t('common:edit')}
+                  onPress={navigateToEditCustomBook}
+                />
+              ) : null}
               <BookStatusDropdown bookStatus={bookStatus as BookStatus} bookId={bookId} dropdownLeftPosition={16} />
             </View>
           </View>
@@ -97,7 +113,10 @@ const BookItem: FC<Props> = memo(
     return (
       prevProps.bookItem.votesCount === nextProps.bookItem.votesCount &&
       prevProps.bookItem.bookStatus === nextProps.bookItem.bookStatus &&
-      prevProps.bookItem.added === nextProps.bookItem.added
+      prevProps.bookItem.added === nextProps.bookItem.added &&
+      prevProps.bookItem.title === nextProps.bookItem.title &&
+      prevProps.bookItem.pages === nextProps.bookItem.pages &&
+      prevProps.bookItem.authorsList === nextProps.bookItem.authorsList
     );
   },
 );

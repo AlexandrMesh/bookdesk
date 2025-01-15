@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { getT } from '~translations/i18n';
 import { SUCCEEDED } from '~constants/loadingStatuses';
 import { DEFAULT_COVER } from '~constants/customBooks';
-// eslint-disable-next-line import/no-cycle
+
 import { getCategoriesData } from '~redux/selectors/books';
 import { RootState } from '~redux/store/configureStore';
 
@@ -11,6 +11,14 @@ type StateWithCustomBook = Pick<RootState, 'customBook'>;
 
 const getCustomBook = (state: StateWithCustomBook) => state.customBook;
 const getAddCustomBook = (state: StateWithCustomBook) => getCustomBook(state).add;
+const getBooksData = (state: StateWithCustomBook) => getCustomBook(state).booksData;
+export const getCustomBooksData = (state: StateWithCustomBook) => getBooksData(state).data;
+const getCustomBooksPagination = (state: StateWithCustomBook) => getBooksData(state).pagination;
+export const getCustomBooksHasNextPage = (state: StateWithCustomBook) => getCustomBooksPagination(state).hasNextPage;
+export const getCustomBooksPageIndex = (state: StateWithCustomBook) => getCustomBooksPagination(state).pageIndex;
+export const getCustomBooksTotalItems = (state: StateWithCustomBook) => getCustomBooksPagination(state).totalItems;
+export const getCustomBooksLoadingDataStatus = (state: StateWithCustomBook) => getBooksData(state).loadingDataStatus;
+export const getCustomBooksShouldReloadData = (state: StateWithCustomBook) => getBooksData(state).shouldReloadData;
 const getCustomBookData = (state: StateWithCustomBook) => getAddCustomBook(state).book;
 const getAddCustomBookSteps = (state: StateWithCustomBook) => getAddCustomBook(state).steps;
 const getAddCustomBookStep1 = (state: StateWithCustomBook) => getAddCustomBookSteps(state)[1];
@@ -56,6 +64,10 @@ export const getStatus = (state: StateWithCustomBook) => getAddCustomBookStep3(s
 export const getPages = (state: StateWithCustomBook) => getAddCustomBookStep3(state).pages;
 export const getAuthorsList = (state: StateWithCustomBook) => getAddCustomBookStep3(state).authorsList;
 export const getAnnotation = (state: StateWithCustomBook) => getAddCustomBookStep3(state).annotation;
+
+export const deriveCustomBookListData = createSelector([getCustomBooksData, getCategoriesData], (booksData, categories) =>
+  booksData.map((book) => ({ ...book, categoryValue: categories.find((category) => category.path === book.categoryPath)?.value })),
+);
 
 export const deriveCategoriesSearchResult = createSelector([getCategoriesData, getCategorySearchQuery], (categories, query) => {
   const searchQuery = query.trim().toLowerCase();

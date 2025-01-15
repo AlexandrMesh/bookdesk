@@ -1,13 +1,22 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { getNewCustomBookNameValue, getSuggestedBooksSortParams, deriveCustomBookParams, getStatus } from '~redux/selectors/customBook';
+import {
+  getNewCustomBookNameValue,
+  getSuggestedBooksSortParams,
+  deriveCustomBookParams,
+  getStatus,
+  getCustomBooksPageIndex,
+  getCustomBooksHasNextPage,
+  getCustomBooksData,
+} from '~redux/selectors/customBook';
 
-import { triggerReloadBookList } from '~redux/actions/booksActions';
+import { triggerReloadBookList, updateBookOnBoardAndSearch } from '~redux/actions/booksActions';
 import { ALL } from '~constants/boardType';
 import DataService from '~http/services/books';
 import CustomBooksService from '~http/services/customBooks';
 import i18n from '~translations/i18n';
 import { BookStatus } from '~types/books';
 import { AppThunkAPI } from '~redux/store/configureStore';
+import { PAGE_SIZE } from '~constants/bookList';
 
 const PREFIX = 'CUSTOM_BOOKS';
 
@@ -35,7 +44,10 @@ export const toggleExpandedCategoryCustomBooks = createAction<string>(`${PREFIX}
 export const selectCategory = createAction<{ path: string; label: string }>(`${PREFIX}/selectCategory`);
 export const setStatus = createAction<BookStatus>(`${PREFIX}/setStatus`);
 export const updateSuggestedBook = createAction<{ bookId: string; bookStatus: BookStatus; added: number }>(`${PREFIX}/updateSuggestedBook`);
+export const updateCustomBook = createAction<{ bookId: string; bookStatus: BookStatus; added: number }>(`${PREFIX}/updateCustomBook`);
 export const updateBookVotesInSuggestedBook = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInSuggestedBook`);
+export const updateBookVotesInCustomBook = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInCustomBook`);
+export const triggerReloadCustomBookList = createAction(`${PREFIX}/triggerReloadCustomBookList`);
 
 export const loadSuggestedBooks = createAsyncThunk(`${PREFIX}/loadSuggestedBooks`, async (bookName: string, { getState }: AppThunkAPI) => {
   const state = getState();
@@ -61,6 +73,54 @@ export const loadSuggestedBooks = createAsyncThunk(`${PREFIX}/loadSuggestedBooks
       hasNextPage: dataBookList.pagination?.hasNextPage || false,
       allowToAddBook: true,
     };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+export const loadCustomBookList = createAsyncThunk(
+  `${PREFIX}/loadCustomBookList`,
+  async ({ shouldLoadMoreResults }: { shouldLoadMoreResults: boolean }, { getState }: AppThunkAPI) => {
+    const state = getState();
+    const { language } = i18n;
+    const pageIndex = getCustomBooksPageIndex(state);
+
+    const params = {
+      pageIndex: shouldLoadMoreResults ? pageIndex + 1 : 0,
+      limit: PAGE_SIZE,
+      language,
+    };
+
+    try {
+      const result = await CustomBooksService().getCustomBooks({ ...params });
+      const { items, pagination } = result?.data[0] || {};
+      return {
+        data: items || [],
+        totalItems: pagination?.totalItems,
+        hasNextPage: pagination?.hasNextPage,
+        shouldLoadMoreResults,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: [],
+        totalItems: 0,
+        hasNextPage: false,
+        shouldLoadMoreResults: false,
+      };
+    }
+  },
+);
+
+export const loadMoreBooks = createAsyncThunk(`${PREFIX}/loadMoreBooks`, async (_, { dispatch, getState }: AppThunkAPI) => {
+  const state = getState();
+  const hasNextPage = getCustomBooksHasNextPage(state);
+  const bookList = getCustomBooksData(state);
+  try {
+    if (bookList.length >= PAGE_SIZE && hasNextPage) {
+      await dispatch(loadCustomBookList({ shouldLoadMoreResults: true }));
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -99,8 +159,42 @@ export const addCustomBook = createAsyncThunk(`${PREFIX}/addCustomBook`, async (
       // ставим метку о том что надо перезагрузить определенную доску где произошли изменения (добавилась книга например)
       dispatch(triggerReloadBookList(bookStatus));
     }
+    dispatch(triggerReloadCustomBookList());
   } catch (error) {
     console.error(error);
     throw error;
   }
 });
+
+export const updateUserCustomBook = createAsyncThunk(
+  `${PREFIX}/updateCustomBook`,
+  async (
+    params: { bookId: string; pages: string; title: string; authorsList: string[]; annotation: string; bookStatus: BookStatus },
+    { dispatch }: AppThunkAPI,
+  ) => {
+    const { language } = i18n;
+    try {
+      const { data } = await CustomBooksService().updateCustomBook({ ...params, language });
+      const response = {
+        bookId: data._id,
+        title: data.title,
+        pages: data.pages,
+        authorsList: data.authorsList,
+        annotation: data.annotation,
+        bookStatus: params.bookStatus,
+      };
+      dispatch(updateBookOnBoardAndSearch(response));
+      return response;
+    } catch (error) {
+      console.error(error);
+      return {
+        bookId: '',
+        title: '',
+        pages: '',
+        authorsList: [],
+        annotation: '',
+        bookStatus: '',
+      };
+    }
+  },
+);

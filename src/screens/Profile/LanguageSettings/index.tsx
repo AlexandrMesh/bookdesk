@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { clearDataForChangeLanguage, triggerReloadBookList, loadCategories, clearSearchResults, clearAllFilters } from '~redux/actions/booksActions';
-import { clearAddCustomBookState } from '~redux/actions/customBookActions';
+import { clearAddCustomBookState, triggerReloadCustomBookList } from '~redux/actions/customBookActions';
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { ALL, PLANNED, IN_PROGRESS, COMPLETED } from '~constants/boardType';
 import { RU, EN } from '~constants/languages';
@@ -26,6 +26,7 @@ const LanguageSettings = () => {
     dispatch(triggerReloadBookList(IN_PROGRESS));
     dispatch(triggerReloadBookList(COMPLETED));
     dispatch(triggerReloadStat());
+    dispatch(triggerReloadCustomBookList());
     dispatch(clearSearchResults());
   }, [dispatch]);
 

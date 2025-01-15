@@ -303,6 +303,12 @@ export default createReducer(defaultState, (builder) => {
         }
       },
     )
+    .addCase(booksActions.updateBookOnBoardAndSearch, (state, { payload: { bookId, bookStatus, title, pages, authorsList } }) => {
+      state.board[bookStatus || ALL].data = state.board[bookStatus || ALL].data.map((book) =>
+        book.bookId === bookId ? { ...book, title, pages, authorsList } : book,
+      );
+      state.search.data = state.search.data.map((book) => (book.bookId === bookId ? { ...book, title, pages, authorsList } : book));
+    })
     .addCase(booksActions.triggerReloadBookList, (state, action) => {
       state.board[action.payload].data = [];
       state.board[action.payload].shouldReloadData = true;

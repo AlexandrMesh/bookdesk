@@ -23,7 +23,7 @@ import {
   getBookToUpdate,
 } from '~redux/selectors/books';
 
-import { updateSuggestedBook, updateBookVotesInSuggestedBook } from '~redux/actions/customBookActions';
+import { updateSuggestedBook, updateBookVotesInSuggestedBook, updateCustomBook, updateBookVotesInCustomBook } from '~redux/actions/customBookActions';
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { ALL } from '~constants/boardType';
 import i18n from '~translations/i18n';
@@ -51,6 +51,13 @@ export const triggerReloadSearchResults = createAction(`${PREFIX}/triggerReloadS
 export const clearBooksData = createAction(`${PREFIX}/clearBooksData`);
 export const clearDataForChangeLanguage = createAction(`${PREFIX}/clearDataForChangeLanguage`);
 export const clearSearchResults = createAction(`${PREFIX}/clearSearchResults`);
+export const updateBookOnBoardAndSearch = createAction<{
+  bookId: string;
+  bookStatus: BookStatus;
+  title: string;
+  pages: number;
+  authorsList: string[];
+}>(`${PREFIX}/updateBookOnBoardAndSearch`);
 export const triggerShouldNotClearSearchQuery = createAction(`${PREFIX}/triggerShouldNotClearSearchQuery`);
 export const addFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(`${PREFIX}/addFilterValue`);
 export const removeFilterValue = createAction<{ boardType: BookStatus; filterParam: string; value: string | string[] }>(
@@ -283,6 +290,7 @@ export const updateUserBookAddedDate = createAsyncThunk(
       const { data } = await DataService().updateUserBookAddedValue({ bookId, date: added, language, boardType: bookStatus });
 
       dispatch(updateSuggestedBook({ bookId, bookStatus, added: data.added }));
+      dispatch(updateCustomBook({ bookId, bookStatus, added: data.added }));
       dispatch(triggerReloadStat());
 
       return {
@@ -335,6 +343,7 @@ export const updateUserBook = createAsyncThunk(
       }
       // It's because we don't want to refresh all books list to preserve scrolling
       dispatch(updateSuggestedBook({ bookId, bookStatus: data.bookStatus, added: data.added }));
+      dispatch(updateCustomBook({ bookId, bookStatus: data.bookStatus, added: data.added }));
 
       dispatch(triggerReloadStat());
 
@@ -391,6 +400,7 @@ export const updateBookVotes = createAsyncThunk(
       const { data } = await DataService().updateBookVotes({ bookId, shouldAdd });
 
       dispatch(updateBookVotesInSuggestedBook({ bookId, votesCount: data.votesCount }));
+      dispatch(updateBookVotesInCustomBook({ bookId, votesCount: data.votesCount }));
       return {
         userVotes: data.userVotes,
         votesCount: data.votesCount,

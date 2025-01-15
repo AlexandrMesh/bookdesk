@@ -24,5 +24,11 @@
   "withoutCover": "Без обложки",
   "findCover": "Найти обложку",
   "chooseTheOptionForBookCover": "Выберите вариант для обложки книги",
-  "addBookManually": "Добавьте эту книгу в каталог вручную"
+  "addBookManually": "Добавьте эту книгу в каталог вручную",
+  "addCustomBook": "Добавить книгу",
+  "customBooks": "Мои книги",
+  "bookTitle": "Название книги",
+  "enterBookTitle": "Введите название книги",
+  "editCustomBookTitle": "Изменить книгу",
+  "bookSuccessfullyUpdated": "Книга обновлена!"
 }

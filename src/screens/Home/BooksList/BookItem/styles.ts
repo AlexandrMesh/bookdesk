@@ -120,4 +120,7 @@ export default StyleSheet.create({
   moreTitle: {
     fontSize: 16,
   },
+  editButton: {
+    marginTop: 10,
+  },
 });

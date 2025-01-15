@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE } from '~constants/routes';
+import { ADD_CUSTOM_BOOK_ROUTE } from '~constants/routes';
 import Button from '~UI/Button';
 import styles from './styles';
 
@@ -22,7 +22,7 @@ const EmptyBoard: FC<Props> = ({ shouldNotDisplayContent = false }) => {
             <>
               <Text style={styles.text}>{t('emptyBoard')}</Text>
               <View style={styles.addButtonWrapper}>
-                <Button style={styles.addButton} title={t('addBook')} onPress={() => navigation.navigate(ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE)} />
+                <Button style={styles.addButton} title={t('addBook')} onPress={() => navigation.navigate(ADD_CUSTOM_BOOK_ROUTE)} />
               </View>
             </>
           ) : null}

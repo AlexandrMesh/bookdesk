@@ -24,5 +24,11 @@
   "withoutCover": "No cover",
   "findCover": "Find cover",
   "chooseTheOptionForBookCover": "Select an option for the book cover",
-  "addBookManually": "Add this book to the catalog manually"
+  "addBookManually": "Add this book to the catalog manually",
+  "addCustomBook": "Add book",
+  "customBooks": "My books",
+  "bookTitle": "Book title",
+  "enterBookTitle": "Enter the book title",
+  "editCustomBookTitle": "Edit book",
+  "bookSuccessfullyUpdated": "Book has updated!"
 }

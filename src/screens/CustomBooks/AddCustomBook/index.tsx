@@ -78,7 +78,7 @@ const AddCustomBook = () => {
         <Text style={styles.successSubTitle}>{t('theBookWasAdded')}</Text>
       </View>
       <View style={styles.buttons}>
-        <Button style={styles.button} onPress={clearAddCustomBookState} title={t('addOneMoreBook')} />
+        <Button style={styles.button} onPress={() => dispatch(clearAddCustomBookState())} title={t('addOneMoreBook')} />
         <Button theme={SECONDARY} style={styles.button} onPress={handleBackToBoard} title={t('backToTheDesk')} />
       </View>
     </View>

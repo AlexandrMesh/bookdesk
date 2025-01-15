@@ -16,9 +16,10 @@ export type Props = {
   data: IBook[];
   loadMoreBooks?: () => void;
   loadingDataStatus: LoadingType;
+  isEditable?: boolean;
 };
 
-const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadingDataStatus, horizontal }) => {
+const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadingDataStatus, horizontal, isEditable }) => {
   const { t } = useTranslation('common');
   const listRef = useRef<any>(null);
   const imgUrl = useGetImgUrl();
@@ -77,9 +78,9 @@ const BookList: FC<Props> = ({ data = [], loadMoreBooks = () => undefined, loadi
         return renderSectionHeader(item.item);
       }
       // Render item
-      return <BookItem imgUrl={imgUrl} bookItem={item.item as IBook} />;
+      return <BookItem imgUrl={imgUrl} bookItem={item.item as IBook} isEditable={isEditable} />;
     },
-    [renderSectionHeader, imgUrl],
+    [renderSectionHeader, imgUrl, isEditable],
   );
 
   const getItemType = useCallback((item: IBook | string) => {

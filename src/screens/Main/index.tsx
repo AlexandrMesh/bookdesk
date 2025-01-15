@@ -28,11 +28,12 @@ import {
   SIGN_UP_ROUTE,
   STAT_NAVIGATOR_ROUTE,
   STAT_ROUTE,
-  ADD_CUSTOM_BOOK_ROUTE,
+  CUSTOM_BOOKS_ROUTE,
   ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE,
   CUSTOM_CATEGORY_CHOOSER_ROUTE,
   EDIT_GOAL,
   BOOK_NOTE_ROUTE,
+  EDIT_CUSTOM_BOOK_ROUTE,
 } from '~constants/routes';
 import HomeIcon from '~assets/home.svg';
 import StatIcon from '~assets/stat.svg';
@@ -46,7 +47,6 @@ import { useAppDispatch, useAppSelector } from '~hooks';
 import { checkAuth, getConfig } from '~redux/actions/authActions';
 import { getCheckingStatus, getIsSignedIn } from '~redux/selectors/auth';
 import { getGoalNumberOfPages } from '~redux/selectors/goals';
-import { getNewCustomBookNameValue } from '~redux/selectors/customBook';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
@@ -56,8 +56,9 @@ import InSuspense from './InSuspense';
 const Search = lazy(() => import('~screens/Search'));
 const BookNote = lazy(() => import('~screens/Home/BookNote'));
 const Filtering = lazy(() => import('~screens/Home/Filtering'));
-const CategoryChooser = lazy(() => import('~screens/AddCustomBook/CategoryChooser'));
-const AddCustomBook = lazy(() => import('~screens/AddCustomBook'));
+const CategoryChooser = lazy(() => import('~screens/CustomBooks/AddCustomBook/CategoryChooser'));
+const CustomBooks = lazy(() => import('~screens/CustomBooks'));
+const EditCustomBook = lazy(() => import('~screens/CustomBooks/EditCustomBook'));
 const Statistic = lazy(() => import('~screens/Statistic'));
 const Goals = lazy(() => import('~screens/Goals/Goals'));
 const AddGoal = lazy(() => import('~screens/Goals/AddGoal'));
@@ -210,29 +211,19 @@ const HomeNavigator = () => {
   );
 };
 
-type AddCustomBookNavigatorProps = {
-  customBookName: string;
-};
-
-const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookName }) => {
+const AddCustomBookNavigator: FC = () => {
   const { t } = useTranslation(['customBook', 'common']);
 
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.primary_dark,
-          shadowColor: 'transparent',
-          borderBottomWidth: 1,
-          borderColor: colors.neutral_medium,
-        },
-        headerTintColor: colors.neutral_light,
+        headerShown: false,
       }}
     >
-      <Stack.Screen name={ADD_CUSTOM_BOOK_ROUTE} options={{ title: customBookName ? `${t('addBook')} - ${customBookName}` : t('addBook') }}>
+      <Stack.Screen name={CUSTOM_BOOKS_ROUTE}>
         {() => (
           <InSuspense>
-            <AddCustomBook />
+            <CustomBooks />
           </InSuspense>
         )}
       </Stack.Screen>
@@ -240,6 +231,27 @@ const AddCustomBookNavigator: FC<AddCustomBookNavigatorProps> = ({ customBookNam
         {() => (
           <InSuspense>
             <CategoryChooser />
+          </InSuspense>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name={EDIT_CUSTOM_BOOK_ROUTE}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: colors.primary_dark,
+            shadowColor: 'transparent',
+            borderBottomWidth: 1,
+            borderColor: colors.neutral_medium,
+          },
+          headerTintColor: colors.neutral_light,
+          presentation: 'modal',
+          title: t('editCustomBookTitle'),
+        }}
+      >
+        {() => (
+          <InSuspense>
+            <EditCustomBook />
           </InSuspense>
         )}
       </Stack.Screen>
@@ -290,7 +302,6 @@ type MainNavigatorProps = {
   isTheLatestAppVersion: boolean;
   googlePlayUrl: string;
   hasGoal: boolean;
-  customBookName: string;
 };
 
 const getIcon = (focused: boolean, route: any) => {
@@ -320,7 +331,7 @@ const getIcon = (focused: boolean, route: any) => {
   return (icon as any)[route.name];
 };
 
-const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl, hasGoal, customBookName }) => {
+const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl, hasGoal }) => {
   const { t } = useTranslation(['common', 'books']);
 
   return (
@@ -336,7 +347,7 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
     >
       <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
       <Tab.Screen name={STAT_NAVIGATOR_ROUTE} component={StatNavigator} />
-      <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE}>{() => <AddCustomBookNavigator customBookName={customBookName} />}</Tab.Screen>
+      <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE}>{() => <AddCustomBookNavigator />}</Tab.Screen>
       <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
       <Tab.Screen
         name={PROFILE_NAVIGATOR_ROUTE}
@@ -410,7 +421,6 @@ const Main = () => {
   const checkingStatus = useAppSelector(getCheckingStatus);
   const hasGoal = !!useAppSelector(getGoalNumberOfPages);
   const isSignedIn = useAppSelector(getIsSignedIn);
-  const customBookName = useAppSelector(getNewCustomBookNameValue);
 
   const checkAuthentication = useCallback(async () => {
     try {
@@ -480,12 +490,7 @@ const Main = () => {
       <NavigationContainer>
         {isSignedIn ? (
           <>
-            <MainNavigator
-              isTheLatestAppVersion={isTheLatestAppVersion}
-              googlePlayUrl={googlePlayUrl}
-              hasGoal={hasGoal}
-              customBookName={customBookName}
-            />
+            <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} hasGoal={hasGoal} />
             <InSuspense>
               <>
                 <Modals />
