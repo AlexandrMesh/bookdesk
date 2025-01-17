@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import EmptyBoard from '~screens/Home/EmptyBoard';
-import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import { IDLE, PENDING, SUCCEEDED } from '~constants/loadingStatuses';
 import { IN_PROGRESS } from '~constants/boardType';
 import { useAppDispatch, useAppSelector } from '~hooks';
@@ -15,6 +14,7 @@ import {
 import { loadBookList, loadMoreBooks, setBoardType } from '~redux/actions/booksActions';
 import { BookStatus } from '~types/books';
 import BooksList from '../BooksList';
+import ActionBar from '../ActionBar/ActionBar';
 import styles from './styles';
 
 const InProgressBooks = () => {
@@ -55,7 +55,9 @@ const InProgressBooks = () => {
 
   return (
     <View style={styles.wrapper}>
-      {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
+      {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
+        <ActionBar boardType={IN_PROGRESS} shouldRenderFilterButton={false} totalItems={totalItems} />
+      ) : null}
       <BooksList data={sectionedBookListData} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </View>
   );

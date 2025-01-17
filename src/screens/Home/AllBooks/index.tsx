@@ -65,7 +65,7 @@ const AllBooks = () => {
   return (
     <View style={styles.wrapper}>
       {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
-        <ActionBar filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} />
+        <ActionBar boardType={ALL} filterParams={filterParams} activeFiltersCount={activeFiltersCount} totalItems={totalItems} />
       ) : null}
       <BooksList data={bookList} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </View>

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import TotalCount from '~screens/Home/ActionBar/TotalCount';
 import EmptyBoard from '~screens/Home/EmptyBoard';
 import { IDLE, SUCCEEDED, PENDING } from '~constants/loadingStatuses';
 import {
@@ -15,6 +14,7 @@ import { COMPLETED } from '~constants/boardType';
 import { BookStatus } from '~types/books';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import BooksList from '../BooksList';
+import ActionBar from '../ActionBar/ActionBar';
 import styles from './styles';
 
 const CompletedBooks = () => {
@@ -55,7 +55,9 @@ const CompletedBooks = () => {
 
   return (
     <View style={styles.wrapper}>
-      {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? <TotalCount count={totalItems} /> : null}
+      {loadingDataStatus !== IDLE && loadingDataStatus !== PENDING ? (
+        <ActionBar boardType={COMPLETED} shouldRenderFilterButton={false} totalItems={totalItems} />
+      ) : null}
       <BooksList data={sectionedBookListData} loadMoreBooks={_loadMoreBooks} loadingDataStatus={loadingDataStatus} />
     </View>
   );

@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.8.0
+
+###### 2025-01-17
+- [New] Added search to the all boards
+
 ## 4.7.0
 
 ###### 2025-01-15

@@ -121,7 +121,7 @@ export const manageFilters = (path: string, boardType: BookStatus, categoryPaths
 
 export const loadSearchResults = createAsyncThunk(
   `${PREFIX}/loadSearchResults`,
-  async (shouldLoadMoreResults: boolean, { getState }: AppThunkAPI) => {
+  async (param: { shouldLoadMoreResults: boolean; boardType: BookStatus }, { getState }: AppThunkAPI) => {
     const state = getState();
     const pageIndex = getSearchResultsPageIndex(state);
     const searchText = deriveSearchQuery(state);
@@ -130,8 +130,8 @@ export const loadSearchResults = createAsyncThunk(
 
     const params = {
       limit: PAGE_SIZE,
-      pageIndex: shouldLoadMoreResults ? pageIndex + 1 : 0,
-      boardType: ALL,
+      pageIndex: param.shouldLoadMoreResults ? pageIndex + 1 : 0,
+      boardType: param.boardType || ALL,
       title: searchText,
       sortType: sortParams.type,
       sortDirection: sortParams.direction,
@@ -145,7 +145,7 @@ export const loadSearchResults = createAsyncThunk(
         data: items || [],
         totalItems: pagination?.totalItems || 0,
         hasNextPage: pagination?.hasNextPage || false,
-        shouldLoadMoreResults,
+        shouldLoadMoreResults: param.shouldLoadMoreResults,
       };
     } catch (error) {
       console.error(error);
@@ -253,19 +253,22 @@ export const loadBookDetails = createAsyncThunk(`${PREFIX}/loadBookDetails`, asy
   }
 });
 
-export const loadMoreSearchResults = createAsyncThunk(`${PREFIX}/loadMoreSearchResults`, async (_, { dispatch, getState }: AppThunkAPI) => {
-  const state = getState();
-  const hasNextPage = getSearchResultsHasNextPage(state);
-  const bookList = getSearchResults(state);
-  try {
-    if (bookList.length >= PAGE_SIZE && hasNextPage) {
-      await dispatch(loadSearchResults(true));
+export const loadMoreSearchResults = createAsyncThunk(
+  `${PREFIX}/loadMoreSearchResults`,
+  async (boardType: BookStatus, { dispatch, getState }: AppThunkAPI) => {
+    const state = getState();
+    const hasNextPage = getSearchResultsHasNextPage(state);
+    const bookList = getSearchResults(state);
+    try {
+      if (bookList.length >= PAGE_SIZE && hasNextPage) {
+        await dispatch(loadSearchResults({ shouldLoadMoreResults: true, boardType }));
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-});
+  },
+);
 
 export const reloadBookList = createAsyncThunk(
   `${PREFIX}/reloadBookList`,

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { ADD_CUSTOM_BOOK_ROUTE } from '~constants/routes';
+import { ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE, ADD_CUSTOM_BOOK_ROUTE, CUSTOM_BOOKS_ROUTE } from '~constants/routes';
 import Button from '~UI/Button';
 import styles from './styles';
 
@@ -13,6 +13,7 @@ export type Props = {
 const EmptyBoard: FC<Props> = ({ shouldNotDisplayContent = false }) => {
   const { t } = useTranslation(['books', 'common']);
   const navigation = useNavigation<any>();
+  const route = useRoute();
 
   return (
     <View style={styles.wrapper}>
@@ -22,7 +23,18 @@ const EmptyBoard: FC<Props> = ({ shouldNotDisplayContent = false }) => {
             <>
               <Text style={styles.text}>{t('emptyBoard')}</Text>
               <View style={styles.addButtonWrapper}>
-                <Button style={styles.addButton} title={t('addBook')} onPress={() => navigation.navigate(ADD_CUSTOM_BOOK_ROUTE)} />
+                <Button
+                  style={styles.addButton}
+                  title={t('addBook')}
+                  onPress={() =>
+                    navigation.navigate(route.name === ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE ? ADD_CUSTOM_BOOK_ROUTE : ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE, {
+                      screen: CUSTOM_BOOKS_ROUTE,
+                      params: {
+                        screen: ADD_CUSTOM_BOOK_ROUTE,
+                      },
+                    })
+                  }
+                />
               </View>
             </>
           ) : null}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import { useRoute, useIsFocused, RouteProp } from '@react-navigation/native';
 import isEmpty from 'lodash/isEmpty';
 import { useTranslation } from 'react-i18next';
 import EmptyResults from '~screens/Home/EmptyResults';
@@ -17,15 +17,27 @@ import {
 import { loadSearchResults, loadMoreSearchResults, setBoardType } from '~redux/actions/booksActions';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import BooksList from '~screens/Home/BooksList';
+import { BookStatus } from '~types/books';
 import styles from './styles';
+
+type ParamList = {
+  SearchResults: {
+    boardType: BookStatus;
+  };
+};
 
 const SearchResults = () => {
   const { t } = useTranslation('search');
   const isFocused = useIsFocused();
 
+  const { params } = useRoute<RouteProp<ParamList, 'SearchResults'>>();
+
   const dispatch = useAppDispatch();
-  const _loadSearchResults = useCallback((shouldLoadMoreResults: boolean) => dispatch(loadSearchResults(shouldLoadMoreResults)), [dispatch]);
-  const _loadMoreSearchResults = () => dispatch(loadMoreSearchResults());
+  const _loadSearchResults = useCallback(
+    (shouldLoadMoreResults: boolean) => dispatch(loadSearchResults({ shouldLoadMoreResults, boardType: params.boardType })),
+    [dispatch, params.boardType],
+  );
+  const _loadMoreSearchResults = () => dispatch(loadMoreSearchResults(params.boardType));
   const _setBoardType = useCallback(() => dispatch(setBoardType(ALL)), [dispatch]);
 
   const searchResult = useAppSelector(deriveSearchBookListData);
