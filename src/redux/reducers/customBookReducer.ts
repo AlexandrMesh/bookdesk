@@ -347,5 +347,6 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(customBooksActions.selectCover, (state, action) => {
       state.add.steps[2].selectedCover = action.payload;
-    });
+    })
+    .addCase(customBooksActions.clearData, () => defaultState);
 });

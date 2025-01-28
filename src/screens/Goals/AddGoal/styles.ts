@@ -31,7 +31,20 @@ export default StyleSheet.create({
     marginTop: 15,
   },
   text: {
+    marginBottom: 10,
     fontSize: 17,
     color: colors.neutral_light,
+    fontWeight: 'bold',
+  },
+  radioButtonWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  radioButtonLabel: {
+    color: colors.neutral_light,
+    fontSize: 15,
+    marginLeft: 5,
   },
 });

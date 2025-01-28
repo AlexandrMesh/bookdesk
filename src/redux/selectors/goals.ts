@@ -13,14 +13,25 @@ export const getGoal = (state: StateWithGoals) => getGoals(state).goal;
 
 export const getGoalsData = (state: StateWithGoals) => getGoal(state).data;
 export const getGoalNumberOfPages = (state: StateWithGoals) => getGoal(state).numberOfPages;
+export const getGoalType = (state: StateWithGoals) => getGoal(state).type;
 
 export const deriveNumberOfPagesDoneToday = createSelector([getGoalsData], (pages) =>
   // eslint-disable-next-line camelcase
   sum(pages.filter(({ added_at }) => new Date(added_at).toDateString() === new Date().toDateString()).map(({ pages }) => Number(pages))),
 );
 
+export const deriveNumberOfPagesDoneMonthly = createSelector([getGoalsData], (pages) =>
+  // eslint-disable-next-line camelcase
+  sum(pages.filter(({ added_at }) => new Date(added_at).getMonth() === new Date().getMonth()).map(({ pages }) => Number(pages))),
+);
+
 export const deriveTodayProgress = createSelector([getGoalNumberOfPages, deriveNumberOfPagesDoneToday], (goalNumberOfPages, numberOfPagesDoneToday) =>
   Math.round((numberOfPagesDoneToday / Number(goalNumberOfPages)) * 100),
+);
+
+export const deriveMonthlyProgress = createSelector(
+  [getGoalNumberOfPages, deriveNumberOfPagesDoneMonthly],
+  (goalNumberOfPages, numberOfPagesDoneMonthly) => Math.round((numberOfPagesDoneMonthly / Number(goalNumberOfPages)) * 100),
 );
 
 export const deriveSortedgetGoalsData = createSelector([getGoalsData], (data) => [...data].sort((a, b) => b.added_at - a.added_at));
@@ -28,7 +39,7 @@ export const deriveSortedgetGoalsData = createSelector([getGoalsData], (data) =>
 export const deriveSectionedPagesDone = createSelector([getGoalsData], (pages) =>
   map(
     groupBy(
-      ([...pages] || [])
+      [...pages]
         .sort((a, b) => Number(b.added_at) - Number(a.added_at))
         .map((item) => ({
           ...item,

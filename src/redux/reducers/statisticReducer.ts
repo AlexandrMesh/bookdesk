@@ -18,5 +18,6 @@ export default createReducer(defaultState, (builder) => {
     })
     .addCase(statisticActions.loadStat.fulfilled, (state) => {
       state.shouldReloadStat = false;
-    });
+    })
+    .addCase(statisticActions.clearData, () => defaultState);
 });

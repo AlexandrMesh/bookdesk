@@ -1,14 +1,17 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { DAILY } from '~constants/goals';
 import * as goalsActions from '~redux/actions/goalsActions';
-import { IGoal } from '~types/goals';
+import { IGoal, GoalType } from '~types/goals';
 
 export interface IGoalState {
   numberOfPages: number | null;
+  type: GoalType;
   data: IGoal[];
 }
 
 const getDefaultGoalState = (): IGoalState => ({
   numberOfPages: null,
+  type: DAILY,
   data: [],
 });
 
@@ -27,11 +30,13 @@ export default createReducer(defaultState, (builder) => {
     .addCase(goalsActions.deleteUserGoalItem.fulfilled, (state, action) => {
       state.goal.data = action.payload;
     })
-    .addCase(goalsActions.addGoal.fulfilled, (state, action) => {
-      state.goal.numberOfPages = action.payload;
+    .addCase(goalsActions.addGoal.fulfilled, (state, { payload: { numberOfPages, type } }) => {
+      state.goal.numberOfPages = numberOfPages;
+      state.goal.type = type;
     })
-    .addCase(goalsActions.updateGoal.fulfilled, (state, action) => {
-      state.goal.numberOfPages = action.payload;
+    .addCase(goalsActions.updateGoal.fulfilled, (state, { payload: { numberOfPages, type } }) => {
+      state.goal.numberOfPages = numberOfPages;
+      state.goal.type = type;
     })
     .addCase(goalsActions.getGoalItems.fulfilled, (state, action) => {
       state.goal.data = action.payload;
@@ -39,7 +44,9 @@ export default createReducer(defaultState, (builder) => {
     .addCase(goalsActions.addGoalItem.fulfilled, (state, action) => {
       state.goal.data = action.payload;
     })
-    .addCase(goalsActions.setGoal, (state, action) => {
-      state.goal.numberOfPages = action.payload;
-    });
+    .addCase(goalsActions.setGoal, (state, { payload: { pages, type } }) => {
+      state.goal.numberOfPages = pages;
+      state.goal.type = type;
+    })
+    .addCase(goalsActions.clearData, () => defaultState);
 });

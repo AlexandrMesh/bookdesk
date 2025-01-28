@@ -2,10 +2,12 @@ import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import GoalsService from '~http/services/goals';
 import { triggerReloadStat } from '~redux/actions/statisticActions';
 import { AppThunkAPI } from '~redux/store/configureStore';
+import { GoalType } from '~types/goals';
 
 const PREFIX = 'GOALS';
 
-export const setGoal = createAction<number>(`${PREFIX}/setGoal`);
+export const setGoal = createAction<{ pages: number; type: GoalType }>(`${PREFIX}/setGoal`);
+export const clearData = createAction(`${PREFIX}/clearData`);
 
 export const deleteUserGoalItem = createAsyncThunk(`${PREFIX}/deleteUserGoalItem`, async (id: string, { dispatch }: AppThunkAPI) => {
   try {
@@ -18,22 +20,26 @@ export const deleteUserGoalItem = createAsyncThunk(`${PREFIX}/deleteUserGoalItem
   }
 });
 
-export const addGoal = createAsyncThunk(`${PREFIX}/addGoal`, async (numberOfPages: string) => {
-  const params = { numberOfPages };
+export const addGoal = createAsyncThunk(`${PREFIX}/addGoal`, async (params: { numberOfPages: string; type: GoalType }) => {
   try {
     await GoalsService().addGoal({ ...params });
-    return Number(numberOfPages);
+    return {
+      numberOfPages: Number(params.numberOfPages),
+      type: params.type,
+    };
   } catch (error) {
     console.error(error);
     throw error;
   }
 });
 
-export const updateGoal = createAsyncThunk(`${PREFIX}/updateGoal`, async (numberOfPages: string) => {
-  const params = { numberOfPages };
+export const updateGoal = createAsyncThunk(`${PREFIX}/updateGoal`, async (params: { numberOfPages: string; type: GoalType }) => {
   try {
     await GoalsService().updateGoal({ ...params });
-    return Number(numberOfPages);
+    return {
+      numberOfPages: Number(params.numberOfPages),
+      type: params.type,
+    };
   } catch (error) {
     console.error(error);
     throw error;

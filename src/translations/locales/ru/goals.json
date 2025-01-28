@@ -4,13 +4,16 @@
   "enterPagesCount": "Введите кол-во страниц",
   "pagesCount": "Кол-во страниц",
   "add": "Внести",
-  "goalForToday": "Цель на сегодня {{date}}",
+  "goalFor": "Цель на: {{date}}",
   "editGoal": "Изменить цель",
   "goalsDescription": "Хотите развить привычку регулярного чтения? Добавьте себе цель и трекер поможет Вам следить за достижением результатов.",
-  "howManyPagesDoYouWantReadDescription": "Сколько страниц хотите читать каждый день?",
+  "howManyPagesDoYouWantReadDescription": "Кол-во страниц",
   "pagesDone": "Прочитано (страниц)",
   "goalInPages": "Цель (страниц)",
   "goalAchieved": "Цель достигнута!",
   "achievementsJournal": "Журнал достижений",
-  "addedPageCountDescription": "Внесите количество прочитанных страниц. Можно вносить частями."
+  "addedPageCountDescription": "Внесите количество прочитанных страниц. Можно вносить частями.",
+  "daily": "Ежедневная",
+  "monthly": "Ежемесячная",
+  "goalType": "Тип цели"
 }

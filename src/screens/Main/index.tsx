@@ -46,7 +46,9 @@ import Home from '~screens/Home';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import { checkAuth, getConfig } from '~redux/actions/authActions';
 import { getCheckingStatus, getIsSignedIn } from '~redux/selectors/auth';
-import { getGoalNumberOfPages } from '~redux/selectors/goals';
+import { getGoalNumberOfPages, getGoalType } from '~redux/selectors/goals';
+import { GoalType } from '~types/goals';
+import { DAILY } from '~constants/goals';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
@@ -108,9 +110,10 @@ const StatNavigator = () => {
 
 type GoalsNavigatorProps = {
   hasGoal: boolean;
+  goalType: GoalType | null;
 };
 
-const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
+const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal, goalType }) => {
   const { t } = useTranslation('goals');
 
   return (
@@ -155,7 +158,12 @@ const GoalsNavigator: FC<GoalsNavigatorProps> = ({ hasGoal }) => {
       <Stack.Screen
         name={GOAL_DETAILS}
         options={{
-          title: t('goalForToday', { date: new Date().toLocaleString(i18n.language, { day: 'numeric', month: 'long' }) }),
+          title: t('goalFor', {
+            date:
+              goalType === DAILY
+                ? new Date().toLocaleString(i18n.language, { day: 'numeric', month: 'long' })
+                : new Date().toLocaleString(i18n.language, { month: 'long', year: 'numeric' }),
+          }),
           headerLeft: undefined,
           headerRight: EditComponent,
         }}
@@ -302,6 +310,7 @@ type MainNavigatorProps = {
   isTheLatestAppVersion: boolean;
   googlePlayUrl: string;
   hasGoal: boolean;
+  goalType: GoalType | null;
 };
 
 const getIcon = (focused: boolean, route: any) => {
@@ -331,7 +340,7 @@ const getIcon = (focused: boolean, route: any) => {
   return (icon as any)[route.name];
 };
 
-const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl, hasGoal }) => {
+const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePlayUrl, hasGoal, goalType }) => {
   const { t } = useTranslation(['common', 'books']);
 
   return (
@@ -348,7 +357,7 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
       <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
       <Tab.Screen name={STAT_NAVIGATOR_ROUTE} component={StatNavigator} />
       <Tab.Screen name={ADD_CUSTOM_BOOK_NAVIGATOR_ROUTE}>{() => <AddCustomBookNavigator />}</Tab.Screen>
-      <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator hasGoal={hasGoal} />}</Tab.Screen>
+      <Tab.Screen name={GOALS_NAVIGATOR_ROUTE}>{() => <GoalsNavigator goalType={goalType} hasGoal={hasGoal} />}</Tab.Screen>
       <Tab.Screen
         name={PROFILE_NAVIGATOR_ROUTE}
         options={{
@@ -420,6 +429,7 @@ const Main = () => {
 
   const checkingStatus = useAppSelector(getCheckingStatus);
   const hasGoal = !!useAppSelector(getGoalNumberOfPages);
+  const goalType = useAppSelector(getGoalType);
   const isSignedIn = useAppSelector(getIsSignedIn);
 
   const checkAuthentication = useCallback(async () => {
@@ -490,7 +500,7 @@ const Main = () => {
       <NavigationContainer>
         {isSignedIn ? (
           <>
-            <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} hasGoal={hasGoal} />
+            <MainNavigator isTheLatestAppVersion={isTheLatestAppVersion} googlePlayUrl={googlePlayUrl} goalType={goalType} hasGoal={hasGoal} />
             <InSuspense>
               <>
                 <Modals />

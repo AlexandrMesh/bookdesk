@@ -13,6 +13,7 @@ const PREFIX = 'STATISTIC';
 
 export const setStat = createAction<IStat>(`${PREFIX}/setStat`);
 export const triggerReloadStat = createAction(`${PREFIX}/triggerReloadStat`);
+export const clearData = createAction(`${PREFIX}/clearData`);
 
 export const loadStat = createAsyncThunk(`${PREFIX}/loadStat`, async (boardType: BookStatus) => {
   const { language } = i18n;

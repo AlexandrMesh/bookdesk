@@ -4,7 +4,9 @@ import axios from 'axios';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { clearBooksData, setBookNotes, setBookVotes, userBookRatingsLoaded } from '~redux/actions/booksActions';
-import { setGoal } from '~redux/actions/goalsActions';
+import { clearData as clearCustomBooksData } from '~redux/actions/customBookActions';
+import { clearData as clearStatisticData } from '~redux/actions/statisticActions';
+import { setGoal, clearData as clearGoalsData } from '~redux/actions/goalsActions';
 import AuthService from '~http/services/auth';
 import i18n, { getT } from '~translations/i18n';
 import { RU } from '~constants/languages';
@@ -99,9 +101,9 @@ export const checkAuth = createAsyncThunk(`${PREFIX}/checkAuth`, async (token: s
     const isGoogleSignedIn = result[0];
     const { data } = result[1];
     if (data.profile) {
-      const { numberOfPagesForGoal } = data;
+      const { numberOfPagesForGoal, goalType } = data;
       if (numberOfPagesForGoal) {
-        dispatch(setGoal(numberOfPagesForGoal));
+        dispatch(setGoal({ pages: numberOfPagesForGoal, type: goalType }));
       }
       dispatch(setBookVotes(data.userVotes));
       dispatch(setBookNotes(data.userComments));
@@ -140,7 +142,7 @@ export const signIn = createAsyncThunk(
         });
         if (data) {
           if (data.numberOfPagesForGoal) {
-            dispatch(setGoal(data.numberOfPagesForGoal));
+            dispatch(setGoal({ pages: data.numberOfPagesForGoal, type: data.goalType }));
           }
           dispatch(setBookVotes(data.userVotes));
           dispatch(setBookNotes(data.userComments));
@@ -170,7 +172,7 @@ export const signIn = createAsyncThunk(
         const { data } = await AuthService().signIn({ email, password });
         if (data) {
           if (data.numberOfPagesForGoal) {
-            dispatch(setGoal(data.numberOfPagesForGoal));
+            dispatch(setGoal({ pages: data.numberOfPagesForGoal, type: data.goalType }));
           }
           dispatch(setBookVotes(data.userVotes));
           dispatch(setBookNotes(data.userComments));
@@ -233,6 +235,9 @@ export const signOut = createAsyncThunk(`${PREFIX}/signOut`, async (_, { dispatc
   try {
     await AsyncStorage.removeItem('token');
     dispatch(clearBooksData());
+    dispatch(clearCustomBooksData());
+    dispatch(clearStatisticData());
+    dispatch(clearGoalsData());
     const isGoogleSignedIn = await GoogleSignin.isSignedIn();
     if (isGoogleSignedIn) {
       await GoogleSignin.revokeAccess();

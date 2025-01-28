@@ -7,10 +7,11 @@ export default StyleSheet.create({
     height: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
     backgroundColor: colors.primary_dark,
+    padding: 10,
   },
   content: {
+    width: '100%',
     maxWidth: 800,
   },
   submitButtonWrapper: {
@@ -22,5 +23,17 @@ export default StyleSheet.create({
     marginBottom: 10,
     fontSize: 17,
     color: colors.neutral_light,
+    fontWeight: 'bold',
+  },
+  radioButtonWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  radioButtonLabel: {
+    color: colors.neutral_light,
+    fontSize: 15,
+    marginLeft: 5,
   },
 });

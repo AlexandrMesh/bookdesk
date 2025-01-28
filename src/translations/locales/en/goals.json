@@ -4,13 +4,16 @@
   "enterPagesCount": "Enter pages count",
   "pagesCount": "Pages count",
   "add": "Add",
-  "goalForToday": "Goal for today {{date}}",
+  "goalFor": "Goal for: {{date}}",
   "editGoal": "Edit Goal",
   "goalsDescription": "Want to develop a regular reading habit? Add a goal and the tracker will help you monitor your progress.",
-  "howManyPagesDoYouWantReadDescription": "How many pages do you want to read every day?",
+  "howManyPagesDoYouWantReadDescription": "Pages count",
   "pagesDone": "Have read (pages)",
   "goalInPages": "Goal (pages)",
   "goalAchieved": "Goal achieved!",
   "achievementsJournal": "Achievements Journal",
-  "addedPageCountDescription": "Enter the number of pages read. Can be added in parts."
+  "addedPageCountDescription": "Enter the number of pages read. Can be added in parts.",
+  "daily": "Daily",
+  "monthly": "Monthly",
+  "goalType": "Goal type"
 }

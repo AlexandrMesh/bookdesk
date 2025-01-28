@@ -48,6 +48,7 @@ export const updateCustomBook = createAction<{ bookId: string; bookStatus: BookS
 export const updateBookVotesInSuggestedBook = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInSuggestedBook`);
 export const updateBookVotesInCustomBook = createAction<{ bookId: string; votesCount: number }>(`${PREFIX}/updateBookVotesInCustomBook`);
 export const triggerReloadCustomBookList = createAction(`${PREFIX}/triggerReloadCustomBookList`);
+export const clearData = createAction(`${PREFIX}/clearData`);
 
 export const loadSuggestedBooks = createAsyncThunk(`${PREFIX}/loadSuggestedBooks`, async (bookName: string, { getState }: AppThunkAPI) => {
   const state = getState();

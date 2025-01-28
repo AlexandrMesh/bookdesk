@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch } from '~hooks';
@@ -9,6 +9,9 @@ import Button from '~UI/Button';
 import Input from '~UI/TextInput';
 import { Spinner } from '~UI/Spinner';
 import { addGoal } from '~redux/actions/goalsActions';
+import { DAILY, MONTHLY } from '~constants/goals';
+import { GoalType } from '~types/goals';
+import RadioButton from '~UI/RadioButton';
 import styles from './styles';
 
 const AddGoal = () => {
@@ -18,6 +21,12 @@ const AddGoal = () => {
   const [pages, setPages] = useState('');
   const [errorForPage, setErrorForPages] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [goalType, setGoalType] = useState<GoalType>(DAILY);
+
+  const goalTypes = [
+    { type: DAILY, action: () => setGoalType(DAILY) },
+    { type: MONTHLY, action: () => setGoalType(MONTHLY) },
+  ];
 
   const validateForm = () => {
     const params = {
@@ -35,7 +44,7 @@ const AddGoal = () => {
   const handleAddGoal = async () => {
     try {
       setIsLoading(true);
-      await dispatch(addGoal(pages));
+      await dispatch(addGoal({ numberOfPages: pages, type: goalType }));
       navigation.navigate(GOAL_DETAILS);
     } catch (error) {
       console.error(error);
@@ -71,6 +80,15 @@ const AddGoal = () => {
         </View>
       ) : (
         <View>
+          <Text style={styles.text}>{t('goalType')}</Text>
+          {goalTypes.map(({ type, action }) => {
+            return (
+              <Pressable key={type} onPress={action} style={styles.radioButtonWrapper}>
+                <RadioButton isSelected={goalType === type} />
+                <Text style={styles.radioButtonLabel}>{t(type)}</Text>
+              </Pressable>
+            );
+          })}
           <Text style={styles.text}>{t('howManyPagesDoYouWantReadDescription')}</Text>
           <Input
             wrapperClassName={styles.inputWrapper}
