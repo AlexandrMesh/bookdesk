@@ -169,7 +169,9 @@ export const signIn = createAsyncThunk(
       }
     } else {
       try {
+        console.log(1);
         const { data } = await AuthService().signIn({ email, password });
+        console.log(data, 'data');
         if (data) {
           if (data.numberOfPagesForGoal) {
             dispatch(setGoal({ pages: data.numberOfPagesForGoal, type: data.goalType }));

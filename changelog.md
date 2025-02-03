@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.9.0
+
+###### 2025-01-28
+- [New] Added goal types `daily` and `monthly` for user goals
+
 ## 4.8.0
 
 ###### 2025-01-17
