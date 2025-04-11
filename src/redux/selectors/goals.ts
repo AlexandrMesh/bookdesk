@@ -21,8 +21,13 @@ export const deriveNumberOfPagesDoneToday = createSelector([getGoalsData], (page
 );
 
 export const deriveNumberOfPagesDoneMonthly = createSelector([getGoalsData], (pages) =>
-  // eslint-disable-next-line camelcase
-  sum(pages.filter(({ added_at }) => new Date(added_at).getMonth() === new Date().getMonth()).map(({ pages }) => Number(pages))),
+  sum(
+    pages
+      .filter(
+        ({ added_at }) => new Date(added_at).getFullYear() === new Date().getFullYear() && new Date(added_at).getMonth() === new Date().getMonth(),
+      )
+      .map(({ pages }) => Number(pages)),
+  ),
 );
 
 export const deriveTodayProgress = createSelector([getGoalNumberOfPages, deriveNumberOfPagesDoneToday], (goalNumberOfPages, numberOfPagesDoneToday) =>

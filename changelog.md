@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.9.1
+
+###### 2025-01-26
+- [Fix] Fix displaying monthly goal progress value
+
 ## 4.9.0
 
 ###### 2025-01-26
