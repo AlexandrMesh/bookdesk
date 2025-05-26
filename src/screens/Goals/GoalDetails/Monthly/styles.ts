@@ -108,6 +108,11 @@ export default StyleSheet.create({
   button: {
     width: 140,
   },
+  statButton: {
+    marginVertical: 10,
+    width: 120,
+    height: 40,
+  },
   stickyHeader: {
     marginVertical: 10,
     display: 'flex',

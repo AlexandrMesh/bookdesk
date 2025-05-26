@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, SectionList, FlatList, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 import { getValidationFailure, validationTypes } from '~utils/validation';
 import { addGoalItem, getGoalItems, deleteUserGoalItem } from '~redux/actions/goalsActions';
-import { deriveSectionedPagesDone, getGoalNumberOfPages, deriveNumberOfPagesDoneToday, deriveTodayProgress } from '~redux/selectors/goals';
+import {
+  deriveSectionedPagesDone,
+  getGoalNumberOfPages,
+  deriveNumberOfPagesDoneToday,
+  deriveTodayProgress,
+  deriveGoalsDataLength,
+} from '~redux/selectors/goals';
 import { useAppDispatch, useAppSelector } from '~hooks';
 import Button from '~UI/Button';
+import { STAT_NAVIGATOR_ROUTE, PAGES_STATISTIC_ROUTE, STAT_ROUTE } from '~constants/routes';
 import Input from '~UI/TextInput';
 import { Spinner } from '~UI/Spinner';
 import { IDLE, PENDING, SUCCEEDED, FAILED } from '~constants/loadingStatuses';
@@ -14,11 +22,12 @@ import ArrowDown from '~assets/arrow-down.svg';
 import MedalIcon from '~assets/medal-star.svg';
 import RemoveIcon from '~assets/remove.svg';
 import useDisplayAlert from '~hooks/useDisplayAlert';
+import { MAX_DISPLAYING_RECORDS } from '~constants/goals';
 import ItemPlaceholder from '../ItemPlaceholder';
 import styles from './styles';
 
 const Daily = () => {
-  const { i18n, t } = useTranslation(['goals', 'errors', 'common']);
+  const { i18n, t } = useTranslation(['goals', 'errors', 'common', 'statistic']);
   const [pages, setPages] = useState<string>('');
   const [errorForPage, setErrorForPages] = useState('');
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -27,11 +36,14 @@ const Daily = () => {
   const deletedId = useRef<string>('');
   const [loadingGoalItemsId, setLoadingGoalItemsId] = useState<string | null>(null);
 
+  const navigation = useNavigation<any>();
+
   const dispatch = useAppDispatch();
   const _getGoalItems = useCallback(() => dispatch(getGoalItems()), [dispatch]);
   const _addGoalItem = useCallback((pages: string) => dispatch(addGoalItem(pages)), [dispatch]);
   const _deleteUserGoalItem = useCallback((id: string) => dispatch(deleteUserGoalItem(id)), [dispatch]);
 
+  const goalsDataLength = useAppSelector(deriveGoalsDataLength);
   const sectionedPagesDone = useAppSelector(deriveSectionedPagesDone);
   const goalNumberOfPages = useAppSelector(getGoalNumberOfPages) as number;
   const numberOfPagesDoneToday = useAppSelector(deriveNumberOfPagesDoneToday);
@@ -194,6 +206,29 @@ const Daily = () => {
 
   const emptyListComponent = useCallback(() => (loadingStatus === IDLE || loadingStatus === PENDING ? <ItemPlaceholder /> : null), [loadingStatus]);
 
+  const footerComponent = useCallback(
+    () =>
+      goalsDataLength > MAX_DISPLAYING_RECORDS ? (
+        <View>
+          <Text style={styles.readingHistoryItem}>{t('displayingRecords', { count: MAX_DISPLAYING_RECORDS })}</Text>
+          <Text style={styles.readingHistoryItem}>{t('detailsInTheStat')}</Text>
+          <Button
+            style={styles.statButton}
+            onPress={() =>
+              navigation.navigate(STAT_NAVIGATOR_ROUTE, {
+                screen: STAT_ROUTE,
+                params: {
+                  screen: PAGES_STATISTIC_ROUTE,
+                },
+              })
+            }
+            title={t('statistic:statistic')}
+          />
+        </View>
+      ) : null,
+    [t, navigation, goalsDataLength],
+  );
+
   const renderSectionHeader = useCallback(
     ({ section }: any) => (
       <View style={styles.stickyHeader}>
@@ -295,9 +330,9 @@ const Daily = () => {
             sections={sectionedPagesDone}
             keyExtractor={getKeyExtractorForSectionList}
             ListEmptyComponent={emptyListComponent}
+            ListFooterComponent={footerComponent}
             renderItem={renderItemFFormSectionList}
             renderSectionHeader={renderSectionHeader}
-            stickySectionHeadersEnabled
           />
         </View>
       </View>

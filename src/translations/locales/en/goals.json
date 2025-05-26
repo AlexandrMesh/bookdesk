@@ -15,5 +15,7 @@
   "addedPageCountDescription": "Enter the number of pages read. Can be added in parts.",
   "daily": "Daily",
   "monthly": "Monthly",
-  "goalType": "Goal type"
+  "goalType": "Goal type",
+  "displayingRecords": "Showing the last {{count}} entries.",
+  "detailsInTheStat": "Go to the statistics to see more details."
 }

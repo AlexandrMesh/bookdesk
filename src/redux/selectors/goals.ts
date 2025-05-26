@@ -41,6 +41,8 @@ export const deriveMonthlyProgress = createSelector(
 
 export const deriveSortedgetGoalsData = createSelector([getGoalsData], (data) => [...data].sort((a, b) => b.added_at - a.added_at));
 
+export const deriveGoalsDataLength = createSelector([getGoalsData], (data) => data.length);
+
 export const deriveSectionedPagesDone = createSelector([getGoalsData], (pages) =>
   map(
     groupBy(

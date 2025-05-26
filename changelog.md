@@ -2,6 +2,11 @@
 
 ## bookdesk
 
+## 4.9.2
+
+###### 2025-05-26
+- [New] Added displaying information in the footer of goal items with Stat button
+
 ## 4.9.1
 
 ###### 2025-01-26
