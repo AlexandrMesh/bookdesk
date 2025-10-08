@@ -4,7 +4,7 @@ import DeviceInfo from 'react-native-device-info';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { lt } from 'semver';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,6 +49,7 @@ import { getCheckingStatus, getIsSignedIn } from '~redux/selectors/auth';
 import { getGoalNumberOfPages, getGoalType } from '~redux/selectors/goals';
 import { GoalType } from '~types/goals';
 import { DAILY } from '~constants/goals';
+import BannerAd from '~UI/BannerAd';
 import { MAIN_CONFIG_URL, RESERVE_CONFIG_URL } from '../../config/api';
 import CloseComponent from './CloseComponent';
 import EditComponent from './EditComponent';
@@ -80,6 +81,14 @@ const NoConnection = lazy(() => import('./NoConnection'));
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const TabBarWithBanner = (props: any) => (
+  <>
+    <BannerAd />
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    <BottomTabBar {...props} />
+  </>
+);
 
 const StatNavigator = () => {
   const { t } = useTranslation('statistic');
@@ -353,6 +362,7 @@ const MainNavigator: FC<MainNavigatorProps> = ({ isTheLatestAppVersion, googlePl
         headerShown: false,
         tabBarIcon: ({ focused }) => getIcon(focused, route),
       })}
+      tabBar={TabBarWithBanner}
     >
       <Tab.Screen name={HOME_NAVIGATOR_ROUTE} component={HomeNavigator} />
       <Tab.Screen name={STAT_NAVIGATOR_ROUTE} component={StatNavigator} />

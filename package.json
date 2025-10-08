@@ -46,7 +46,8 @@
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "reselect": "^4.1.8",
-    "semver": "^7.6.3"
+    "semver": "^7.6.3",
+    "yandex-mobile-ads": "^7.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
